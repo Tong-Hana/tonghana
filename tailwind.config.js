@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        pretendard: ["var(--font-pretendard)"],
+      },
       colors: {
         hanagold: "#ad9a5f",
         hanasilver: "#b5b5b5",
