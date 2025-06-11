@@ -1,4 +1,5 @@
-const config = {
+// commitlint.config.js
+module.exports = {
   extends: ["@commitlint/config-conventional"],
   parserPreset: {
     parserOpts: {
@@ -51,5 +52,3 @@ const config = {
     "footer-max-line-length": [0, "always"],
   },
 };
-
-export default config;
