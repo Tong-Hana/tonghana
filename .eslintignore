@@ -3,3 +3,7 @@ node_modules/
 dist/
 build/
 coverage/
+**/*.stories.tsx
+**/*.stories.ts
+**/*.stories.jsx
+**/*.stories.js
