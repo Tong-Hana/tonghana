@@ -7,6 +7,147 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ProductType {
+  productId            Int                    @id @default(autoincrement()) @map("product_id")
+  category             ProductCategory        @map("category")
+  userFinancialProduct UserFinancialProduct[]
+}
+
+model ConsumeHistory {
+  userId           Int     @id @map("user_id")
+  savingsRate      Decimal @map("savings_rate") @db.Decimal(5, 2)
+  investmentRate   Decimal @map("investment_rate") @db.Decimal(5, 2)
+  leisureRate      Decimal @map("leisure_rate") @db.Decimal(5, 2)
+  fixedExpenseRate Decimal @map("fixed_expense_rate") @db.Decimal(5, 2)
+  user             User    @relation(fields: [userId], references: [userId])
+}
+
+model UserFinancialProduct {
+  id              Int         @default(autoincrement()) @map("id")
+  productId       Int         @map("product_id")
+  userId          Int         @map("user_id")
+  productName     String      @map("product_name")
+  institutionName String      @map("institution_name")
+  currentValue    BigInt      @map("current_value")
+  productEndDate  DateTime    @map("product_end_date")
+  riskLevel       RiskLevel   @map("risk_level")
+  productType     ProductType @relation(fields: [productId], references: [productId])
+  user            User        @relation(fields: [userId], references: [userId])
+
+  @@id([id, productId, userId])
+  @@index([productId], map: "UserFinancialProduct_product_id_fkey")
+  @@index([userId], map: "UserFinancialProduct_user_id_fkey")
+}
+
+model UserMatchLog {
+  matchId     Int         @id @default(autoincrement()) @map("match_id")
+  sentId      Int         @map("sent_id")
+  receiveId   Int         @map("receive_id")
+  matchStatus MatchStatus @map("match_status")
+  received    User        @relation("ReceivedMatches", fields: [receiveId], references: [userId])
+  sent        User        @relation("SentMatches", fields: [sentId], references: [userId])
+
+  @@index([receiveId], map: "UserMatchLog_receive_id_fkey")
+  @@index([sentId], map: "UserMatchLog_sent_id_fkey")
+}
+
+model Loan {
+  loanId              Int      @default(autoincrement()) @map("loan_id")
+  userId              Int      @map("user_id")
+  loanName            String   @map("loan_name")
+  loanInstitutionName String   @map("loan_institution_name")
+  loanBalance         BigInt   @map("loan_balance")
+  loanRate            Decimal  @map("loan_rate") @db.Decimal(5, 2)
+  loanEndDate         DateTime @map("loan_end_date")
+  user                User     @relation(fields: [userId], references: [userId])
+
+  @@id([loanId, userId])
+  @@index([userId], map: "Loan_user_id_fkey")
+}
+
+model ChatMessage {
+  messageId Int       @default(autoincrement()) @map("message_id")
+  roomId    Int       @map("room_id")
+  userId    Int       @map("user_id")
+  message   String    @map("message")
+  regdate   DateTime  @map("regdate")
+  chatRoom  ChatRooms @relation(fields: [roomId], references: [roomId])
+  user      User      @relation(fields: [userId], references: [userId])
+
+  @@id([messageId, roomId, userId])
+  @@index([roomId], map: "ChatMessage_room_id_fkey")
+  @@index([userId], map: "ChatMessage_user_id_fkey")
+}
+
+model ChatRooms {
+  roomId       Int           @id @default(autoincrement()) @map("room_id")
+  userId       Int           @map("user_id")
+  userId2      Int           @map("user_id2")
+  isAgree      Boolean       @map("is_agree")
+  isAgree2     Boolean       @map("is_agree2")
+  chatMessages ChatMessage[]
+}
+
+model PairingAnswer {
+  id                Int         @default(autoincrement()) @map("id")
+  userId            Int         @unique @map("user_id")
+  carBudget         BigInt      @map("car_budget")
+  dateBudget        Int         @map("date_budget")
+  shoesBudget       Int         @map("shoes_budget")
+  preferredCity     String      @map("preferred_city")
+  preferredDistrict String      @map("preferred_district")
+  idealIncomeRange  IncomeRange @map("ideal_income_range")
+  createdAt         DateTime    @map("created_at")
+  user              User        @relation(fields: [userId], references: [userId])
+
+  @@id([id, userId])
+}
+
+model HanaProduct {
+  productId       BigInt          @id @default(autoincrement()) @map("product_id")
+  name            String          @map("name")
+  category        ProductCategory @map("category")
+  description     String          @map("description")
+  interestRate    Decimal         @map("interest_rate") @db.Decimal(5, 2)
+  maxInterestRate Decimal         @map("max_interest_rate") @db.Decimal(5, 2)
+  minAmount       BigInt          @map("min_amount")
+  maxAmount       BigInt          @map("max_amount")
+  minPeriodMonth  Int             @map("min_period_month")
+  maxPeriodMonth  Int             @map("max_period_month")
+  riskLevel       RiskLevel       @map("risk_level")
+}
+
+model User {
+  userId               Int                    @id @default(autoincrement()) @map("user_id")
+  email                String                 @unique
+  birthYear            Int                    @map("birth_year")
+  carValue             BigInt?                @map("car_value")
+  city                 String                 @db.VarChar(20)
+  createdAt            DateTime               @default(now()) @map("created_at")
+  currentType          InvestmentType?        @map("current_type")
+  description          String?                @db.VarChar(100)
+  district             String                 @db.VarChar(20)
+  gender               Gender
+  goalAmount           BigInt?                @map("goal_amount")
+  goalPeriod           GoalPeriod?            @map("goal_period")
+  goalType             GoalType?              @map("goal_type")
+  hasCar               Boolean?               @default(false) @map("has_car")
+  hasHouse             Boolean?               @default(false) @map("has_house")
+  houseValue           BigInt?                @map("house_value")
+  job                  String?                @db.VarChar(20)
+  nickname             String                 @db.VarChar(10)
+  password             String                 @db.VarChar(100)
+  preferredType        InvestmentType?        @map("preferred_type")
+  profileImage         String?                @map("profile_image")
+  chatMessage          ChatMessage[]
+  consumeHistory       ConsumeHistory?
+  loan                 Loan[]
+  pairingAnswer        PairingAnswer?
+  userFinancialProduct UserFinancialProduct[]
+  receivedMatches      UserMatchLog[]         @relation("ReceivedMatches")
+  sentMatches          UserMatchLog[]         @relation("SentMatches")
+}
+
 enum Gender {
   M
   F
@@ -65,149 +206,4 @@ enum MatchStatus {
   PENDING
   ACCEPTED
   REJECTED
-}
-
-model ProductType {
-  productId            Int                    @id @default(autoincrement()) @map("product_id")
-  category             ProductCategory        @map("category")
-  userFinancialProduct UserFinancialProduct[]
-}
-
-model ConsumeHistory {
-  userId           Int     @id @map("user_id")
-  savingsRate      Decimal @default(0.00) @map("savings_rate")
-  investmentRate   Decimal @default(0.00) @map("investment_rate")
-  leisureRate      Decimal @default(0.00) @map("leisure_rate")
-  fixedExpenseRate Decimal @default(0.00) @map("fixed_expense_rate")
-  user             User    @relation(fields: [userId], references: [userId])
-}
-
-model UserFinancialProduct {
-  id              Int       @default(autoincrement()) @map("id")
-  productId       Int       @map("product_id")
-  userId          Int       @map("user_id")
-  productName     String    @map("product_name")
-  institutionName String    @map("institution_name")
-  currentValue    BigInt    @map("current_value")
-  productEndDate  DateTime  @map("product_end_date")
-  riskLevel       RiskLevel @map("risk_level")
-
-  productType ProductType @relation(fields: [productId], references: [productId])
-  user        User        @relation(fields: [userId], references: [userId])
-
-  @@id([id, productId, userId])
-}
-
-model UserMatchLog {
-  matchId     Int         @id @default(autoincrement()) @map("match_id")
-  sentId      Int         @map("sent_id")
-  receiveId   Int         @map("receive_id")
-  matchStatus MatchStatus @map("match_status")
-
-  sent     User @relation("SentMatches", fields: [sentId], references: [userId])
-  received User @relation("ReceivedMatches", fields: [receiveId], references: [userId])
-}
-
-model Loan {
-  loanId              Int      @default(autoincrement()) @map("loan_id")
-  userId              Int      @map("user_id")
-  loanName            String   @map("loan_name")
-  loanInstitutionName String   @map("loan_institution_name")
-  loanBalance         BigInt   @map("loan_balance")
-  loanRate            Decimal  @map("loan_rate")
-  loanEndDate         DateTime @map("loan_end_date")
-
-  user User @relation(fields: [userId], references: [userId])
-
-  @@id([loanId, userId])
-}
-
-model ChatMessage {
-  messageId Int      @default(autoincrement()) @map("message_id")
-  roomId    Int      @map("room_id")
-  userId    Int      @map("user_id")
-  message   String   @map("message")
-  regdate   DateTime @map("regdate")
-
-  chatRoom ChatRooms @relation(fields: [roomId], references: [roomId])
-  user     User      @relation(fields: [userId], references: [userId])
-
-  @@id([messageId, roomId, userId])
-}
-
-model ChatRooms {
-  roomId   Int     @id @default(autoincrement()) @map("room_id")
-  userId   Int     @map("user_id")
-  userId2  Int     @map("user_id2")
-  isAgree  Boolean @map("is_agree")
-  isAgree2 Boolean @map("is_agree2")
-
-  chatMessages ChatMessage[]
-}
-
-model PairingAnswer {
-  id                Int         @default(autoincrement()) @map("id")
-  userId            Int         @unique @map("user_id")
-  carBudget         BigInt      @map("car_budget")
-  dateBudget        Int         @map("date_budget")
-  shoesBudget       Int         @map("shoes_budget")
-  preferredCity     String      @map("preferred_city")
-  preferredDistrict String      @map("preferred_district")
-  idealIncomeRange  IncomeRange @map("ideal_income_range")
-  createdAt         DateTime    @map("created_at")
-
-  user User @relation(fields: [userId], references: [userId])
-
-  @@id([id, userId])
-}
-
-model HanaProduct {
-  productId       BigInt          @id @default(autoincrement()) @map("product_id")
-  name            String          @map("name")
-  category        ProductCategory @map("category")
-  description     String          @map("description")
-  interestRate    Decimal         @map("interest_rate")
-  maxInterestRate Decimal         @map("max_interest_rate")
-  minAmount       BigInt          @map("min_amount")
-  maxAmount       BigInt          @map("max_amount")
-  minPeriodMonth  Int             @map("min_period_month")
-  maxPeriodMonth  Int             @map("max_period_month")
-  riskLevel       RiskLevel       @map("risk_level")
-}
-
-model User {
-  userId    Int     @id @default(autoincrement()) @map("user_id")
-  nickname  String  @db.VarChar(10)
-  email     String  @unique
-  password  String  @db.VarChar(100)
-  birthYear Int     @map("birth_year")
-  gender    Gender
-  job       String? @db.VarChar(20)
-
-  profileImage String? @map("profile_image") // S3 URL
-  city         String  @db.VarChar(20)
-  district     String  @db.VarChar(20)
-
-  hasCar     Boolean? @default(false) @map("has_car")
-  hasHouse   Boolean? @default(false) @map("has_house")
-  carValue   BigInt?  @map("car_value") // 보유X는 null
-  houseValue BigInt?  @map("house_value") // 보유X는 null
-
-  currentType   InvestmentType? @map("current_type")
-  preferredType InvestmentType? @map("preferred_type")
-
-  goalType   GoalType?   @map("goal_type")
-  goalAmount BigInt?     @map("goal_amount")
-  goalPeriod GoalPeriod? @map("goal_period")
-
-  description String?  @db.VarChar(100)
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  consumeHistory       ConsumeHistory?
-  userFinancialProduct UserFinancialProduct[]
-  loan                 Loan[]
-  chatMessage          ChatMessage[]
-  pairingAnswer        PairingAnswer?
-  sentMatches          UserMatchLog[]         @relation("SentMatches")
-  receivedMatches      UserMatchLog[]         @relation("ReceivedMatches")
 }
