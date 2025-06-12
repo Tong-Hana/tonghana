@@ -1,64 +1,221 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
-}
-
-enum Gender {
-    M
-    F
-}
-
-enum InvestmentType {
-    CONSERVATIVE    @map("안정형")
-    MODERATE        @map("안정추구형")
-    NEUTRAL         @map("위험중립형")
-    AGGRESSIVE      @map("적극투자형")
-    VERY_AGGRESSIVE @map("공격투자형")
-}
-
-enum GoalType {
-    HOUSE      @map("내집마련")
-    LUMPSUM    @map("목돈마련")
-    RETIREMENT @map("노후자금")
-    MARRIAGE   @map("결혼자금")
-}
-
-enum GoalPeriod {
-    WITHIN_1_YEAR     @map("1년 이내")
-    WITHIN_3_YEARS    @map("3년 이내")
-    WITHIN_5_YEARS    @map("5년 이내")
-    MORE_THAN_5_YEARS @map("5년 이상")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    userId    Int     @id @default(autoincrement()) @map("user_id")
-    nickname  String  @db.VarChar(10)
-    email     String  @unique
-    password  String  @db.VarChar(100)
-    birthYear Int     @map("birth_year")
-    gender    Gender
-    job       String? @db.VarChar(20)
+  userId                                     Int                    @id @default(autoincrement()) @map("user_id")
+  email                                      String                 @unique
+  birthYear                                  Int                    @map("birth_year")
+  carValue                                   BigInt?                @map("car_value")
+  city                                       String                 @db.VarChar(20)
+  createdAt                                  DateTime               @default(now()) @map("created_at")
+  currentType                                InvestmentType?        @map("current_type")
+  description                                String?                @db.VarChar(100)
+  district                                   String                 @db.VarChar(20)
+  gender                                     Gender
+  goalAmount                                 BigInt?                @map("goal_amount")
+  goalPeriod                                 GoalPeriod?            @map("goal_period")
+  goalType                                   GoalType?              @map("goal_type")
+  hasCar                                     Boolean?               @default(false) @map("has_car")
+  hasHouse                                   Boolean?               @default(false) @map("has_house")
+  houseValue                                 BigInt?                @map("house_value")
+  job                                        String?                @db.VarChar(20)
+  nickname                                   String                 @db.VarChar(10)
+  password                                   String                 @db.VarChar(100)
+  preferredType                              InvestmentType?        @map("preferred_type")
+  profileImage                               String?                @map("profile_image")
+  ChatMessage                                ChatMessage[]
+  ConsumeHistory                             ConsumeHistory?
+  Loan                                       Loan[]
+  PairingAnswer                              PairingAnswer?
+  UserFinancialProduct                       UserFinancialProduct[]
+  UserMatchLog_UserMatchLog_receive_idToUser UserMatchLog[]         @relation("UserMatchLog_receive_idToUser")
+  UserMatchLog_UserMatchLog_sent_idToUser    UserMatchLog[]         @relation("UserMatchLog_sent_idToUser")
+}
 
-    profileImage String? @map("profile_image") // S3 URL
-    city         String  @db.VarChar(20)
-    district     String  @db.VarChar(20)
+model ChatMessage {
+  message_id Int       @default(autoincrement())
+  room_id    Int
+  user_id    Int
+  message    String
+  regdate    DateTime
+  ChatRooms  ChatRooms @relation(fields: [room_id], references: [room_id])
+  User       User      @relation(fields: [user_id], references: [userId])
 
-    hasCar     Boolean? @default(false) @map("has_car")
-    hasHouse   Boolean? @default(false) @map("has_house")
-    carValue   Int?     @map("car_value") // 보유X는 null
-    houseValue Int?     @map("house_value") // 보유X는 null
+  @@id([message_id, room_id, user_id])
+  @@index([room_id], map: "ChatMessage_room_id_fkey")
+  @@index([user_id], map: "ChatMessage_user_id_fkey")
+}
 
-    currentType   InvestmentType? @map("current_type")
-    preferredType InvestmentType? @map("preferred_type")
+model ChatRooms {
+  room_id     Int           @id @default(autoincrement())
+  user_id     Int
+  user_id2    Int
+  is_agree    Boolean
+  is_agree2   Boolean
+  ChatMessage ChatMessage[]
+}
 
-    goalType   GoalType?   @map("goal_type")
-    goalAmount Int?        @map("goal_amount")
-    goalPeriod GoalPeriod? @map("goal_period")
+model ConsumeHistory {
+  user_id            Int     @id
+  savings_rate       Decimal @db.Decimal(5, 2)
+  investment_rate    Decimal @db.Decimal(5, 2)
+  leisure_rate       Decimal @db.Decimal(5, 2)
+  fixed_expense_rate Decimal @db.Decimal(5, 2)
+  User               User    @relation(fields: [user_id], references: [userId])
+}
 
-    description String?  @db.VarChar(100)
-    createdAt   DateTime @default(now()) @map("created_at")
+model HanaProduct {
+  product_id        BigInt                 @id @default(autoincrement())
+  name              String
+  category          HanaProduct_category
+  description       String
+  interest_rate     Decimal                @db.Decimal(5, 2)
+  max_interest_rate Decimal                @db.Decimal(5, 2)
+  min_amount        BigInt
+  max_amount        BigInt
+  min_period_month  Int
+  max_period_month  Int
+  risk_level        HanaProduct_risk_level
+}
+
+model Loan {
+  loan_id               Int      @default(autoincrement())
+  user_id               Int
+  loan_name             String
+  loan_institution_name String
+  loan_balance          BigInt
+  loan_rate             Decimal  @db.Decimal(5, 2)
+  loan_end_date         DateTime
+  User                  User     @relation(fields: [user_id], references: [userId])
+
+  @@id([loan_id, user_id])
+  @@index([user_id], map: "Loan_user_id_fkey")
+}
+
+model PairingAnswer {
+  id                 Int                              @default(autoincrement())
+  user_id            Int                              @unique
+  car_budget         BigInt
+  date_budget        Int
+  shoes_budget       Int
+  preferred_city     String
+  preferred_district String
+  ideal_income_range PairingAnswer_ideal_income_range
+  created_at         DateTime
+  User               User                             @relation(fields: [user_id], references: [userId])
+
+  @@id([id, user_id])
+}
+
+model UserFinancialProduct {
+  id               Int                             @default(autoincrement())
+  user_id          Int
+  product_name     String
+  institution_name String
+  current_value    BigInt
+  product_end_date DateTime
+  risk_level       UserFinancialProduct_risk_level
+  category         UserFinancialProduct_category
+  User             User                            @relation(fields: [user_id], references: [userId])
+
+  @@id([id, user_id])
+  @@index([user_id], map: "UserFinancialProduct_user_id_fkey")
+}
+
+model UserMatchLog {
+  match_id                           Int                       @id @default(autoincrement())
+  sent_id                            Int
+  receive_id                         Int
+  match_status                       UserMatchLog_match_status
+  User_UserMatchLog_receive_idToUser User                      @relation("UserMatchLog_receive_idToUser", fields: [receive_id], references: [userId])
+  User_UserMatchLog_sent_idToUser    User                      @relation("UserMatchLog_sent_idToUser", fields: [sent_id], references: [userId])
+
+  @@index([receive_id], map: "UserMatchLog_receive_id_fkey")
+  @@index([sent_id], map: "UserMatchLog_sent_id_fkey")
+}
+
+enum Gender {
+  M
+  F
+}
+
+enum InvestmentType {
+  CONSERVATIVE    @map("안정형")
+  MODERATE        @map("안정추구형")
+  NEUTRAL         @map("위험중립형")
+  AGGRESSIVE      @map("적극투자형")
+  VERY_AGGRESSIVE @map("공격투자형")
+}
+
+enum GoalType {
+  HOUSE      @map("내집마련")
+  LUMPSUM    @map("목돈마련")
+  RETIREMENT @map("노후자금")
+  MARRIAGE   @map("결혼자금")
+}
+
+enum GoalPeriod {
+  WITHIN_1_YEAR     @map("1년 이내")
+  WITHIN_3_YEARS    @map("3년 이내")
+  WITHIN_5_YEARS    @map("5년 이내")
+  MORE_THAN_5_YEARS @map("5년 이상")
+}
+
+enum HanaProduct_category {
+  SAVINGS
+  DOMESTIC_STOCKS
+  DEVELOPED_STOCKS
+  EMERGING_STOCKS
+  DOMESTIC_BONDS
+  FOREIGN_BONDS
+  ALTERNATIVE
+  CASH
+}
+
+enum UserMatchLog_match_status {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum PairingAnswer_ideal_income_range {
+  NEAR_400
+  NEAR_600
+  NEAR_800
+  OVER_1000
+}
+
+enum UserFinancialProduct_risk_level {
+  VERY_HIGH
+  HIGH
+  LITTLE_HIGH
+  MEDIUM
+  LOW
+  VERY_LOW
+}
+
+enum HanaProduct_risk_level {
+  VERY_HIGH
+  HIGH
+  LITTLE_HIGH
+  MEDIUM
+  LOW
+  VERY_LOW
+}
+
+enum UserFinancialProduct_category {
+  SAVINGS
+  DOMESTIC_STOCKS
+  DEVELOPED_STOCKS
+  EMERGING_STOCKS
+  DOMESTIC_BONDS
+  FOREIGN_BONDS
+  ALTERNATIVE
+  CASH
 }
