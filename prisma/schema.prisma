@@ -8,27 +8,13 @@ datasource db {
 }
 
 model ConsumeHistory {
-  userId           Int     @id @map("user_id")
-  savingsRate      Decimal @map("savings_rate") @db.Decimal(5, 2)
-  investmentRate   Decimal @map("investment_rate") @db.Decimal(5, 2)
-  leisureRate      Decimal @map("leisure_rate") @db.Decimal(5, 2)
-  fixedExpenseRate Decimal @map("fixed_expense_rate") @db.Decimal(5, 2)
-  user             User    @relation(fields: [userId], references: [userId])
-}
-
-model UserFinancialProduct {
-  id              Int             @default(autoincrement()) @map("id")
-  category        ProductCategory @map("category")
-  userId          Int             @map("user_id")
-  productName     String          @map("product_name")
-  institutionName String          @map("institution_name")
-  currentValue    BigInt          @map("current_value")
-  productEndDate  DateTime        @map("product_end_date")
-  riskLevel       RiskLevel       @map("risk_level")
-  user            User            @relation(fields: [userId], references: [userId])
-
-  @@id([id, userId])
-  @@index([userId], map: "UserFinancialProduct_user_id_fkey")
+  userId            Int     @id @map("user_id")
+  savingsRate       Decimal @map("savings_rate") @db.Decimal(5, 2)
+  investmentRate    Decimal @map("investment_rate") @db.Decimal(5, 2)
+  leisureRate       Decimal @map("leisure_rate") @db.Decimal(5, 2)
+  livingExpenseRate Decimal @map("living_expense_rate") @db.Decimal(5, 2)
+  otherRate         Decimal @map("other_rate") @db.Decimal(5, 2)
+  user              User    @relation(fields: [userId], references: [userId])
 }
 
 model UserMatchLog {
@@ -81,18 +67,15 @@ model ChatRooms {
 }
 
 model PairingAnswer {
-  id                Int         @default(autoincrement()) @map("id")
-  userId            Int         @unique @map("user_id")
-  carBudget         BigInt      @map("car_budget")
-  dateBudget        Int         @map("date_budget")
-  shoesBudget       Int         @map("shoes_budget")
-  preferredCity     String      @map("preferred_city")
-  preferredDistrict String      @map("preferred_district")
-  idealIncomeRange  IncomeRange @map("ideal_income_range")
-  createdAt         DateTime    @map("created_at")
-  user              User        @relation(fields: [userId], references: [userId])
-
-  @@id([id, userId])
+  id               Int         @id @default(autoincrement()) @map("id")
+  userId           Int         @unique @map("user_id")
+  carBudget        BigInt      @map("car_budget")
+  dateBudget       Int         @map("date_budget")
+  shoesBudget      Int         @map("shoes_budget")
+  preferredCity    String      @map("preferred_city")
+  idealIncomeRange IncomeRange @map("ideal_income_range")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  user             User        @relation(fields: [userId], references: [userId])
 }
 
 model HanaProduct {
@@ -118,7 +101,6 @@ model User {
   createdAt            DateTime               @default(now()) @map("created_at")
   currentType          InvestmentType?        @map("current_type")
   description          String?                @db.VarChar(100)
-  district             String                 @db.VarChar(20)
   gender               Gender
   goalAmount           BigInt?                @map("goal_amount")
   goalPeriod           GoalPeriod?            @map("goal_period")
@@ -138,6 +120,27 @@ model User {
   userFinancialProduct UserFinancialProduct[]
   receivedMatches      UserMatchLog[]         @relation("ReceivedMatches")
   sentMatches          UserMatchLog[]         @relation("SentMatches")
+}
+
+model UserFinancialProduct {
+  userProductId  Int      @id @default(autoincrement()) @map("user_product_id")
+  userId         Int      @map("user_id")
+  productId      Int      @map("product_id")
+  currentValue   BigInt   @map("current_value")
+  productEndDate DateTime @map("product_end_date")
+
+  user             User             @relation(fields: [userId], references: [userId])
+  financialProduct FinancialProduct @relation(fields: [productId], references: [productId])
+}
+
+model FinancialProduct {
+  productId       Int             @id @default(autoincrement()) @map("product_id")
+  productName     String          @map("product_name")
+  institutionName String          @map("institution_name")
+  riskLevel       RiskLevel       @map("risk_level")
+  category        ProductCategory @map("category")
+
+  userFinancialProduct UserFinancialProduct[]
 }
 
 enum Gender {
