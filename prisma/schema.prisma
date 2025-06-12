@@ -7,12 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ProductType {
-  productId            Int                    @id @default(autoincrement()) @map("product_id")
-  category             ProductCategory        @map("category")
-  userFinancialProduct UserFinancialProduct[]
-}
-
 model ConsumeHistory {
   userId           Int     @id @map("user_id")
   savingsRate      Decimal @map("savings_rate") @db.Decimal(5, 2)
@@ -23,19 +17,17 @@ model ConsumeHistory {
 }
 
 model UserFinancialProduct {
-  id              Int         @default(autoincrement()) @map("id")
-  productId       Int         @map("product_id")
-  userId          Int         @map("user_id")
-  productName     String      @map("product_name")
-  institutionName String      @map("institution_name")
-  currentValue    BigInt      @map("current_value")
-  productEndDate  DateTime    @map("product_end_date")
-  riskLevel       RiskLevel   @map("risk_level")
-  productType     ProductType @relation(fields: [productId], references: [productId])
-  user            User        @relation(fields: [userId], references: [userId])
+  id              Int             @default(autoincrement()) @map("id")
+  category        ProductCategory @map("category")
+  userId          Int             @map("user_id")
+  productName     String          @map("product_name")
+  institutionName String          @map("institution_name")
+  currentValue    BigInt          @map("current_value")
+  productEndDate  DateTime        @map("product_end_date")
+  riskLevel       RiskLevel       @map("risk_level")
+  user            User            @relation(fields: [userId], references: [userId])
 
-  @@id([id, productId, userId])
-  @@index([productId], map: "UserFinancialProduct_product_id_fkey")
+  @@id([id, userId])
   @@index([userId], map: "UserFinancialProduct_user_id_fkey")
 }
 
