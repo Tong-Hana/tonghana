@@ -16,7 +16,6 @@ model User {
   createdAt                                  DateTime               @default(now()) @map("created_at")
   currentType                                InvestmentType?        @map("current_type")
   description                                String?                @db.VarChar(100)
-  district                                   String                 @db.VarChar(20)
   gender                                     Gender
   goalAmount                                 BigInt?                @map("goal_amount")
   goalPeriod                                 GoalPeriod?            @map("goal_period")
