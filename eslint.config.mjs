@@ -1,5 +1,3 @@
-import storybook from "eslint-plugin-storybook";
-
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -13,21 +11,23 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-
   {
-    settings: {
-      'import/resolver': {
-        typescript: {
-          alwaysTryTypes: true,
-          project: ['./tsconfig.json', './.storybook/tsconfig.json'],
-        },
-      },
-    },
+    ignores: [
+      "node_modules/**",
+      ".next/**",
+      "dist/**",
+      "build/**",
+      "coverage/**",
+      "**/*.stories.tsx",
+      "**/*.stories.ts",
+      "**/*.stories.jsx",
+      "**/*.stories.js",
+      "**/api/**/route.ts",
+      "**/api/**/route.js",
+    ],
   },
-
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   eslintConfigPrettier,
-  ...storybook.configs["flat/recommended"],
 ];
 
 export default eslintConfig;
