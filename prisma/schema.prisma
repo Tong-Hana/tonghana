@@ -7,8 +7,58 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum Gender {
+    M
+    F
+}
+
+enum InvestmentType {
+    CONSERVATIVE    @map("안정형")
+    MODERATE        @map("안정추구형")
+    NEUTRAL         @map("위험중립형")
+    AGGRESSIVE      @map("적극투자형")
+    VERY_AGGRESSIVE @map("공격투자형")
+}
+
+enum GoalType {
+    HOUSE      @map("내집마련")
+    LUMPSUM    @map("목돈마련")
+    RETIREMENT @map("노후자금")
+    MARRIAGE   @map("결혼자금")
+}
+
+enum GoalPeriod {
+    WITHIN_1_YEAR     @map("1년 이내")
+    WITHIN_3_YEARS    @map("3년 이내")
+    WITHIN_5_YEARS    @map("5년 이내")
+    MORE_THAN_5_YEARS @map("5년 이상")
+}
+
 model User {
-    user_id Int     @id @default(autoincrement())
-    email   String  @unique
-    name    String?
+    userId    Int     @id @default(autoincrement()) @map("user_id")
+    nickname  String  @db.VarChar(10)
+    email     String  @unique
+    password  String  @db.VarChar(100)
+    birthYear Int     @map("birth_year")
+    gender    Gender
+    job       String? @db.VarChar(20)
+
+    profileImage String? @map("profile_image") // S3 URL
+    city         String  @db.VarChar(20)
+    district     String  @db.VarChar(20)
+
+    hasCar     Boolean? @default(false) @map("has_car")
+    hasHouse   Boolean? @default(false) @map("has_house")
+    carValue   Int?     @map("car_value") // 보유X는 null
+    houseValue Int?     @map("house_value") // 보유X는 null
+
+    currentType   InvestmentType? @map("current_type")
+    preferredType InvestmentType? @map("preferred_type")
+
+    goalType   GoalType?   @map("goal_type")
+    goalAmount Int?        @map("goal_amount")
+    goalPeriod GoalPeriod? @map("goal_period")
+
+    description String?  @db.VarChar(100)
+    createdAt   DateTime @default(now()) @map("created_at")
 }
