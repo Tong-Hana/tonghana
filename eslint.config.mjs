@@ -16,7 +16,6 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   eslintConfigPrettier,
-  ...storybook.configs["flat/recommended"],
 ];
 
 export default eslintConfig;
