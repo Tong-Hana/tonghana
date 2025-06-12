@@ -18,13 +18,10 @@ export default function BottomNavButton({
   const pathname = usePathname();
   const router = useRouter();
 
-  const isActive = pathname.startsWith(path);
+  const isActive = pathname === path || pathname.startsWith(path + "/");
 
   return (
-    <button
-      onClick={() => router.push(path)}
-      className="text-xs transition-colors hover:bg-hanagreen-light-hover rounded-xl"
-    >
+    <button onClick={() => router.push(path)} className="text-xs rounded-xl">
       {isActive ? activeIcon : inactiveIcon}
     </button>
   );
