@@ -4,7 +4,6 @@ import { faker } from "@faker-js/faker/locale/ko";
 async function dummyUserProduct() {
   const users = await prisma.user.findMany();
   for (const user of users) {
-    console.log(user);
     const cnt = faker.number.int({ min: 1, max: 13 });
     for (let i = 0; i < cnt; i++) {
       const productNumber = faker.number.int({ min: 25, max: 124 });
@@ -29,7 +28,7 @@ async function dummyUserProduct() {
             Math.floor(
               faker.number.int({ min: 1_000_000, max: 10_000_000 }) / 1_000_000,
             ) * 1_000_000,
-          productEndDate: productEndDate,
+          productEndDate: productEndDate?.toISOString() || null,
         },
       });
     }
@@ -45,7 +44,7 @@ async function main() {
       console.error("Error creating dummy data:", error);
     })
     .finally(async () => {
-      await prisma.$disconnect(); // Ensure the connection is closed
+      await prisma.$disconnect();
     });
 }
 main();

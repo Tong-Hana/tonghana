@@ -114,7 +114,7 @@ async function main() {
   } catch (error) {
     console.error("Error creating user:", error);
   } finally {
-    await prisma.$disconnect(); // 연결 종료를 반드시 보장
+    await prisma.$disconnect();
   }
 }
 for (let i = 0; i < 100; i++) {

@@ -54,7 +54,7 @@ async function main() {
       console.error("Error creating dummy pairing data:", error);
     })
     .finally(async () => {
-      await prisma.$disconnect(); // Ensure the connection is closed
+      await prisma.$disconnect();
     });
 }
 main();
