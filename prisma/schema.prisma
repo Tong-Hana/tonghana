@@ -17,6 +17,27 @@ model ConsumeHistory {
   user              User    @relation(fields: [userId], references: [userId])
 }
 
+model UserFinancialProduct {
+  userProductId  Int      @id @default(autoincrement()) @map("user_product_id")
+  userId         Int      @map("user_id")
+  productId      Int      @map("product_id")
+  currentValue   BigInt   @map("current_value")
+  productEndDate DateTime @map("product_end_date")
+
+  user             User             @relation(fields: [userId], references: [userId])
+  financialProduct FinancialProduct @relation(fields: [productId], references: [productId])
+}
+
+model FinancialProduct {
+  productId       Int             @id @default(autoincrement()) @map("product_id")
+  productName     String          @map("product_name")
+  institutionName String          @map("institution_name")
+  riskLevel       RiskLevel       @map("risk_level")
+  category        ProductCategory @map("category")
+
+  userFinancialProduct UserFinancialProduct[]
+}
+
 model UserMatchLog {
   matchId     Int         @id @default(autoincrement()) @map("match_id")
   sentId      Int         @map("sent_id")
@@ -120,27 +141,6 @@ model User {
   userFinancialProduct UserFinancialProduct[]
   receivedMatches      UserMatchLog[]         @relation("ReceivedMatches")
   sentMatches          UserMatchLog[]         @relation("SentMatches")
-}
-
-model UserFinancialProduct {
-  userProductId  Int      @id @default(autoincrement()) @map("user_product_id")
-  userId         Int      @map("user_id")
-  productId      Int      @map("product_id")
-  currentValue   BigInt   @map("current_value")
-  productEndDate DateTime @map("product_end_date")
-
-  user             User             @relation(fields: [userId], references: [userId])
-  financialProduct FinancialProduct @relation(fields: [productId], references: [productId])
-}
-
-model FinancialProduct {
-  productId       Int             @id @default(autoincrement()) @map("product_id")
-  productName     String          @map("product_name")
-  institutionName String          @map("institution_name")
-  riskLevel       RiskLevel       @map("risk_level")
-  category        ProductCategory @map("category")
-
-  userFinancialProduct UserFinancialProduct[]
 }
 
 enum Gender {
