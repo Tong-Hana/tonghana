@@ -45,6 +45,7 @@ module.exports = {
         "test",
       ],
     ],
+    "subject-case": [0],
     "header-match-pattern": [2, "always"],
     "body-max-line-length": [0, "always"],
     "footer-leading-blank": [0, "always"],
