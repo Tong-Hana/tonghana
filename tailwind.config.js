@@ -10,6 +10,9 @@ module.exports = {
       fontFamily: {
         pretendard: ["var(--font-pretendard)"],
       },
+      boxShadow: {
+        "card-shadow": "0px -1px 6px 0px rgba(0, 0, 0, 0.25)",
+      },
       colors: {
         hanagold: "#ad9a5f",
         hanasilver: "#b5b5b5",

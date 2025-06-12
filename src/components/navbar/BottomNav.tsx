@@ -1,17 +1,15 @@
-import HomeIconOutline from "@/assets/icons/bottom_nav/nav_home_icon.svg";
-import HomeIconFilled from "@/assets/icons/bottom_nav/filled_nav_home_icon.svg";
-
-import FolderIconOutline from "@/assets/icons/bottom_nav/nav_folder_icon.svg";
-import FolderIconFilled from "@/assets/icons/bottom_nav/fiiled_nav_folder_icon.svg";
-
-import HeartIconOutline from "@/assets/icons/bottom_nav/nav_heart_icon.svg";
-import HeartIconFilled from "@/assets/icons/bottom_nav/filled_nav_heart_icon.svg";
-
-import ChatIconOutline from "@/assets/icons/bottom_nav/nav_chat_icon.svg";
-import ChatIconFilled from "@/assets/icons/bottom_nav/filled_nav_chat_icon.svg";
-
-import ProfileIconOutline from "@/assets/icons/bottom_nav/nav_profile_icon.svg";
-import ProfileIconFilled from "@/assets/icons/bottom_nav/filled_nav_profile_icon.svg";
+import {
+  ChatIconFilled,
+  ChatIconOutline,
+  FolderIconFilled,
+  FolderIconOutline,
+  HeartIconFilled,
+  HeartIconOutline,
+  HomeIconFilled,
+  HomeIconOutline,
+  ProfileIconFilled,
+  ProfileIconOutline,
+} from "@/assets/assets";
 import BottomNavButton from "./BottomNavTab";
 
 const navItems = [
