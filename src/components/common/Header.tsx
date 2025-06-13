@@ -16,7 +16,7 @@ const BackButton = () => {
 
   return (
     <button
-      className="p-2 z-10 cursor-pointer"
+      className="py-2 pr-2 z-10 cursor-pointer"
       type="button"
       onClick={() => router.back()}
     >
@@ -38,12 +38,12 @@ export default function Header({
       <h1
         className={clsx(
           "text-2xl font-normal text-text-primary absolute left-0 right-0",
-          centerTitle ? "text-center" : "text-left px-5",
+          centerTitle ? "text-center" : "text-left",
         )}
       >
         {title}
       </h1>
-      <div className="absolute right-0 pr-5">{children}</div>
+      <div className="absolute right-0">{children}</div>
     </header>
   );
 }
