@@ -21,7 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${pretendard.variable}`}>
-      <body className={`${pretendard.className}`}>{children}</body>
+      <body className={`${pretendard.className} flex justify-center`}>
+        <div className="flex flex-col w-[393px] h-screen px-[20px] bg-background border-black border">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
