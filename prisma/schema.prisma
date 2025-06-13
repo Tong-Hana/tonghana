@@ -61,12 +61,13 @@ model ChatRooms {
 }
 
 model ConsumeHistory {
-  user_id            Int     @id
-  savings_rate       Decimal @db.Decimal(5, 2)
-  investment_rate    Decimal @db.Decimal(5, 2)
-  leisure_rate       Decimal @db.Decimal(5, 2)
-  fixed_expense_rate Decimal @db.Decimal(5, 2)
-  User               User    @relation(fields: [user_id], references: [userId])
+  user_id             Int     @id
+  savings_rate        Decimal @db.Decimal(5, 2)
+  investment_rate     Decimal @db.Decimal(5, 2)
+  leisure_rate        Decimal @db.Decimal(5, 2)
+  living_expense_rate Decimal @db.Decimal(5, 2)
+  other_rate          Decimal @db.Decimal(5, 2)
+  User                User    @relation(fields: [user_id], references: [userId])
 }
 
 model HanaProduct {
@@ -98,33 +99,28 @@ model Loan {
 }
 
 model PairingAnswer {
-  id                 Int                              @default(autoincrement())
+  id                 Int                              @id @default(autoincrement())
   user_id            Int                              @unique
   car_budget         BigInt
   date_budget        Int
   shoes_budget       Int
   preferred_city     String
-  preferred_district String
   ideal_income_range PairingAnswer_ideal_income_range
-  created_at         DateTime
+  created_at         DateTime                         @default(now())
   User               User                             @relation(fields: [user_id], references: [userId])
-
-  @@id([id, user_id])
 }
 
 model UserFinancialProduct {
-  id               Int                             @default(autoincrement())
   user_id          Int
-  product_name     String
-  institution_name String
   current_value    BigInt
-  product_end_date DateTime
-  risk_level       UserFinancialProduct_risk_level
-  category         UserFinancialProduct_category
-  User             User                            @relation(fields: [user_id], references: [userId])
+  product_end_date DateTime?
+  product_id       Int
+  user_product_id  Int              @id @default(autoincrement())
+  FinancialProduct FinancialProduct @relation(fields: [product_id], references: [product_id])
+  User             User             @relation(fields: [user_id], references: [userId])
 
-  @@id([id, user_id])
   @@index([user_id], map: "UserFinancialProduct_user_id_fkey")
+  @@index([product_id], map: "UserFinancialProduct_product_id_fkey")
 }
 
 model UserMatchLog {
@@ -137,6 +133,15 @@ model UserMatchLog {
 
   @@index([receive_id], map: "UserMatchLog_receive_id_fkey")
   @@index([sent_id], map: "UserMatchLog_sent_id_fkey")
+}
+
+model FinancialProduct {
+  product_id           Int                         @id @default(autoincrement())
+  product_name         String
+  institution_name     String
+  risk_level           FinancialProduct_risk_level
+  category             FinancialProduct_category
+  UserFinancialProduct UserFinancialProduct[]
 }
 
 enum Gender {
@@ -190,15 +195,6 @@ enum PairingAnswer_ideal_income_range {
   OVER_1000
 }
 
-enum UserFinancialProduct_risk_level {
-  VERY_HIGH
-  HIGH
-  LITTLE_HIGH
-  MEDIUM
-  LOW
-  VERY_LOW
-}
-
 enum HanaProduct_risk_level {
   VERY_HIGH
   HIGH
@@ -208,7 +204,16 @@ enum HanaProduct_risk_level {
   VERY_LOW
 }
 
-enum UserFinancialProduct_category {
+enum FinancialProduct_risk_level {
+  VERY_HIGH
+  HIGH
+  LITTLE_HIGH
+  MEDIUM
+  LOW
+  VERY_LOW
+}
+
+enum FinancialProduct_category {
   SAVINGS
   DOMESTIC_STOCKS
   DEVELOPED_STOCKS
