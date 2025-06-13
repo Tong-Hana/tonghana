@@ -1,24 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { dummyUserProduct } from "@/lib/actions/dummyUserProduct";
+import { dummyConsume } from "@/lib/actions/dummyConsume";
+import { dummyLoan } from "@/lib/actions/dummyLoan";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { nickname, email, password, birthYear, gender, city, district } = body;
+    const { nickname, email, password, birthYear, gender, city } = body;
 
-    if (
-      !nickname ||
-      !email ||
-      !password ||
-      !birthYear ||
-      !gender ||
-      !city ||
-      !district
-    ) {
+    if (!nickname || !email || !password || !birthYear || !gender || !city) {
       return NextResponse.json(
         { code: "INVALID_INPUT", message: "필수 값을 입력해주세요." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,7 +24,7 @@ export async function POST(req: Request) {
     if (existingUser) {
       return NextResponse.json(
         { code: "ALREADY_EXISTS", message: "이미 존재하는 이메일입니다." },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -43,9 +38,17 @@ export async function POST(req: Request) {
         birthYear,
         gender,
         city,
-        district,
       },
     });
+
+    if (newUser) {
+      dummyUserProduct(newUser);
+      dummyConsume(newUser);
+      const bool = Math.random() < 0.5;
+      if (bool) {
+        dummyLoan(newUser);
+      }
+    }
 
     return NextResponse.json(
       {
@@ -56,7 +59,7 @@ export async function POST(req: Request) {
           nickname: newUser.nickname,
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error(error);
