@@ -99,30 +99,28 @@ model Loan {
 }
 
 model PairingAnswer {
-  id                 Int      @id @default(autoincrement()) // ✅ 기본 키 단일화
-  user_id            Int      @unique
+  id                 Int                              @id @default(autoincrement())
+  user_id            Int                              @unique
   car_budget         BigInt
   date_budget        Int
   shoes_budget       Int
   preferred_city     String
   ideal_income_range PairingAnswer_ideal_income_range
-  created_at         DateTime @default(now()) // 있으면 기본값으로 줘도 좋아
-  User               User     @relation(fields: [user_id], references: [userId])
+  created_at         DateTime                         @default(now())
+  User               User                             @relation(fields: [user_id], references: [userId])
 }
 
 model UserFinancialProduct {
-  id               Int                             @default(autoincrement())
   user_id          Int
-  product_name     String
-  institution_name String
   current_value    BigInt
-  product_end_date DateTime
-  risk_level       UserFinancialProduct_risk_level
-  category         UserFinancialProduct_category
-  User             User                            @relation(fields: [user_id], references: [userId])
+  product_end_date DateTime?
+  product_id       Int
+  user_product_id  Int              @id @default(autoincrement())
+  FinancialProduct FinancialProduct @relation(fields: [product_id], references: [product_id])
+  User             User             @relation(fields: [user_id], references: [userId])
 
-  @@id([id, user_id])
   @@index([user_id], map: "UserFinancialProduct_user_id_fkey")
+  @@index([product_id], map: "UserFinancialProduct_product_id_fkey")
 }
 
 model UserMatchLog {
@@ -135,6 +133,15 @@ model UserMatchLog {
 
   @@index([receive_id], map: "UserMatchLog_receive_id_fkey")
   @@index([sent_id], map: "UserMatchLog_sent_id_fkey")
+}
+
+model FinancialProduct {
+  product_id           Int                         @id @default(autoincrement())
+  product_name         String
+  institution_name     String
+  risk_level           FinancialProduct_risk_level
+  category             FinancialProduct_category
+  UserFinancialProduct UserFinancialProduct[]
 }
 
 enum Gender {
@@ -181,31 +188,11 @@ enum UserMatchLog_match_status {
   REJECTED
 }
 
-enum UserFinancialProduct_risk_level {
-  VERY_HIGH
-  HIGH
-  LITTLE_HIGH
-  MEDIUM
-  LOW
-  VERY_LOW
-}
-
 enum PairingAnswer_ideal_income_range {
   NEAR_400
   NEAR_600
   NEAR_800
   OVER_1000
-}
-
-enum UserFinancialProduct_category {
-  SAVINGS
-  DOMESTIC_STOCKS
-  DEVELOPED_STOCKS
-  EMERGING_STOCKS
-  DOMESTIC_BONDS
-  FOREIGN_BONDS
-  ALTERNATIVE
-  CASH
 }
 
 enum HanaProduct_risk_level {
@@ -215,4 +202,24 @@ enum HanaProduct_risk_level {
   MEDIUM
   LOW
   VERY_LOW
+}
+
+enum FinancialProduct_risk_level {
+  VERY_HIGH
+  HIGH
+  LITTLE_HIGH
+  MEDIUM
+  LOW
+  VERY_LOW
+}
+
+enum FinancialProduct_category {
+  SAVINGS
+  DOMESTIC_STOCKS
+  DEVELOPED_STOCKS
+  EMERGING_STOCKS
+  DOMESTIC_BONDS
+  FOREIGN_BONDS
+  ALTERNATIVE
+  CASH
 }
