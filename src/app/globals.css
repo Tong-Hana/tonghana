@@ -29,4 +29,7 @@ body {
   .frame-mobile {
     @apply w-full max-w-[393px] mx-auto;
   }
+  .frame-container {
+    @apply w-full max-w-[1024px] mx-auto px-5;
+  }
 }
