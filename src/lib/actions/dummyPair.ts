@@ -1,10 +1,11 @@
 import { faker } from "@faker-js/faker/locale/ko";
 import { prisma } from "@/lib/prisma";
+import { IdealIncomeRange } from "../constants/enums";
 
 async function dummyPair() {
   let minValue = 10000000;
   const users = await prisma.user.findMany();
-  users.forEach(async (user) => {
+  for (const user of users) {
     if (user.hasCar) {
       minValue = Number(user.carValue);
     }
@@ -19,16 +20,17 @@ async function dummyPair() {
         shoesBudget: faker.number.int({ min: 10, max: 100 }),
         preferredCity: user.city,
         idealIncomeRange: faker.helpers.arrayElement([
-          "NEAR_400",
-          "NEAR_600",
-          "NEAR_800",
-          "OVER_1000",
+          IdealIncomeRange.NEAR_400,
+          IdealIncomeRange.NEAR_600,
+          IdealIncomeRange.NEAR_800,
+          IdealIncomeRange.OVER_1000,
         ]),
         createdAt: new Date().toISOString(),
       },
     });
-  });
+  }
 }
+// 더미데이터 생성
 async function main() {
   await dummyPair()
     .then(() => {
@@ -41,4 +43,6 @@ async function main() {
       await prisma.$disconnect();
     });
 }
-main();
+if (require.main === module) {
+  main();
+}

@@ -1,28 +1,21 @@
-import { Faker, ko, en } from "@faker-js/faker";
+import { en, Faker, ko } from "@faker-js/faker";
 import { prisma } from "@/lib/prisma";
+import {
+  Gender,
+  GoalPeriod,
+  GoalType,
+  InvestmentType,
+} from "@/lib/constants/enums";
 
 const faker = new Faker({ locale: [ko] });
 const fakerEn = new Faker({ locale: [en] });
 
-type Gender = "M" | "F";
-type GoalPeriod =
-  | "WITHIN_1_YEAR"
-  | "WITHIN_3_YEARS"
-  | "WITHIN_5_YEARS"
-  | "MORE_THAN_5_YEARS";
-type GoalType = "HOUSE" | "LUMPSUM" | "RETIREMENT" | "MARRIAGE";
-type InvestmentType =
-  | "CONSERVATIVE"
-  | "MODERATE"
-  | "NEUTRAL"
-  | "AGGRESSIVE"
-  | "VERY_AGGRESSIVE";
 const cities = ["서울시 성동구", "서울시 강남구", "서울시 종로구"];
 function generateUser() {
   const hasCar = faker.datatype.boolean();
   const hasHouse = faker.datatype.boolean();
-  const g = faker.helpers.arrayElement<Gender>(["M", "F"]);
-  const sexType = g === "M" ? "male" : "female";
+  const g = faker.helpers.arrayElement<Gender>([Gender.F, Gender.M]);
+  const sexType = g === Gender.M ? "male" : "female";
   const name = faker.person.firstName(sexType);
 
   return {
@@ -43,16 +36,16 @@ function generateUser() {
         faker.number.int({ min: 5_000_000, max: 1_000_000_000 }) / 1_000_000,
       ) * 1_000_000,
     goalPeriod: faker.helpers.arrayElement<GoalPeriod>([
-      "WITHIN_1_YEAR",
-      "WITHIN_3_YEARS",
-      "WITHIN_5_YEARS",
-      "MORE_THAN_5_YEARS",
+      GoalPeriod.WITHIN_1_YEAR,
+      GoalPeriod.WITHIN_3_YEARS,
+      GoalPeriod.WITHIN_5_YEARS,
+      GoalPeriod.MORE_THAN_5_YEARS,
     ]),
     goalType: faker.helpers.arrayElement<GoalType>([
-      "HOUSE",
-      "LUMPSUM",
-      "RETIREMENT",
-      "MARRIAGE",
+      GoalType.HOUSE,
+      GoalType.LUMPSUM,
+      GoalType.RETIREMENT,
+      GoalType.MARRIAGE,
     ]),
     hasCar,
     hasHouse,
@@ -72,11 +65,11 @@ function generateUser() {
     nickname: name,
     password: faker.internet.password({ length: 10 }),
     preferredType: faker.helpers.arrayElement<InvestmentType>([
-      "CONSERVATIVE",
-      "MODERATE",
-      "NEUTRAL",
-      "AGGRESSIVE",
-      "VERY_AGGRESSIVE",
+      InvestmentType.CONSERVATIVE,
+      InvestmentType.MODERATE,
+      InvestmentType.NEUTRAL,
+      InvestmentType.AGGRESSIVE,
+      InvestmentType.VERY_AGGRESSIVE,
     ]),
     profileImage: faker.image.avatar(),
   };
@@ -108,6 +101,7 @@ async function pushUser() {
     },
   });
 }
+// 더미데이터 생성
 async function main() {
   try {
     await pushUser();
@@ -117,6 +111,6 @@ async function main() {
     await prisma.$disconnect();
   }
 }
-for (let i = 0; i < 100; i++) {
+if (require.main === module) {
   main();
 }

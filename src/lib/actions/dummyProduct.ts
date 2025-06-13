@@ -1,22 +1,5 @@
 import { prisma } from "@/lib/prisma";
-
-type RiskLevel =
-  | "VERY_LOW"
-  | "LOW"
-  | "MEDIUM"
-  | "LITTLE_HIGH"
-  | "HIGH"
-  | "VERY_HIGH";
-
-type ProductCategory =
-  | "SAVINGS"
-  | "CASH"
-  | "DOMESTIC_STOCKS"
-  | "DEVELOPED_STOCKS"
-  | "EMERGING_STOCKS"
-  | "DOMESTIC_BONDS"
-  | "FOREIGN_BONDS"
-  | "ALTERNATIVE";
+import { ProductCategory, RiskLevel } from "../constants/enums";
 
 interface FinancialProduct {
   productName: string;
@@ -84,21 +67,33 @@ const productFeatures: Record<ProductCategory, string[]> = {
 };
 
 const riskLevelMap: Record<ProductCategory, RiskLevel | RiskLevel[]> = {
-  SAVINGS: "VERY_LOW",
-  CASH: "VERY_LOW",
-  DOMESTIC_STOCKS: "HIGH",
-  DEVELOPED_STOCKS: "VERY_HIGH",
-  EMERGING_STOCKS: "VERY_HIGH",
+  SAVINGS: RiskLevel.VERY_LOW,
+  CASH: RiskLevel.VERY_LOW,
+  DOMESTIC_STOCKS: RiskLevel.HIGH,
+  DEVELOPED_STOCKS: RiskLevel.VERY_HIGH,
+  EMERGING_STOCKS: RiskLevel.VERY_HIGH,
   DOMESTIC_BONDS: [
-    "VERY_HIGH",
-    "HIGH",
-    "LITTLE_HIGH",
-    "MEDIUM",
-    "LOW",
-    "VERY_LOW",
+    RiskLevel.VERY_HIGH,
+    RiskLevel.HIGH,
+    RiskLevel.LITTLE_HIGH,
+    RiskLevel.MEDIUM,
+    RiskLevel.LOW,
+    RiskLevel.VERY_LOW,
   ],
-  FOREIGN_BONDS: ["VERY_HIGH", "HIGH", "LITTLE_HIGH", "MEDIUM", "LOW"],
-  ALTERNATIVE: ["VERY_HIGH", "HIGH", "LITTLE_HIGH", "MEDIUM", "LOW"],
+  FOREIGN_BONDS: [
+    RiskLevel.VERY_HIGH,
+    RiskLevel.HIGH,
+    RiskLevel.LITTLE_HIGH,
+    RiskLevel.MEDIUM,
+    RiskLevel.LOW,
+  ],
+  ALTERNATIVE: [
+    RiskLevel.VERY_HIGH,
+    RiskLevel.HIGH,
+    RiskLevel.LITTLE_HIGH,
+    RiskLevel.MEDIUM,
+    RiskLevel.LOW,
+  ],
 };
 
 function getRandomElement<T>(arr: T[]): T {
@@ -145,14 +140,14 @@ function generateProduct(category: ProductCategory): FinancialProduct {
 }
 
 const categories: ProductCategory[] = [
-  "SAVINGS",
-  "CASH",
-  "DOMESTIC_STOCKS",
-  "DEVELOPED_STOCKS",
-  "EMERGING_STOCKS",
-  "DOMESTIC_BONDS",
-  "FOREIGN_BONDS",
-  "ALTERNATIVE",
+  ProductCategory.SAVINGS,
+  ProductCategory.CASH,
+  ProductCategory.DOMESTIC_STOCKS,
+  ProductCategory.DEVELOPED_STOCKS,
+  ProductCategory.EMERGING_STOCKS,
+  ProductCategory.DOMESTIC_BONDS,
+  ProductCategory.FOREIGN_BONDS,
+  ProductCategory.ALTERNATIVE,
 ];
 const cntMap: Record<ProductCategory, number> = {
   SAVINGS: 9,
@@ -164,18 +159,19 @@ const cntMap: Record<ProductCategory, number> = {
   FOREIGN_BONDS: 4,
   ALTERNATIVE: 13,
 };
-
-categories.forEach(async (category) => {
-  const j = cntMap[category];
-  for (let i = 0; i < j; i++) {
-    const productData = generateProduct(category);
-    await prisma.financialProduct.create({
-      data: {
-        productName: productData.productName,
-        institutionName: productData.institutionName,
-        riskLevel: productData.riskLevel,
-        category: productData.category,
-      },
-    });
-  }
-});
+if (require.main === module) {
+  categories.forEach(async (category) => {
+    const j = cntMap[category];
+    for (let i = 0; i < j; i++) {
+      const productData = generateProduct(category);
+      await prisma.financialProduct.create({
+        data: {
+          productName: productData.productName,
+          institutionName: productData.institutionName,
+          riskLevel: productData.riskLevel,
+          category: productData.category,
+        },
+      });
+    }
+  });
+}
