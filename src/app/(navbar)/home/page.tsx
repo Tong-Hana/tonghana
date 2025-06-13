@@ -9,7 +9,7 @@ export default function HomePage() {
         debtLabel="200%"
         valueFormat="percent"
       />
-      <div className="w-[353px]">
+      <div className="frame-container">
         <HorizontalBarChart
           segments={[
             { label: "저축", value: 20 },

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ChatIconFilled,
   ChatIconOutline,
@@ -57,20 +59,17 @@ const navItems = [
 
 export default function BottomNav() {
   return (
-    <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 frame-mobile z-50 
-             flex items-center justify-evenly py-2 border-t border-hanasilver bg-white"
-    >
-      {navItems.map((item) => {
-        return (
+    <nav className="fixed bottom-0 left-0 w-full z-50 border-t border-hanasilver bg-white">
+      <div className="frame-container flex items-center justify-evenly py-2">
+        {navItems.map((item) => (
           <BottomNavButton
             key={item.label}
             path={item.path}
             activeIcon={item.icon.active}
             inactiveIcon={item.icon.inactive}
           />
-        );
-      })}
+        ))}
+      </div>
     </nav>
   );
 }

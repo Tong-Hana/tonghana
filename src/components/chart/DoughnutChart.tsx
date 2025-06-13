@@ -35,17 +35,14 @@ export default function DoughnutChart({
     value: values[idx] ?? 0,
   }));
 
-  //0값 제거
   const rawFiltered = merged.filter((d) => d.value > 0);
-
-  // 비율 계산
   const total = rawFiltered.reduce((sum, item) => sum + item.value, 0);
+
   const filtered = rawFiltered.map((item) => ({
     ...item,
     value: total ? Math.round((item.value / total) * 100) : 0,
   }));
 
-  //그래프 데이터 값
   const data = {
     labels: filtered.map((d) => d.label),
     datasets: [
@@ -57,7 +54,6 @@ export default function DoughnutChart({
     ],
   };
 
-  //라벨 데이터 값
   const labelData = valueFormat === "percent" ? filtered : rawFiltered;
 
   const formatValue = (val: number) => {
@@ -87,27 +83,28 @@ export default function DoughnutChart({
   };
 
   return (
-    <div className="flex flex-row gap-7 w-fit h-[146px] justify-center items-center relative">
-      <div className="w-[8rem] p-2 relative">
+    <div className="flex flex-row gap-5 justify-center items-center w-full max-w-[100%]">
+      <div className="w-[8rem] min-w-[8rem] p-2 relative">
         <Doughnut data={data} options={options} />
-        {/* 중앙 부채 텍스트 */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[9px] text-center text-[#c2a244] font-semibold whitespace-nowrap">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] text-center text-[#c2a244] font-semibold whitespace-nowrap leading-snug">
           <p>부채</p>
           <p>{debtLabel}</p>
         </div>
       </div>
 
-      <div className="w-fit gap-1">
+      <div className="flex flex-col justify-center w-full max-w-[250px] gap-2">
         <p className="text-hanagold text-sm font-medium">#안정형</p>
-        <ul className="text-[8px] text-hanablack">
+        <ul className="text-xs text-hanablack space-y-1">
           {labelData.map((item, index) => (
-            <li key={index} className="flex items-center space-x-2">
-              <span
-                className="inline-block w-[5px] h-[5px] rounded-full"
-                style={{ backgroundColor: item.color }}
-              />
-              <span>{item.label}</span>
-              <span className="ml-auto">{formatValue(item.value)}</span>
+            <li key={index} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span
+                  className="inline-block w-[6px] h-[6px] rounded-full"
+                  style={{ backgroundColor: item.color }}
+                />
+                <span>{item.label}</span>
+              </div>
+              <span>{formatValue(item.value)}</span>
             </li>
           ))}
         </ul>
