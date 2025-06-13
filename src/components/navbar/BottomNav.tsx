@@ -57,7 +57,10 @@ const navItems = [
 
 export default function BottomNav() {
   return (
-    <nav className="flex fixed left-0 right-0 bottom-0 py-2 border-t border-hanasilver bg-white justify-evenly items-center z-50 w-full">
+    <nav
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 frame-mobile z-50 
+             flex items-center justify-evenly py-2 border-t border-hanasilver bg-white"
+    >
       {navItems.map((item) => {
         return (
           <BottomNavButton
