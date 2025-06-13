@@ -48,3 +48,23 @@ export const PasswordField: Story = {
     className: "w-72",
   },
 };
+
+export const WithUnitSuffix: Story = {
+  args: {
+    placeholder: "몸무게",
+    unit: "kg",
+    unitPosition: "end",
+    fullWidth: false,
+    className: "w-56",
+  },
+};
+
+export const WithUnitPrefix: Story = {
+  args: {
+    placeholder: "금액",
+    unit: "₩",
+    unitPosition: "start",
+    fullWidth: false,
+    className: "w-56",
+  },
+};

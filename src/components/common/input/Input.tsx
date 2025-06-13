@@ -1,6 +1,6 @@
 "use client";
 
-import { TextField, TextFieldProps } from "@mui/material";
+import { TextField, TextFieldProps, InputAdornment } from "@mui/material";
 import { cn } from "@/utils/cn";
 import { forwardRef } from "react";
 import { colors } from "@/components/common/input/styles";
@@ -10,6 +10,8 @@ export interface CustomInputProps extends Omit<TextFieldProps, "variant"> {
   className?: string;
   inputClassName?: string;
   variant?: "outlined" | "standard";
+  unit?: string;
+  unitPosition?: "start" | "end";
 }
 
 const Input = forwardRef<HTMLInputElement, CustomInputProps>(
@@ -19,10 +21,19 @@ const Input = forwardRef<HTMLInputElement, CustomInputProps>(
       inputClassName,
       fullWidth = false,
       variant = "outlined",
+      unit,
+      unitPosition = "end",
       ...props
     },
     ref,
   ) => {
+    const adornment =
+      unit && unit.length > 0 ? (
+        <InputAdornment position={unitPosition}>
+          <span className="text-placeholder text-sm">{unit}</span>
+        </InputAdornment>
+      ) : null;
+
     return (
       <TextField
         {...props}
@@ -32,6 +43,12 @@ const Input = forwardRef<HTMLInputElement, CustomInputProps>(
         className={cn("rounded-lg h-9", className)}
         InputProps={{
           ...props.InputProps,
+          endAdornment:
+            unitPosition === "end" ? adornment : props.InputProps?.endAdornment,
+          startAdornment:
+            unitPosition === "start"
+              ? adornment
+              : props.InputProps?.startAdornment,
           classes: {
             ...props.InputProps?.classes,
           },
