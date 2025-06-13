@@ -1,4 +1,4 @@
-import BottomNav from "@/components/navbar/BottomNav";
+import BottomNav from "@/components/common/navbar/BottomNav";
 
 export default function BottomNavLayout({
   children,
