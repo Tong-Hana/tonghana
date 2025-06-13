@@ -17,7 +17,7 @@ export async function PATCH(req: NextRequest) {
   const file = formData.get("img");
   let profileImage: string | null = null;
 
-  // ✅ 이미지 업로드
+  // 이미지 업로드
   if (file && file instanceof File) {
     try {
       profileImage = await uploadImageToS3(file);
@@ -30,7 +30,7 @@ export async function PATCH(req: NextRequest) {
     }
   }
 
-  // ✅ 타입 안전한 텍스트 추출 + 검증
+  // 타입 안전한 텍스트 추출 + 검증
   const description = formData.get("description");
   const job = formData.get("job");
   const goalType = formData.get("goalType");
@@ -41,7 +41,7 @@ export async function PATCH(req: NextRequest) {
   const hasHouse = formData.get("hasHouse");
   const houseValue = formData.get("houseValue");
 
-  // ✅ 기본 타입 검증
+  // 기본 타입 검증
   if (
     typeof description !== "string" ||
     typeof job !== "string" ||
@@ -55,7 +55,7 @@ export async function PATCH(req: NextRequest) {
     );
   }
 
-  // ✅ enum 값 검증
+  // enum 값 검증
   const validGoalTypes = ["HOUSE", "LUMPSUM", "RETIREMENT", "MARRIAGE"];
   const validGoalPeriods = [
     "WITHIN_1_YEAR",
@@ -77,7 +77,7 @@ export async function PATCH(req: NextRequest) {
     );
   }
 
-  // ✅ Boolean 및 BigInt 처리
+  // Boolean 및 BigInt 처리
   const parsedHasCar = hasCar === "true";
   const parsedCarValue =
     parsedHasCar && typeof carValue === "string" && carValue !== ""
