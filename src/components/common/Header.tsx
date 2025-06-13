@@ -20,7 +20,7 @@ const BackButton = () => {
       type="button"
       onClick={() => router.back()}
     >
-      <LeftArrow className="w-8 h-8" />
+      <LeftArrow className="w-8 h-8 stroke-black" />
     </button>
   );
 };

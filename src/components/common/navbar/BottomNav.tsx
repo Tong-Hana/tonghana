@@ -1,16 +1,11 @@
 "use client";
 
 import {
-  ChatIconFilled,
-  ChatIconOutline,
-  FolderIconFilled,
-  FolderIconOutline,
-  HeartIconFilled,
-  HeartIconOutline,
-  HomeIconFilled,
-  HomeIconOutline,
-  ProfileIconFilled,
-  ProfileIconOutline,
+  ChatIcon,
+  FolderIcon,
+  HeartIcon,
+  HomeIcon,
+  ProfileIcon,
 } from "@/assets/assets";
 import BottomNavButton from "./BottomNavTab";
 
@@ -19,40 +14,54 @@ const navItems = [
     label: "home",
     path: "/home",
     icon: {
-      active: <HomeIconFilled className="w-10 h-10" />,
-      inactive: <HomeIconOutline className="w-10 h-10" />,
+      active: (
+        <HomeIcon className="w-10 h-10 text-hanagreen-normal stroke-hanagreen-normal" />
+      ),
+      inactive: <HomeIcon className="w-10 h-10 stroke-hanasilver text-white" />,
     },
   },
   {
     label: "recommend",
     path: "/recommend",
     icon: {
-      active: <FolderIconFilled className="w-10 h-10" />,
-      inactive: <FolderIconOutline className="w-10 h-10" />,
+      active: (
+        <FolderIcon className="w-10 h-10 fill-hanagreen-normal stroke-white" />
+      ),
+      inactive: (
+        <FolderIcon className="w-10 h-10 stroke-hanasilver fill-white" />
+      ),
     },
   },
   {
     label: "like",
     path: "/like",
     icon: {
-      active: <HeartIconFilled className="w-10 h-10" />,
-      inactive: <HeartIconOutline className="w-10 h-10" />,
+      active: (
+        <HeartIcon className="w-10 h-10 fill-hanagreen-normal stroke-hanagreen-normal" />
+      ),
+      inactive: (
+        <HeartIcon className="w-10 h-10 stroke-hanasilver fill-white" />
+      ),
     },
   },
   {
     label: "chat",
     path: "/chat",
     icon: {
-      active: <ChatIconFilled className="w-10 h-10" />,
-      inactive: <ChatIconOutline className="w-10 h-10" />,
+      active: (
+        <ChatIcon className="w-10 h-10 text-hanagreen-normal stroke-hanagreen-normal" />
+      ),
+      inactive: <ChatIcon className="w-10 h-10 stroke-hanasilver fill-white" />,
     },
   },
   {
     label: "profile",
     path: "/profile",
     icon: {
-      active: <ProfileIconFilled className="w-10 h-10" />,
-      inactive: <ProfileIconOutline className="w-10 h-10" />,
+      active: <ProfileIcon className="w-10 h-10 stroke-hanagreen-normal" />,
+      inactive: (
+        <ProfileIcon className="w-10 h-10 fill-white stroke-hanasilver" />
+      ),
     },
   },
 ];
