@@ -34,7 +34,7 @@ export default function StackedBar({ segments }: StackedBarProps) {
       </div>
 
       {/* 하단 라벨 */}
-      <div className="flex flex-wrap justify-around text-hanablack text-[10px]">
+      <div className="flex flex-wrap justify-around text-hanablack text-[0.7rem]">
         {segments.map((seg, idx) => (
           <div key={idx} className="flex items-center gap-1 mb-2">
             <span
