@@ -1,7 +1,6 @@
 import ProfileCard from "./ProfileCard";
 import PairingBook from "./ParingBook";
 import MonthlySpendingChart from "../chart/MonthlySpendingChart";
-import { DislikeButton, LikeButton } from "../common/button/ReactionButton";
 
 export default function ProfileCardDetail() {
   const answer = [
@@ -59,11 +58,6 @@ export default function ProfileCardDetail() {
       <PairingBook answers={answer} />
       {/* 지난 달 소비 */}
       <MonthlySpendingChart segments={segments} />
-      {/* 좋아요, 싫어요 버튼 */}
-      <div className="flex justify-between">
-        <DislikeButton circle size="md" />
-        <LikeButton circle size="md" onClick={() => console.log("좋아요!")} />
-      </div>
     </div>
   );
 }
