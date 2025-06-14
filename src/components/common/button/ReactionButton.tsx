@@ -3,7 +3,7 @@
 import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/utils/cn";
-import { HeartIconFilled, XMark } from "@/assets/assets";
+import { HeartIcon, XMark } from "@/assets/assets";
 
 const iconButtonVariants = cva(
   "inline-flex items-center justify-center transition-colors duration-200 active:opacity-80",
@@ -48,7 +48,7 @@ export function IconButton({
   className,
   ...props
 }: IconButtonProps) {
-  const Icon = intent === "like" ? HeartIconFilled : XMark;
+  const Icon = intent === "like" ? HeartIcon : XMark;
   const iconSizeClass = size === "sm" ? "w-4 h-4" : "w-5 h-5";
   const strokeWidth = size === "sm" ? "p-[0.2rem]" : "";
 
