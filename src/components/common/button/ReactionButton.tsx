@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/utils/cn";
 import { HeartIcon, XMark } from "@/assets/assets";
@@ -14,7 +13,7 @@ const iconButtonVariants = cva(
         md: "",
       },
       circle: {
-        true: "bg-hanagreen-light-active rounded-full hover:bg-hanagreen-light-hover",
+        true: "bg-hanagreen-light-active rounded-full",
         false: "",
       },
       intent: {
@@ -23,8 +22,8 @@ const iconButtonVariants = cva(
       },
     },
     compoundVariants: [
-      { size: "sm", circle: true, class: "p-1" }, // 4px padding
-      { size: "md", circle: true, class: "p-2" }, // 8px padding
+      { size: "sm", circle: true, class: "p-1" },
+      { size: "md", circle: true, class: "p-2" },
     ],
     defaultVariants: {
       size: "md",
@@ -38,7 +37,8 @@ export interface IconButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "type">,
     VariantProps<typeof iconButtonVariants> {
   type?: "button" | "submit" | "reset";
-  iconSize?: string; // Optional prop for custom icon size
+  iconSize?: string;
+  isActive?: boolean;
 }
 
 export function IconButton({
@@ -46,6 +46,7 @@ export function IconButton({
   circle = false,
   intent = "like",
   className,
+  isActive,
   ...props
 }: IconButtonProps) {
   const Icon = intent === "like" ? HeartIcon : XMark;
@@ -60,9 +61,12 @@ export function IconButton({
     >
       <Icon
         className={cn(
+          iconSizeClass,
           intent === "like"
-            ? `text-white ${iconSizeClass} hover:text-hanared-normal-hover active:text-hanared-normal-active`
-            : `text-white ${iconSizeClass} p-[0.1rem] ${strokeWidth} hover:text-gray-600 active:text-gray-700`,
+            ? isActive
+              ? "text-hanared-normal-active"
+              : "text-white hover:text-hanared-normal-hover active:text-hanared-normal-active"
+            : `text-white p-[0.1rem] ${strokeWidth} hover:text-gray-600 active:text-gray-700`,
         )}
       />
     </button>

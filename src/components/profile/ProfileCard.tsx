@@ -4,6 +4,7 @@ import DoughnutChart from "../chart/DoughnutChart";
 import { DislikeButton, LikeButton } from "../common/button/ReactionButton";
 import Tag from "../common/tag/Tag";
 import { ProfileCardProps } from "./types/profileCardTypes";
+import { useState } from "react";
 
 export default function ProfileCard({
   name,
@@ -22,6 +23,8 @@ export default function ProfileCard({
   debtPercent,
   showDetail = true,
 }: ProfileCardProps) {
+  const [isLiked, setIsLiked] = useState(false);
+
   return (
     <div className="flex flex-col justify-center p-3 w-full rounded-xl bg-hanagreen-light border-hanagreen-light-active border gap-4">
       {/* profile */}
@@ -115,7 +118,12 @@ export default function ProfileCard({
       {/* 좋아요, 싫어요 버튼 */}
       <div className="flex justify-between">
         <DislikeButton circle size="md" />
-        <LikeButton circle size="md" onClick={() => console.log("좋아요!")} />
+        <LikeButton
+          circle
+          size="md"
+          isActive={isLiked}
+          onClick={() => setIsLiked((prev) => !prev)}
+        />
       </div>
     </div>
   );
