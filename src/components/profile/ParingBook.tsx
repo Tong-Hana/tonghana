@@ -28,8 +28,9 @@ export default function PairingBook({ answers }: PairingBookProps) {
       <h2 className="text-hanagreen-normal font-semibold text-lg">페어링북</h2>
       {questions.map((q) => (
         <div key={q.id}>
-          <p className="text-hanagreen-normal font-normal mb-2">
-            Q{q.id}. <span className="text-black">{q.question}</span>
+          <p className="text-hanagreen-normal font-medium mb-2">
+            Q{q.id}.{" "}
+            <span className="text-black font-normal">{q.question}</span>
           </p>
           <p className="bg-hanagreen-light px-3 py-2 text-[0.9rem] rounded-md text-text-primary">
             {answers.find((a) => a.id === q.id)?.answer}

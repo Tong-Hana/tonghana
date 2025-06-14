@@ -1,9 +1,9 @@
 type Segment = {
-  label: "저축" | "투자" | "여가/취미" | "생활" | "기타";
+  label: string;
   value: number; // %
 };
 
-type StackedBarProps = {
+type Props = {
   segments: Segment[];
 };
 
@@ -15,9 +15,12 @@ const COLOR_MAP: Record<Segment["label"], string> = {
   기타: "#C4C4DE",
 };
 
-export default function StackedBar({ segments }: StackedBarProps) {
+export default function MonthlySpendingChart({ segments }: Props) {
   return (
-    <div className="w-full space-y-3">
+    <div className="rounded-xl p-5 bg-white w-full space-y-5">
+      <h2 className="text-hanagreen-normal font-semibold text-lg">
+        지난 달 소비
+      </h2>
       {/* 그래프 막대 */}
       <div className="w-full h-4 rounded-sm overflow-hidden flex">
         {segments.map((seg, idx) => (
@@ -34,11 +37,11 @@ export default function StackedBar({ segments }: StackedBarProps) {
       </div>
 
       {/* 하단 라벨 */}
-      <div className="flex flex-wrap justify-around text-hanablack text-[0.7rem]">
+      <div className="flex flex-wrap justify-around text-hanablack text-[0.8rem]">
         {segments.map((seg, idx) => (
-          <div key={idx} className="flex items-center gap-1 mb-2">
+          <div key={idx} className="flex items-center text-center gap-1 mb-2">
             <span
-              className="w-[6px] h-[6px] rounded-full"
+              className="w-[0.4rem] h-[0.4rem] rounded-full"
               style={{ backgroundColor: COLOR_MAP[seg.label] }}
             />
             <span className="flex-1">{seg.label}</span>
