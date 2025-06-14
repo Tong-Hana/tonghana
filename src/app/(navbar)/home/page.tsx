@@ -1,23 +1,21 @@
-import DoughnutChart from "@/components/chart/DoughnutChart";
-import HorizontalBarChart from "@/components/chart/HorizontalBarChart";
+"use client";
+import ProfileCard from "@/components/profile/ProfileCard";
 
 export default function HomePage() {
   return (
-    <div className="space-y-8">
-      <DoughnutChart
-        values={[300, 200, 165, 100, 0, 0, 0, 100]}
-        debtLabel="200%"
-        valueFormat="percent"
-      />
-      <div className="w-[353px]">
-        <HorizontalBarChart
-          segments={[
-            { label: "저축", value: 20 },
-            { label: "투자", value: 10 },
-            { label: "여가/취미", value: 20 },
-            { label: "생활", value: 25 },
-            { label: "기타", value: 25 },
-          ]}
+    <div className="frame-container space-y-8">
+      <div className="flex flex-col">
+        <ProfileCard
+          name="별돌이"
+          age={25}
+          job="아티스트"
+          location="서울시 서초구"
+          description="서초에 살고 판교에서 일해요 😊"
+          imageUrl="/jennie.jpg" // public 폴더에 있는 임시 이미지
+          target="3년 안에 1억 모으기!"
+          totalAsset="30억"
+          carCost="1억"
+          houseCost="10억"
         />
       </div>
     </div>
