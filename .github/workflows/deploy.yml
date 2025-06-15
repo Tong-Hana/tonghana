@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: Create .env file for build
+      - name: Create .env file
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
@@ -26,12 +26,6 @@ jobs:
           echo "AMPLIFY_BUCKET=${{ secrets.AMPLIFY_BUCKET }}" >> .env
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
 
       - name: Copy project to EC2
         uses: appleboy/scp-action@master
