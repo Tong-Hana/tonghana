@@ -1,3 +1,97 @@
+/**
+ * @swagger
+ * /api/profiles:
+ *   patch:
+ *     summary: 사용자 프로필 등록 또는 수정
+ *     description: 사용자 인증 후 프로필 정보를 업데이트합니다. 이미지, 목표, 직업 등 다양한 정보를 포함합니다.
+ *     consumes:
+ *       - multipart/form-data
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               img:
+ *                 type: string
+ *                 format: binary
+ *                 description: 업로드할 이미지 파일
+ *               description:
+ *                 type: string
+ *                 example: "나는 개발자입니다."
+ *               job:
+ *                 type: string
+ *                 example: "프론트엔드 엔지니어"
+ *               goalType:
+ *                 type: string
+ *                 enum: [HOUSE, LUMPSUM, RETIREMENT, MARRIAGE]
+ *                 example: "HOUSE"
+ *               goalAmount:
+ *                 type: string
+ *                 example: "100000000"
+ *               goalPeriod:
+ *                 type: string
+ *                 enum: [WITHIN_1_YEAR, WITHIN_3_YEARS, WITHIN_5_YEARS, MORE_THAN_5_YEARS]
+ *                 example: "WITHIN_3_YEARS"
+ *               hasCar:
+ *                 type: string
+ *                 enum: ["true", "false"]
+ *               carValue:
+ *                 type: string
+ *                 example: "30000000"
+ *               hasHouse:
+ *                 type: string
+ *                 enum: ["true", "false"]
+ *               houseValue:
+ *                 type: string
+ *                 example: "500000000"
+ *     responses:
+ *       200:
+ *         description: 프로필 등록 완료
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "프로필 등록 완료이 완료되었습니다."
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                     email:
+ *                       type: string
+ *                     profileImage:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     job:
+ *                       type: string
+ *                     goalType:
+ *                       type: string
+ *                     goalPeriod:
+ *                       type: string
+ *                     goalAmount:
+ *                       type: string
+ *                     hasCar:
+ *                       type: boolean
+ *                     carValue:
+ *                       type: string
+ *                     hasHouse:
+ *                       type: boolean
+ *                     houseValue:
+ *                       type: string
+ *       400:
+ *         description: 잘못된 요청
+ *       401:
+ *         description: 인증되지 않음
+ *       500:
+ *         description: 서버 오류
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
