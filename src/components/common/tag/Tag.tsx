@@ -4,7 +4,11 @@ import InteractiveTag from "@/components/common/tag/type/InteractiveTag";
 
 export default function Tag(props: TagProps) {
   if (props.selectable) {
-    return <InteractiveTag {...props} />;
+    const cleanedProps = { ...props };
+    delete cleanedProps.selectable;
+
+    return <InteractiveTag {...cleanedProps} />;
   }
+
   return <StaticTag {...props} />;
 }
