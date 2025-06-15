@@ -1,6 +1,6 @@
 import ProfileCard from "./ProfileCard";
 import PairingBook from "./ParingBook";
-import MonthlySpendingChart from "../chart/MonthlySpendingChart";
+import MonthlySpendingChart from "@/components/chart/MonthlySpendingChart";
 
 export default function ProfileCardDetail() {
   const answer = [
