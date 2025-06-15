@@ -3,7 +3,10 @@
  * /api/profiles:
  *   patch:
  *     summary: 사용자 프로필 등록 또는 수정
- *     description: 사용자 인증 후 프로필 정보를 업데이트합니다. 이미지, 목표, 직업 등 다양한 정보를 포함합니다.
+ *     description: |
+ *       사용자 프로필을 등록하거나 수정합니다.
+ *       한 줄 소개, 직업, 목표 설정, 목표 금액, 목표 기간,
+ *       실물 자산 보유 현황(자차, 부동산) 여부, 보유 시 시세 정보를 포함합니다.
  *     consumes:
  *       - multipart/form-data
  *     requestBody:
@@ -19,17 +22,17 @@
  *                 description: 업로드할 이미지 파일
  *               description:
  *                 type: string
- *                 example: "나는 개발자입니다."
+ *                 example: "안녕하세요!"
  *               job:
  *                 type: string
- *                 example: "프론트엔드 엔지니어"
+ *                 example: "백엔드 개발자"
  *               goalType:
  *                 type: string
  *                 enum: [HOUSE, LUMPSUM, RETIREMENT, MARRIAGE]
  *                 example: "HOUSE"
  *               goalAmount:
  *                 type: string
- *                 example: "100000000"
+ *                 example: "50000000"
  *               goalPeriod:
  *                 type: string
  *                 enum: [WITHIN_1_YEAR, WITHIN_3_YEARS, WITHIN_5_YEARS, MORE_THAN_5_YEARS]
@@ -39,13 +42,13 @@
  *                 enum: ["true", "false"]
  *               carValue:
  *                 type: string
- *                 example: "30000000"
+ *                 example: "12000000"
  *               hasHouse:
  *                 type: string
  *                 enum: ["true", "false"]
  *               houseValue:
  *                 type: string
- *                 example: "500000000"
+ *                 example: "300000000"
  *     responses:
  *       200:
  *         description: 프로필 등록 완료
@@ -62,28 +65,66 @@
  *                   properties:
  *                     userId:
  *                       type: integer
+ *                       example: 186
  *                     email:
  *                       type: string
- *                     profileImage:
- *                       type: string
- *                     description:
- *                       type: string
- *                     job:
- *                       type: string
- *                     goalType:
- *                       type: string
- *                     goalPeriod:
- *                       type: string
- *                     goalAmount:
- *                       type: string
- *                     hasCar:
- *                       type: boolean
+ *                       example: "abcd@naver.com"
+ *                     birthYear:
+ *                       type: integer
+ *                       example: 2000
  *                     carValue:
  *                       type: string
+ *                       example: "12000000"
+ *                     city:
+ *                       type: string
+ *                       example: "서울시 동작구"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-06-12T06:30:22.409Z"
+ *                     currentType:
+ *                       type: string
+ *                       nullable: true
+ *                     description:
+ *                       type: string
+ *                       example: "안녕하세요! "
+ *                     gender:
+ *                       type: string
+ *                       example: "M"
+ *                     goalAmount:
+ *                       type: string
+ *                       example: "50000000"
+ *                     goalPeriod:
+ *                       type: string
+ *                       example: "WITHIN_3_YEARS"
+ *                     goalType:
+ *                       type: string
+ *                       example: "HOUSE"
+ *                     hasCar:
+ *                       type: boolean
+ *                       example: true
  *                     hasHouse:
  *                       type: boolean
+ *                       example: false
  *                     houseValue:
  *                       type: string
+ *                       nullable: true
+ *                     job:
+ *                       type: string
+ *                       example: "백엔드 개발자"
+ *                     nickname:
+ *                       type: string
+ *                       example: "테스트"
+ *                     password:
+ *                       type: string
+ *                       example: "$2b$10$************"  # 실제 해시값 일부 마스킹
+ *                     preferredType:
+ *                       type: string
+ *                       nullable: true
+ *                     profileImage:
+ *                       type: string
+ *                       format: uri
+ *                       example: "https://tonghanabucket.s3.ap-northeast-2.amazonaws.com/..."
  *       400:
  *         description: 잘못된 요청
  *       401:
