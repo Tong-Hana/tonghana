@@ -7,6 +7,7 @@ import { ProfileCardProps } from "./types/profileCardTypes";
 import { useState } from "react";
 
 export default function ProfileCard({
+  id,
   name,
   age,
   job,
@@ -26,7 +27,10 @@ export default function ProfileCard({
   const [isLiked, setIsLiked] = useState(false);
 
   return (
-    <div className="flex flex-col justify-center p-3 w-full rounded-xl bg-hanagreen-light border-hanagreen-light-active border gap-4">
+    <div
+      key={id}
+      className="flex flex-col justify-center p-3 w-full rounded-xl bg-hanagreen-light border-hanagreen-light-active border gap-4 shadow-[0px_1px_3px_0px_#0000001A]"
+    >
       {/* profile */}
       <div className="relative w-full aspect-square rounded-xl overflow-hidden">
         <Image

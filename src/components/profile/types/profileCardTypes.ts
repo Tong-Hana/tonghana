@@ -1,4 +1,5 @@
 export interface ProfileCardProps {
+  id: number;
   name: string;
   age: number;
   job: string;
