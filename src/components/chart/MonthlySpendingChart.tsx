@@ -17,7 +17,7 @@ const COLOR_MAP: Record<Segment["label"], string> = {
 
 export default function MonthlySpendingChart({ segments }: Props) {
   return (
-    <div className="rounded-xl p-5 bg-white w-full space-y-5">
+    <div className="rounded-xl p-5 bg-white w-full space-y-5 shadow-[0px_1px_3px_0px_#0000001A]">
       <h2 className="text-hanagreen-normal font-semibold text-lg">
         지난 달 소비
       </h2>
