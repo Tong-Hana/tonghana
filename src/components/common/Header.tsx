@@ -9,10 +9,11 @@ type Props = {
   title: string;
   centerTitle?: boolean;
   showBackButton?: boolean;
-  bgColor?: string;
+  color?: "white" | "black";
+  className?: string;
 };
 
-const BackButton = () => {
+const BackButton = ({ color }: { color: "white" | "black" }) => {
   const router = useRouter();
 
   return (
@@ -21,7 +22,12 @@ const BackButton = () => {
       type="button"
       onClick={() => router.back()}
     >
-      <LeftArrow className="w-8 h-8 stroke-black" />
+      <LeftArrow
+        className={clsx(
+          "w-8 h-8 stroke-black",
+          color === "black" ? "stroke-black" : "stroke-white",
+        )}
+      />
     </button>
   );
 };
@@ -30,23 +36,25 @@ export default function Header({
   title,
   centerTitle = true,
   showBackButton = true,
-  bgColor,
+  color = "black",
+  className,
   children,
 }: PropsWithChildren<Props>) {
   return (
     <header
       className={clsx(
-        "fixed z-50 left-0 top-0 w-full",
-        bgColor ?? "bg-background",
+        "fixed z-50 left-0 top-0 w-full bg-background",
+        className,
       )}
     >
       <div className="relative flex items-center h-12">
-        {showBackButton && <BackButton />}
+        {showBackButton && <BackButton color={color} />}
 
         <h1
           className={clsx(
             "text-2xl font-normal  absolute left-0 right-0",
             centerTitle ? "text-center" : "pl-5 text-left",
+            color === "black" ? "text-text-primary" : "text-white",
           )}
         >
           {title}
