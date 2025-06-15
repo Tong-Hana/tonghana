@@ -135,7 +135,7 @@ export default function SignupForm() {
   return (
     <form
       onSubmit={handleSignup}
-      className="mt-10 mb-10 flex flex-col w-full justify-center items-center gap-5"
+      className="mt-20 mb-20 flex flex-col w-full justify-center items-center gap-5"
     >
       <InputWithLabel
         id="nickname"
@@ -171,7 +171,7 @@ export default function SignupForm() {
         onChangeDistrict={handleChangeDistrict}
       />
       <TermsAgreementGroup value={checkedTerms} onChange={handleTermsChange} />
-      <div className="flex  w-full gap-3">
+      <div className="fixed bg-background px-5 py-4 bottom-0 flex w-full gap-3">
         <Button
           className="rounded-lg flex-[1_1_0]"
           type="button"
