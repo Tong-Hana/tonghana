@@ -7,8 +7,10 @@ export default function HomeLayout({
 }) {
   return (
     <div>
-      <Header title="홈" centerTitle={false} showBackButton={false} />
+      <Header title="통하나" centerTitle={false} showBackButton={false} />
+      <div className="pb-[1rem]" />
       {children}
+      <div className="pb-[4rem]" />
     </div>
   );
 }
