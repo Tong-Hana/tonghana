@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import localFont from "next/font/local";
 
@@ -31,6 +32,7 @@ export default function RootLayout({
           paddingRight: "env(safe-area-inset-right)",
         }}
       >
+        <Toaster />
         <div className="frame-container min-h-screen flex flex-col bg-background">
           {children}
         </div>
