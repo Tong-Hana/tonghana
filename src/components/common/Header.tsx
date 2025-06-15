@@ -37,7 +37,7 @@ export default function Header({
 
       <h1
         className={clsx(
-          "text-2xl font-normal text-text-primary absolute left-0 right-0",
+          "text-2xl font-normal text-text-primary absolute left-0 right-0 px-5",
           centerTitle ? "text-center" : "text-left",
         )}
       >
