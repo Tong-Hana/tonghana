@@ -12,7 +12,7 @@ export default function AnswerButton({ content, isSelected, onClick }: Props) {
   return (
     <button
       className={clsx(
-        "px-4 py-2 rounded-xl border text-text-primary text-base font-normal",
+        "w-full px-4 py-3 rounded-xl border text-text-primary text-base font-normal text-left whitespace-pre-wrap",
         isSelected
           ? "border-hanagreen-normal bg-hanagreen-light shadow-md"
           : "border-hanasilver bg-white",
