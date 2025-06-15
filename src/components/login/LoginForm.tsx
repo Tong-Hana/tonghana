@@ -47,9 +47,8 @@ export default function LoginForm() {
       }
 
       setIsSubmitting(false);
-    } catch (error) {
+    } catch {
       toast.error("로그인에 실패했습니다.");
-      console.log(error);
       setIsSubmitting(false);
     }
   };

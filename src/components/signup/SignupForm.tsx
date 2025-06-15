@@ -125,9 +125,8 @@ export default function SignupForm() {
       }
 
       setIsSubmitting(false);
-    } catch (error) {
+    } catch {
       toast.error("회원가입에 실패했습니다.");
-      console.log(error);
       setIsSubmitting(false);
     }
   };
