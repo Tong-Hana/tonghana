@@ -1,3 +1,138 @@
+/**
+ * @swagger
+ * /api/profiles:
+ *   patch:
+ *     summary: 사용자 프로필 등록 또는 수정
+ *     description: |
+ *       사용자 프로필을 등록하거나 수정합니다.
+ *       한 줄 소개, 직업, 목표 설정, 목표 금액, 목표 기간,
+ *       실물 자산 보유 현황(자차, 부동산) 여부, 보유 시 시세 정보를 포함합니다.
+ *     consumes:
+ *       - multipart/form-data
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               img:
+ *                 type: string
+ *                 format: binary
+ *                 description: 업로드할 이미지 파일
+ *               description:
+ *                 type: string
+ *                 example: "안녕하세요!"
+ *               job:
+ *                 type: string
+ *                 example: "백엔드 개발자"
+ *               goalType:
+ *                 type: string
+ *                 enum: [HOUSE, LUMPSUM, RETIREMENT, MARRIAGE]
+ *                 example: "HOUSE"
+ *               goalAmount:
+ *                 type: string
+ *                 example: "50000000"
+ *               goalPeriod:
+ *                 type: string
+ *                 enum: [WITHIN_1_YEAR, WITHIN_3_YEARS, WITHIN_5_YEARS, MORE_THAN_5_YEARS]
+ *                 example: "WITHIN_3_YEARS"
+ *               hasCar:
+ *                 type: string
+ *                 enum: ["true", "false"]
+ *               carValue:
+ *                 type: string
+ *                 example: "12000000"
+ *               hasHouse:
+ *                 type: string
+ *                 enum: ["true", "false"]
+ *               houseValue:
+ *                 type: string
+ *                 example: "300000000"
+ *     responses:
+ *       200:
+ *         description: 프로필 등록 완료
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "프로필 등록 완료이 완료되었습니다."
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                       example: 186
+ *                     email:
+ *                       type: string
+ *                       example: "abcd@naver.com"
+ *                     birthYear:
+ *                       type: integer
+ *                       example: 2000
+ *                     carValue:
+ *                       type: string
+ *                       example: "12000000"
+ *                     city:
+ *                       type: string
+ *                       example: "서울시 동작구"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-06-12T06:30:22.409Z"
+ *                     currentType:
+ *                       type: string
+ *                       nullable: true
+ *                     description:
+ *                       type: string
+ *                       example: "안녕하세요! "
+ *                     gender:
+ *                       type: string
+ *                       example: "M"
+ *                     goalAmount:
+ *                       type: string
+ *                       example: "50000000"
+ *                     goalPeriod:
+ *                       type: string
+ *                       example: "WITHIN_3_YEARS"
+ *                     goalType:
+ *                       type: string
+ *                       example: "HOUSE"
+ *                     hasCar:
+ *                       type: boolean
+ *                       example: true
+ *                     hasHouse:
+ *                       type: boolean
+ *                       example: false
+ *                     houseValue:
+ *                       type: string
+ *                       nullable: true
+ *                     job:
+ *                       type: string
+ *                       example: "백엔드 개발자"
+ *                     nickname:
+ *                       type: string
+ *                       example: "테스트"
+ *                     password:
+ *                       type: string
+ *                       example: "$2b$10$************"  # 실제 해시값 일부 마스킹
+ *                     preferredType:
+ *                       type: string
+ *                       nullable: true
+ *                     profileImage:
+ *                       type: string
+ *                       format: uri
+ *                       example: "https://tonghanabucket.s3.ap-northeast-2.amazonaws.com/..."
+ *       400:
+ *         description: 잘못된 요청
+ *       401:
+ *         description: 인증되지 않음
+ *       500:
+ *         description: 서버 오류
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
