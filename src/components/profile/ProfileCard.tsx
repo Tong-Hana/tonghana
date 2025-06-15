@@ -1,3 +1,5 @@
+"use client";
+
 import { Car, HomeIcon, Job, Map } from "@/assets/assets";
 import Image from "next/image";
 import DoughnutChart from "../chart/DoughnutChart";
@@ -5,6 +7,7 @@ import { DislikeButton, LikeButton } from "../common/button/ReactionButton";
 import Tag from "../common/tag/Tag";
 import { ProfileCardProps } from "./types/profileCardTypes";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProfileCard({
   id,
@@ -25,10 +28,12 @@ export default function ProfileCard({
   showDetail = true,
 }: ProfileCardProps) {
   const [isLiked, setIsLiked] = useState(false);
+  const router = useRouter();
 
   return (
     <div
       key={id}
+      onClick={() => router.push(`/card/${id}`)}
       className="flex flex-col justify-center p-3 w-full rounded-xl bg-hanagreen-light border-hanagreen-light-active border gap-4 shadow-[0px_1px_3px_0px_#0000001A]"
     >
       {/* profile */}
