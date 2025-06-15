@@ -28,6 +28,7 @@ model User {
   password                                   String                 @db.VarChar(100)
   preferredType                              InvestmentType?        @map("preferred_type")
   profileImage                               String?                @map("profile_image")
+  is_deleted                                 Boolean                @default(false)
   ChatMessage                                ChatMessage[]
   ConsumeHistory                             ConsumeHistory?
   Loan                                       Loan[]
@@ -44,7 +45,7 @@ model ChatMessage {
   message    String
   regdate    DateTime
   ChatRooms  ChatRooms @relation(fields: [room_id], references: [room_id])
-  User       User      @relation(fields: [user_id], references: [userId])
+  User       User      @relation(fields: [user_id], references: [userId], onDelete: Cascade)
 
   @@id([message_id, room_id, user_id])
   @@index([room_id], map: "ChatMessage_room_id_fkey")
@@ -67,7 +68,7 @@ model ConsumeHistory {
   leisure_rate        Decimal @db.Decimal(5, 2)
   living_expense_rate Decimal @db.Decimal(5, 2)
   other_rate          Decimal @db.Decimal(5, 2)
-  User                User    @relation(fields: [user_id], references: [userId])
+  User                User    @relation(fields: [user_id], references: [userId], onDelete: Cascade)
 }
 
 model HanaProduct {
@@ -92,7 +93,7 @@ model Loan {
   loan_balance          BigInt
   loan_rate             Decimal  @db.Decimal(5, 2)
   loan_end_date         DateTime
-  User                  User     @relation(fields: [user_id], references: [userId])
+  User                  User     @relation(fields: [user_id], references: [userId], onDelete: Cascade)
 
   @@id([loan_id, user_id])
   @@index([user_id], map: "Loan_user_id_fkey")
@@ -107,7 +108,7 @@ model PairingAnswer {
   preferred_city     String
   ideal_income_range PairingAnswer_ideal_income_range
   created_at         DateTime                         @default(now())
-  User               User                             @relation(fields: [user_id], references: [userId])
+  User               User                             @relation(fields: [user_id], references: [userId], onDelete: Cascade)
 }
 
 model UserFinancialProduct {
@@ -117,7 +118,7 @@ model UserFinancialProduct {
   product_id       Int
   user_product_id  Int              @id @default(autoincrement())
   FinancialProduct FinancialProduct @relation(fields: [product_id], references: [product_id])
-  User             User             @relation(fields: [user_id], references: [userId])
+  User             User             @relation(fields: [user_id], references: [userId], onDelete: Cascade)
 
   @@index([user_id], map: "UserFinancialProduct_user_id_fkey")
   @@index([product_id], map: "UserFinancialProduct_product_id_fkey")
@@ -128,8 +129,8 @@ model UserMatchLog {
   sent_id                            Int
   receive_id                         Int
   match_status                       UserMatchLog_match_status
-  User_UserMatchLog_receive_idToUser User                      @relation("UserMatchLog_receive_idToUser", fields: [receive_id], references: [userId])
-  User_UserMatchLog_sent_idToUser    User                      @relation("UserMatchLog_sent_idToUser", fields: [sent_id], references: [userId])
+  User_UserMatchLog_receive_idToUser User                      @relation("UserMatchLog_receive_idToUser", fields: [receive_id], references: [userId], onDelete: Cascade)
+  User_UserMatchLog_sent_idToUser    User                      @relation("UserMatchLog_sent_idToUser", fields: [sent_id], references: [userId], onDelete: Cascade)
 
   @@index([receive_id], map: "UserMatchLog_receive_id_fkey")
   @@index([sent_id], map: "UserMatchLog_sent_id_fkey")
