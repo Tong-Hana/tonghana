@@ -9,6 +9,7 @@ type Props = {
   title: string;
   centerTitle?: boolean;
   showBackButton?: boolean;
+  bgColor?: string;
 };
 
 const BackButton = () => {
@@ -16,7 +17,7 @@ const BackButton = () => {
 
   return (
     <button
-      className="py-2 pr-2 z-10 cursor-pointer"
+      className="py-2 px-2 z-10 cursor-pointer"
       type="button"
       onClick={() => router.back()}
     >
@@ -29,21 +30,29 @@ export default function Header({
   title,
   centerTitle = true,
   showBackButton = true,
+  bgColor,
   children,
 }: PropsWithChildren<Props>) {
   return (
-    <header className="relative flex items-center h-12">
-      {showBackButton && <BackButton />}
+    <header
+      className={clsx(
+        "fixed z-50 left-0 top-0 w-full",
+        bgColor ?? "bg-background",
+      )}
+    >
+      <div className="relative flex items-center h-12">
+        {showBackButton && <BackButton />}
 
-      <h1
-        className={clsx(
-          "text-2xl font-normal text-text-primary absolute left-0 right-0",
-          centerTitle ? "text-center" : "text-left",
-        )}
-      >
-        {title}
-      </h1>
-      <div className="absolute right-0">{children}</div>
+        <h1
+          className={clsx(
+            "text-2xl font-normal  absolute left-0 right-0",
+            centerTitle ? "text-center" : "pl-5 text-left",
+          )}
+        >
+          {title}
+        </h1>
+        <div className="absolute right-0">{children}</div>
+      </div>
     </header>
   );
 }
