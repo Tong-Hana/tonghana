@@ -46,6 +46,7 @@ export function IconButton({
   circle = false,
   intent = "like",
   className,
+  onClick,
   isActive,
   ...props
 }: IconButtonProps) {
@@ -53,10 +54,17 @@ export function IconButton({
   const iconSizeClass = size === "sm" ? "w-4 h-4" : "w-5 h-5";
   const strokeWidth = size === "sm" ? "p-[0.2rem]" : "";
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    onClick?.(e);
+  };
+
   return (
     <button
       type={props.type}
       className={cn(iconButtonVariants({ size, circle, intent }), className)}
+      onClick={handleClick}
       {...props}
     >
       <Icon
