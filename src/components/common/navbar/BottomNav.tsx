@@ -68,16 +68,19 @@ const navItems = [
 
 export default function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 w-full z-50 border-t border-hanasilver bg-white">
-      <div className="frame-container flex items-center justify-evenly py-2">
-        {navItems.map((item) => (
-          <BottomNavButton
-            key={item.label}
-            path={item.path}
-            activeIcon={item.icon.active}
-            inactiveIcon={item.icon.inactive}
-          />
-        ))}
+    <nav>
+      <div className="h-14"></div>
+      <div className="fixed bottom-0 left-0 w-full z-50 border-t border-hanasilver bg-white">
+        <div className="frame-container flex items-center justify-evenly py-2">
+          {navItems.map((item) => (
+            <BottomNavButton
+              key={item.label}
+              path={item.path}
+              activeIcon={item.icon.active}
+              inactiveIcon={item.icon.inactive}
+            />
+          ))}
+        </div>
       </div>
     </nav>
   );
