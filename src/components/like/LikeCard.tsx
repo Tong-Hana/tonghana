@@ -1,4 +1,4 @@
-import { HeartIcon, MapPin, X } from "@/assets/assets";
+import { HeartIcon, Map, XMark } from "@/assets/assets";
 import Image from "next/image";
 import Tag from "../common/tag/Tag";
 import Link from "next/link";
@@ -31,12 +31,12 @@ export default function LikeCard({
             <div className="flex w-full justify-between items-center">
               <p className="">{name}</p>
               <button type="button">
-                <X className="w-5 h-5 fill-hanasilver" />
+                <XMark className="w-5 h-5 fill-hanasilver" />
               </button>
             </div>
             <div className="flex font-light items-center">
               <p className="mr-2">{age}세</p>
-              <MapPin className="mr-[2px] w-4 h-4 fill-hanasilver" />
+              <Map className="mr-[2px] w-4 h-4 fill-hanasilver" />
               <p>{address}</p>
             </div>
             <p className="truncate w-full block">{goal}</p>

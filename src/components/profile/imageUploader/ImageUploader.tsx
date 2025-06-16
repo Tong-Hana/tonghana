@@ -45,7 +45,7 @@ export default function ImageUploader({
     <div className="flex flex-col items-center">
       <div
         onClick={handleClick}
-        className="relative w-40 h-40 rounded-full bg-gray-100 border border-hanasilver flex items-center justify-center cursor-pointer overflow-hidden"
+        className="relative w-24 h-24 rounded-full bg-background border border-hanasilver flex items-center justify-center cursor-pointer overflow-hidden"
       >
         {preview ? (
           <Image

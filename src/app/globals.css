@@ -27,6 +27,6 @@ body {
 
 @layer utilities {
   .frame-container {
-    @apply w-full max-w-[1024px] mx-auto px-5;
+    @apply w-full max-w-[1024px] mx-auto;
   }
 }

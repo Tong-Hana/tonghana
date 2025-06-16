@@ -9,8 +9,10 @@ import AttentionStarGirl from "@/assets/character/attention_stargirl.svg";
 import InfoStarBoy from "@/assets/character/info_starboy.svg";
 import ThumbsUpStarGirl from "@/assets/character/thumbs_up_stargirl.svg";
 
-import MapPin from "@/assets/icons/map_pin.svg";
-import X from "@/assets/icons/X.svg";
+import XMark from "@/assets/icons/profile_card/XMark.svg";
+import Car from "@/assets/icons/profile_card/car.svg";
+import Job from "@/assets/icons/profile_card/job.svg";
+import Map from "@/assets/icons/profile_card/map.svg";
 
 export {
   HomeIcon,
@@ -22,6 +24,8 @@ export {
   AttentionStarGirl,
   InfoStarBoy,
   ThumbsUpStarGirl,
-  MapPin,
-  X,
+  XMark,
+  Job,
+  Map,
+  Car,
 };
