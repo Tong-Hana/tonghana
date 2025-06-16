@@ -2,7 +2,9 @@
  * @swagger
  * /api/match-cards/user-summary/{userId}:
  *   get:
- *     summary: 유저 카드 요약 정보 조회
+ *     tags:
+ *       - MatchCards
+ *     summary: 특정 유저 카드 상세보기
  *     description: |
  *       특정 유저의 카드 보기 데이터를 조회합니다.
  *       유저 기본 정보, 페어링북 답변, 소비 성향(ConsumeHistory), 보유 금융상품(UserFinancialProduct)을 포함합니다.
