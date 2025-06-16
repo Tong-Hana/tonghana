@@ -38,25 +38,10 @@ export async function dummyLoan(user: User) {
     },
   });
 }
-// 더미데이터 생성
-async function makeAllLoans() {
+// 유저의 대출 더미데이터 생성
+export async function dummyLoanAll() {
   const users = await prisma.user.findMany();
   for (const user of users) {
     await dummyLoan(user);
   }
-}
-async function main() {
-  await makeAllLoans()
-    .then(() => {
-      console.log("Dummy pairing data created successfully.");
-    })
-    .catch((error) => {
-      console.error("Error creating dummy pairing data:", error);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-}
-if (require.main === module) {
-  main();
 }
