@@ -28,7 +28,7 @@ export default function ProfileSetUpPage() {
 
   return (
     <div className="frame-container w-full min-h-screen bg-hanagreen-normal">
-      <Header title="프로필" />
+      <Header title="프로필" color="white" className="bg-hanagreen-normal" />
 
       <div className="relative mt-24 px-5">
         {/* 프로필 이미지 업로더 */}
