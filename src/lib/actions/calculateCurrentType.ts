@@ -69,3 +69,14 @@ export async function calculateCurrentType(userId: number) {
     });
   }
 }
+
+//생성된 더미데이터 유저들의 현재 소비 성향 업데이트
+export async function updateAllUsersCurrentType() {
+  const users = await prisma.user.findMany({
+    select: { userId: true },
+  });
+
+  for (const user of users) {
+    await calculateCurrentType(user.userId);
+  }
+}

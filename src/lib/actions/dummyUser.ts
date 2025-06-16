@@ -101,16 +101,9 @@ async function pushUser() {
     },
   });
 }
-// 더미데이터 생성
-async function main() {
-  try {
+// 더미데이터 생성, 생성갯수 입력, 기본값 100
+export async function dummyUserAll(cnt: number = 100) {
+  for (let i = 0; i < cnt; i++) {
     await pushUser();
-  } catch (error) {
-    console.error("Error creating user:", error);
-  } finally {
-    await prisma.$disconnect();
   }
-}
-if (require.main === module) {
-  main();
 }

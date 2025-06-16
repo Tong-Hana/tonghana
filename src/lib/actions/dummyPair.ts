@@ -2,7 +2,8 @@ import { faker } from "@faker-js/faker/locale/ko";
 import { prisma } from "@/lib/prisma";
 import { IdealIncomeRange } from "../constants/enums";
 
-async function dummyPair() {
+// 페이링답변 더미데이터 생성함수
+export async function dummyPairAll() {
   let minValue = 10000000;
   const users = await prisma.user.findMany();
   for (const user of users) {
@@ -29,20 +30,4 @@ async function dummyPair() {
       },
     });
   }
-}
-// 더미데이터 생성
-async function main() {
-  await dummyPair()
-    .then(() => {
-      console.log("Dummy pairing data created successfully.");
-    })
-    .catch((error) => {
-      console.error("Error creating dummy pairing data:", error);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-}
-if (require.main === module) {
-  main();
 }
