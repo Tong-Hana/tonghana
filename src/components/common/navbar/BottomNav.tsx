@@ -8,6 +8,9 @@ import {
   ProfileIcon,
 } from "@/assets/assets";
 import BottomNavButton from "./BottomNavTab";
+import clsx from "clsx";
+
+const NavIconSize = "w-8 h-8";
 
 const navItems = [
   {
@@ -15,9 +18,18 @@ const navItems = [
     path: "/home",
     icon: {
       active: (
-        <HomeIcon className="w-10 h-10 text-hanagreen-normal stroke-hanagreen-normal" />
+        <HomeIcon
+          className={clsx(
+            "text-hanagreen-normal stroke-hanagreen-normal",
+            NavIconSize,
+          )}
+        />
       ),
-      inactive: <HomeIcon className="w-10 h-10 stroke-hanasilver text-white" />,
+      inactive: (
+        <HomeIcon
+          className={clsx("stroke-hanasilver text-white", NavIconSize)}
+        />
+      ),
     },
   },
   {
@@ -25,10 +37,14 @@ const navItems = [
     path: "/recommend",
     icon: {
       active: (
-        <FolderIcon className="w-10 h-10 fill-hanagreen-normal stroke-white" />
+        <FolderIcon
+          className={clsx("fill-hanagreen-normal stroke-white", NavIconSize)}
+        />
       ),
       inactive: (
-        <FolderIcon className="w-10 h-10 stroke-hanasilver fill-white" />
+        <FolderIcon
+          className={clsx("stroke-hanasilver fill-white", NavIconSize)}
+        />
       ),
     },
   },
@@ -37,10 +53,17 @@ const navItems = [
     path: "/like",
     icon: {
       active: (
-        <HeartIcon className="w-10 h-10 fill-hanagreen-normal stroke-hanagreen-normal" />
+        <HeartIcon
+          className={clsx(
+            "fill-hanagreen-normal stroke-hanagreen-normal",
+            NavIconSize,
+          )}
+        />
       ),
       inactive: (
-        <HeartIcon className="w-10 h-10 stroke-hanasilver fill-white" />
+        <HeartIcon
+          className={clsx("stroke-hanasilver fill-white", NavIconSize)}
+        />
       ),
     },
   },
@@ -49,18 +72,31 @@ const navItems = [
     path: "/chat",
     icon: {
       active: (
-        <ChatIcon className="w-10 h-10 text-hanagreen-normal stroke-hanagreen-normal" />
+        <ChatIcon
+          className={clsx(
+            "text-hanagreen-normal stroke-hanagreen-normal",
+            NavIconSize,
+          )}
+        />
       ),
-      inactive: <ChatIcon className="w-10 h-10 stroke-hanasilver fill-white" />,
+      inactive: (
+        <ChatIcon
+          className={clsx("stroke-hanasilver fill-white", NavIconSize)}
+        />
+      ),
     },
   },
   {
     label: "profile",
     path: "/profile",
     icon: {
-      active: <ProfileIcon className="w-10 h-10 stroke-hanagreen-normal" />,
+      active: (
+        <ProfileIcon className={clsx("stroke-hanagreen-normal", NavIconSize)} />
+      ),
       inactive: (
-        <ProfileIcon className="w-10 h-10 fill-white stroke-hanasilver" />
+        <ProfileIcon
+          className={clsx("fill-white stroke-hanasilver", NavIconSize)}
+        />
       ),
     },
   },
@@ -69,7 +105,7 @@ const navItems = [
 export default function BottomNav() {
   return (
     <nav>
-      <div className="h-14"></div>
+      <div className="h-12"></div>
       <div className="fixed bottom-0 left-0 w-full z-50 border-t border-hanasilver bg-white">
         <div className="frame-container flex items-center justify-evenly py-2">
           {navItems.map((item) => (
