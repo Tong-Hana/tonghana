@@ -13,6 +13,7 @@ import XMark from "@/assets/icons/profile_card/XMark.svg";
 import Car from "@/assets/icons/profile_card/car.svg";
 import Job from "@/assets/icons/profile_card/job.svg";
 import Map from "@/assets/icons/profile_card/map.svg";
+import Exit from "@/assets/icons/exit.svg";
 
 export {
   HomeIcon,
@@ -28,4 +29,5 @@ export {
   Job,
   Map,
   Car,
+  Exit,
 };

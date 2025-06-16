@@ -18,7 +18,7 @@ export default function ChatRoom({
   lastMessageDate,
 }: Props) {
   return (
-    <Link href={`/chat/${roomId}`}>
+    <Link href={`/chatroom/${roomId}`}>
       <div className="flex px-5 gap-2 items-center hover:bg-hanagreen-light">
         <div className="w-[50px] h-[50px] relative rounded-full overflow-hidden">
           <Image src={imageUrl} alt="profile" fill className="object-cover" />
