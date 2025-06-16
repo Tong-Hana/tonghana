@@ -2,6 +2,8 @@
  * @swagger
  * /api/login:
  *   post:
+ *     tags:
+ *       - Auth
  *     summary: 사용자 로그인
  *     description: 이메일과 비밀번호를 입력받아 사용자를 인증하고 JWT 토큰을 반환합니다.
  *     requestBody:

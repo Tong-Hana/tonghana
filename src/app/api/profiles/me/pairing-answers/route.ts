@@ -2,6 +2,8 @@
  * @swagger
  * /app/profiles/me/pairing-answers:
  *   post:
+ *     tags:
+ *       - Profiles
  *     summary: 페어링북 응답 저장
  *     description: 로그인한 사용자의 페어링북 설문 응답(예산, 선호 도시, 이상적 소득 범위 등)을 저장하거나 업데이트합니다.
  *     requestBody:
