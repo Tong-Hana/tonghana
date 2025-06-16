@@ -8,7 +8,7 @@ export default function SignupLayout({
   return (
     <div>
       <Header title="회원가입" centerTitle={true} showBackButton={true} />
-      {children}
+      <div className="px-5">{children}</div>
     </div>
   );
 }

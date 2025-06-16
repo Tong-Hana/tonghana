@@ -134,7 +134,7 @@ export default function SignupForm() {
   return (
     <form
       onSubmit={handleSignup}
-      className="mt-20 mb-20 flex flex-col w-full justify-center items-center gap-5"
+      className="mt-10 mb-20 flex flex-col w-full justify-center items-center gap-5"
     >
       <InputWithLabel
         id="nickname"
