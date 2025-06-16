@@ -1,11 +1,5 @@
 import Character from "@/assets/character/thumbs_up_stargirl.svg";
-
-interface HanaAdCardProps {
-  name: string;
-  interestRate: number;
-  maxInterestRate: number;
-  maxAmount: number;
-}
+import { HanaAdCardProps } from "./types/HanaProducts";
 
 export default function HanaAdCard({
   name,
