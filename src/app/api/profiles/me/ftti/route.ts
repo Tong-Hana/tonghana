@@ -2,6 +2,8 @@
  * @swagger
  * /api/profiles/me/ftti:
  *   post:
+ *     tags:
+ *       - Profiles
  *     summary: 투자 성향 분석 결과 저장
  *     description: 10개의 응답값을 기반으로 투자 성향을 분석하고 해당 유저의 preferredType 필드를 업데이트합니다.
  *     requestBody:

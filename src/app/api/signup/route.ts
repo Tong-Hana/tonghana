@@ -2,6 +2,8 @@
  * @swagger
  * /api/signup:
  *   post:
+ *     tags:
+ *       - Auth
  *     summary: 사용자 회원가입
  *     description: 필수 정보를 입력받아 새로운 사용자를 생성합니다.
  *     requestBody:
