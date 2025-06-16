@@ -73,6 +73,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { dummyUserProduct } from "@/lib/actions/dummyUserProduct";
+import { dummyConsume } from "@/lib/actions/dummyConsume";
+import { dummyLoan } from "@/lib/actions/dummyLoan";
+import { calculateCurrentType } from "@/lib/actions/calculateCurrentType";
 
 export async function POST(req: Request) {
   try {
@@ -109,6 +113,16 @@ export async function POST(req: Request) {
         city,
       },
     });
+
+    if (newUser) {
+      await dummyUserProduct(newUser);
+      dummyConsume(newUser);
+      const bool = Math.random() < 0.5;
+      if (bool) {
+        dummyLoan(newUser);
+      }
+      calculateCurrentType(newUser.userId);
+    }
 
     return NextResponse.json(
       {
