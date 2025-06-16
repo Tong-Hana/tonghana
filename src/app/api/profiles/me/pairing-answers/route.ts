@@ -14,7 +14,7 @@
  *               - car_budget
  *               - dateBudget
  *               - shoesBudget
- *               -preferredCity
+ *               - preferredCity
  *               - idealIncomeRange
  *             properties:
  *               car_budget:
@@ -29,7 +29,7 @@
  *                 type: integer
  *                 example: 30
  *                 description: 신발 예산
- *              preferredCity:
+ *               preferredCity:
  *                 type: string
  *                 example: "서울시 강남구"
  *               idealIncomeRange:
@@ -65,7 +65,7 @@
  *                     shoesBudget:
  *                       type: integer
  *                       example: 30
- *                    preferredCity:
+ *                     preferredCity:
  *                       type: string
  *                       example: "서울시 강남구"
  *                     idealIncomeRange:
