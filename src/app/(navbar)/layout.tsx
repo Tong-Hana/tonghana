@@ -1,4 +1,4 @@
-import BottomNav from "@/components/navbar/BottomNav";
+import BottomNav from "@/components/common/navbar/BottomNav";
 
 export default function BottomNavLayout({
   children,
@@ -6,7 +6,7 @@ export default function BottomNavLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto max-w-3xl w-full h-screen">
+    <div className="w-full h-screen">
       {children}
       <BottomNav />
     </div>

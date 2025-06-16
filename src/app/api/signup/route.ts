@@ -1,3 +1,75 @@
+/**
+ * @swagger
+ * /api/signup:
+ *   post:
+ *     summary: 사용자 회원가입
+ *     description: 필수 정보를 입력받아 새로운 사용자를 생성합니다.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nickname
+ *               - email
+ *               - password
+ *               - birthYear
+ *               - gender
+ *               - city
+ *             properties:
+ *               nickname:
+ *                 type: string
+ *                 example: "홍길동"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "hong@example.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "securePass123!"
+ *               birthYear:
+ *                 type: integer
+ *                 example: 1995
+ *               gender:
+ *                 type: string
+ *                 enum: [M, F]
+ *                 example: "M"
+ *               city:
+ *                 type: string
+ *                 example: "서울시 성동구"
+ *     responses:
+ *       200:
+ *         description: 회원가입 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "회원가입에 성공하였습니다."
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                       example: 1
+ *                     email:
+ *                       type: string
+ *                       example: "hong@example.com"
+ *                     nickname:
+ *                       type: string
+ *                       example: "홍길동"
+ *       400:
+ *         description: 입력값 누락
+ *       409:
+ *         description: 이메일 중복
+ *       500:
+ *         description: 서버 오류
+ */
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
