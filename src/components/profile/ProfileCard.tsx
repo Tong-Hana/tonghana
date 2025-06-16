@@ -2,10 +2,13 @@
 
 import { Car, HomeIcon, Job, Map } from "@/assets/assets";
 import Image from "next/image";
-import DoughnutChart from "../chart/DoughnutChart";
-import { DislikeButton, LikeButton } from "../common/button/ReactionButton";
-import Tag from "../common/tag/Tag";
-import { ProfileCardProps } from "./types/profileCardTypes";
+import Tag from "@/components/common/tag/Tag";
+import DoughnutChart from "@/components/chart/DoughnutChart";
+import {
+  DislikeButton,
+  LikeButton,
+} from "@/components/common/button/ReactionButton";
+import { ProfileCardProps } from "@/components/profile/types/profileCardTypes";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
