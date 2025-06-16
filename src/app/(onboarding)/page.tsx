@@ -1,9 +1,11 @@
-export default function Home() {
+import IntroSwiper from "@/components/intro/IntroSwiper";
+
+export default function OnboardingIntroPage() {
   return (
-    <div className="flex">
-      <p className="text-2xl text-hanagreen-normal-active font-semibold">
-        온보딩 인트로 페이지(초기진입)
-      </p>
-    </div>
+    <main className="min-h-screen flex flex-col bg-background">
+      <div className="flex-1">
+        <IntroSwiper />
+      </div>
+    </main>
   );
 }
