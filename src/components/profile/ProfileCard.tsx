@@ -1,3 +1,5 @@
+"use client";
+
 import { Car, HomeIcon, Job, Map } from "@/assets/assets";
 import Image from "next/image";
 import Tag from "@/components/common/tag/Tag";
@@ -8,8 +10,10 @@ import {
 } from "@/components/common/button/ReactionButton";
 import { ProfileCardProps } from "@/components/profile/types/profileCardTypes";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProfileCard({
+  id,
   name,
   age,
   job,
@@ -27,9 +31,14 @@ export default function ProfileCard({
   showDetail = true,
 }: ProfileCardProps) {
   const [isLiked, setIsLiked] = useState(false);
+  const router = useRouter();
 
   return (
-    <div className="flex flex-col justify-center p-3 w-full rounded-xl bg-hanagreen-light border-hanagreen-light-active border gap-4">
+    <div
+      key={id}
+      onClick={() => router.push(`/card/${id}`)}
+      className="flex flex-col justify-center p-3 w-full rounded-xl bg-hanagreen-light border-hanagreen-light-active border gap-4 shadow-[0px_1px_3px_0px_#0000001A]"
+    >
       {/* profile */}
       <div className="relative w-full aspect-square rounded-xl overflow-hidden">
         <Image

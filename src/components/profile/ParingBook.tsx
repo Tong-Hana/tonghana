@@ -24,7 +24,7 @@ export default function PairingBook({ answers }: PairingBookProps) {
   ];
 
   return (
-    <div className="rounded-lg p-5 bg-white w-full space-y-5">
+    <div className="rounded-lg p-5 bg-white w-full space-y-5 shadow-[0px_1px_3px_0px_#0000001A]">
       <h2 className="text-hanagreen-normal font-semibold text-lg">페어링북</h2>
       {questions.map((q) => (
         <div key={q.id}>
