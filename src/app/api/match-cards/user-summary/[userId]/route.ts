@@ -5,7 +5,7 @@
  *     summary: 유저 카드 요약 정보 조회
  *     description: |
  *       특정 유저의 카드 보기 데이터를 조회합니다.
- *       유저 기본 정보, 페어링북 답변, 소비 성향(ConsumeHistory)을 포함합니다.
+ *       유저 기본 정보, 페어링북 답변, 소비 성향(ConsumeHistory), 보유 금융상품(UserFinancialProduct)을 포함합니다.
  *       userId에 "me"를 입력하면 로그인한 본인의 정보를 조회합니다.
  *     parameters:
  *       - in: path
@@ -117,6 +117,46 @@
  *                     otherRate:
  *                       type: string
  *                       example: "40"
+ *                 userFinancialProduct:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       userProductId:
+ *                         type: integer
+ *                         example: 1297
+ *                       userId:
+ *                         type: integer
+ *                         example: 186
+ *                       productId:
+ *                         type: integer
+ *                         example: 73
+ *                       currentValue:
+ *                         type: integer
+ *                         example: 6000000
+ *                       productEndDate:
+ *                         type: string
+ *                         format: date-time
+ *                         nullable: true
+ *                         example: "2028-02-16T16:31:25.447Z"
+ *                       financialProduct:
+ *                         type: object
+ *                         properties:
+ *                           productId:
+ *                             type: integer
+ *                             example: 73
+ *                           productName:
+ *                             type: string
+ *                             example: "기업은행 자유적립 적금"
+ *                           institutionName:
+ *                             type: string
+ *                             example: "기업은행"
+ *                           riskLevel:
+ *                             type: string
+ *                             example: "VERY_LOW"
+ *                           category:
+ *                             type: string
+ *                             example: "SAVINGS"
  *       400:
  *         description: 잘못된 요청
  *       401:
@@ -181,6 +221,24 @@ export async function GET(_: Request, context: { params: { userId: string } }) {
             leisureRate: true,
             livingExpenseRate: true,
             otherRate: true,
+          },
+        },
+        userFinancialProduct: {
+          select: {
+            userProductId: true,
+            userId: true,
+            productId: true,
+            currentValue: true,
+            productEndDate: true,
+            financialProduct: {
+              select: {
+                productId: true,
+                productName: true,
+                institutionName: true,
+                riskLevel: true,
+                category: true,
+              },
+            },
           },
         },
       },
