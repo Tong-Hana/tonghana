@@ -23,21 +23,11 @@ export async function dummyConsume(user: User) {
     },
   });
 }
-async function dummyConsumeAll() {
+
+// 유저의 소비 더미데이터 생성
+export async function dummyConsumeAll() {
   const users = await prisma.user.findMany();
   for (const user of users) {
     await dummyConsume(user);
   }
-}
-async function main() {
-  try {
-    await dummyConsumeAll();
-  } catch (error) {
-    console.error("Error creating user:", error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-if (require.main === module) {
-  main();
 }

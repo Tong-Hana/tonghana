@@ -159,8 +159,10 @@ const cntMap: Record<ProductCategory, number> = {
   FOREIGN_BONDS: 4,
   ALTERNATIVE: 13,
 };
-if (require.main === module) {
-  categories.forEach(async (category) => {
+
+//유저가 가입중인 금융상품에 대한 더미데이터 생성
+export async function dummyFinancialProductAll() {
+  for (const category of categories) {
     const j = cntMap[category];
     for (let i = 0; i < j; i++) {
       const productData = generateProduct(category);
@@ -173,5 +175,5 @@ if (require.main === module) {
         },
       });
     }
-  });
+  }
 }
