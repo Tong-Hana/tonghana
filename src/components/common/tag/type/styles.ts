@@ -5,10 +5,10 @@ export const tagVariants = cva(
   {
     variants: {
       variant: {
-        filled: "bg-hanagreen-light text-hanagreen-normal",
+        filled: "bg-hanagreen-light-active text-hanagreen-normal",
         outlined:
-          "bg-white text-hanagreen-normal border border-hanagreen-light border-[2px]",
-        interactive: "bg-hanagreen-light text-hanagreen-normal",
+          "bg-white text-hanagreen-normal border border-hanagreen-light-active border-[2px]",
+        interactive: "bg-hanagreen-light-active text-hanagreen-normal",
         selected: "bg-hanagreen-normal text-hanagreen-light",
       },
       size: {
