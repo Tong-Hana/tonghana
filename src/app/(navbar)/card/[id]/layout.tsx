@@ -2,16 +2,15 @@ import Header from "@/components/common/Header";
 
 interface LayoutProps {
   children: React.ReactNode;
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function CardDetailLayout({
   children,
   params,
 }: LayoutProps) {
-  const userId = Number(params.id);
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.id);
 
   // const user = await fetchUserData(userId)
 

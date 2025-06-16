@@ -1,13 +1,12 @@
 import ProfileCardDetail from "@/components/profile/ProfileCardDetail";
 
 interface Params {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function CardDetailPage({ params }: Params) {
-  const userId = Number(params.id);
+  const resolvedParams = await params;
+  const userId = Number(resolvedParams.id);
 
   // API로 불러올 데이터
   const user = {

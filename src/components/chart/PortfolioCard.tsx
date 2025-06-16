@@ -10,6 +10,7 @@ export default function PortfolioCard() {
         values={[300, 200, 165, 100, 0, 0, 0, 100]}
         debtLabel="200%"
         valueFormat="percent"
+        portfolioType="안정형"
       />
     </div>
   );
