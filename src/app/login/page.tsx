@@ -1,9 +1,11 @@
 import Image from "next/image";
 import LoginForm from "@/components/login/LoginForm";
+import Header from "@/components/common/Header";
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-col h-screen justify-center">
+    <div className="flex flex-col h-screen justify-center px-5">
+      <Header title="로그인" />
       <div className="flex flex-col gap-5 justify-center items-center">
         <Image
           src="hana_logo.svg"
