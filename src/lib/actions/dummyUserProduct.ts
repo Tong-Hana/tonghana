@@ -51,7 +51,8 @@ export async function dummyUserProduct(
   }
 }
 
-async function makeAllUserProducts() {
+// 유저가 소유한 금융상품 더미데이터 생성
+export async function dummyUserProductAll() {
   const users = await prisma.user.findMany();
   const result = await prisma.financialProduct.aggregate({
     _min: {
@@ -67,20 +68,4 @@ async function makeAllUserProducts() {
   for (const user of users) {
     await dummyUserProduct(user, minId, maxId);
   }
-}
-// 더미데이터 생성
-async function main() {
-  await makeAllUserProducts()
-    .then(() => {
-      console.log("Dummy data created successfully.");
-    })
-    .catch((error) => {
-      console.error("Error creating dummy data:", error);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-}
-if (require.main === module) {
-  main();
 }
