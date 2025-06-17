@@ -34,6 +34,7 @@ export enum ProductCategory {
   DOMESTIC_BONDS = "DOMESTIC_BONDS",
   FOREIGN_BONDS = "FOREIGN_BONDS",
   ALTERNATIVE = "ALTERNATIVE",
+  LOAN = "LOAN",
 }
 
 export enum RiskLevel {
