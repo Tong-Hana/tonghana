@@ -4,6 +4,12 @@ import { prisma } from "@/lib/prisma";
 import { RiskLevel } from "@prisma/client";
 import { ProductCategory } from "@prisma/client";
 
+declare global {
+  interface Window {
+    doPaging: (offset: string) => void;
+  }
+}
+
 const riskLevelMap: Record<string, RiskLevel> = {
   "매우낮은위험(H)": RiskLevel.VERY_LOW,
   "매우낮은위험(UH)": RiskLevel.VERY_LOW,
@@ -320,7 +326,7 @@ interface Product {
 
   for (const el of items) {
     const category = ProductCategory.SAVINGS;
-    // const category = $(el).find('.product-tit > i').text().trim(); // 세부카테고리(정기예금...)
+    // const category = $(el).find('.product-tit > i').text().trim(); // 세부카테고리(적금...)
 
     // const channel = $(el)
     //   .find('.product-tit em.badge02, .product-tit em.badge34, .product-tit em.null')
@@ -371,115 +377,152 @@ interface Product {
       },
     });
   }
-
-  console.log(products);
   await browser.close();
 })();
 
-// // 대출 상품 크롤링
-// (async () => {
-//   const browser = await puppeteer.launch({
-//     headless: false,
-//     slowMo: 50,
-//     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-//   });
+// 대출 상품 크롤링
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    slowMo: 50,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
 
-//   const page = await browser.newPage();
+  const page = await browser.newPage();
 
-//   const targetUrl = 'https://www.kebhana.com/cont/mall/mall08/mall0805/index.jsp?_menuNo=62608';
+  const targetUrl =
+    "https://www.kebhana.com/cont/mall/mall08/mall0805/index.jsp?_menuNo=62608";
 
-//   // 네트워크가 0개 이하로 조용해질 때까지 대기
-//   await page.goto(targetUrl, { waitUntil: 'networkidle0' });
+  // 네트워크가 0개 이하로 조용해질 때까지 대기
+  await page.goto(targetUrl, { waitUntil: "networkidle0" });
 
-//   // 적금 탭 클릭: onclick에 doTab('spb_2821,spb_2822,spb_2823,spb_2824,spb_2825,spb_2826') 있는 a 태그 클릭
-//   await page.evaluate(() => {
-//     const anchors = Array.from(document.querySelectorAll('a'));
-//     const target = anchors.find(a => a.getAttribute('onclick')?.includes("doTab('spb_2821,spb_2822,spb_2823,spb_2824,spb_2825,spb_2826')"));
-//     if (target) {
-//       target.click();
-//     }
-//   });
+  // 대출 탭 클릭: onclick에 doTab('spb_2821,spb_2822,spb_2823,spb_2824,spb_2825,spb_2826') 있는 a 태그 클릭
+  await page.evaluate(() => {
+    const anchors = Array.from(document.querySelectorAll("a"));
+    const target = anchors.find((a) =>
+      a
+        .getAttribute("onclick")
+        ?.includes(
+          "doTab('spb_2821,spb_2822,spb_2823,spb_2824,spb_2825,spb_2826')",
+        ),
+    );
+    if (target) {
+      target.click();
+    }
+  });
 
-//    // 페이지가 로딩 될 시간을 줌
-//   await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }).catch(() => {});
+  // 페이지가 로딩 될 시간을 줌
+  await page
+    .waitForNavigation({ waitUntil: "domcontentloaded", timeout: 10000 })
+    .catch(() => {});
 
-//   const products: Product[] = [];
-//   let currentOffset = 0; // 페이징 파라미터
+  const products: Product[] = [];
+  let currentOffset = 0; // 페이징 파라미터
 
-//   async function crawlCurrentPage() {
-//     const content = await page.content();
-//     const $ = cheerio.load(content);
+  async function crawlCurrentPage() {
+    const content = await page.content();
+    const $ = cheerio.load(content);
 
-//     $('ul.product-list > li.item').each((_, el) => {
-//       const category = $(el).find('.product-tit > i').text().trim();
+    const items = $("ul.product-list > li.item");
 
-//       // const channel = $(el)
-//       //   .find('.product-tit em.badge02, .product-tit em.badge34, .product-tit em.null')
-//       //   .map((_, em) => $(em).text().trim())
-//       //   .get();
+    for (const el of items) {
+      const category = ProductCategory.LOAN;
+      // const category = $(el).find('.product-tit > i').text().trim(); // 세부카테고리(담보/전월세/신용...)
 
-//       const name = $(el).find('.product-tit > em a').text().trim();
+      // const channel = $(el)
+      //   .find('.product-tit em.badge02, .product-tit em.badge34, .product-tit em.null')
+      //   .map((_, em) => $(em).text().trim())
+      //   .get();
+      const name = $(el).find(".product-tit > em a").text().trim();
 
-//       const description = $(el).find('.tit-desc a').text().trim();
+      const description = $(el).find(".tit-desc a").text().trim();
 
-//       const rateElems = $(el).find('strong');
-//       const min_rate = $(rateElems[0]).clone().children().remove().end().text().trim();
-//       const max_rate = $(rateElems[1]).clone().children().remove().end().text().trim();
+      const rateElems = $(el).find("strong");
+      const min_rate = $(rateElems[0])
+        .clone()
+        .children()
+        .remove()
+        .end()
+        .text()
+        .trim();
+      const max_rate = $(rateElems[1])
+        .clone()
+        .children()
+        .remove()
+        .end()
+        .text()
+        .trim();
 
-//       products.push({
-//         category,
-//         // channel,
-//         name,
-//         description,
-//         min_rate,
-//         max_rate,
-//       });
-//     });
-//     console.log(products);
-//   }
+      products.push({
+        category,
+        // channel,
+        name,
+        description,
+        min_rate,
+        max_rate,
+      });
 
-//     // 크롤링 시작
-//     while (true) {
-//       await crawlCurrentPage();
+      // DB 저장
+      await prisma.hanaProduct.create({
+        data: {
+          name: name,
+          category: category,
+          description: description,
+          interestRate: min_rate || 0,
+          maxInterestRate: max_rate || 0,
+          minAmount: 0,
+          maxAmount: 0,
+          minPeriodMonth: 0,
+          maxPeriodMonth: 0,
+          riskLevel: RiskLevel.VERY_LOW, // 추후 수정 필요
+        },
+      });
+    }
+  }
 
-//       // 다음 페이지 offset 존재 여부 확인
-//       const nextOffset = await page.evaluate(() => {
-//         const currentPageEl = document.querySelector('.paging a.on');
-//         if (!currentPageEl) return null;
+  // 크롤링 시작
+  while (true) {
+    await crawlCurrentPage();
 
-//         // 현재 페이지 strong 태그 기준으로 다음 a 태그를 찾음
-//         const strongEl = currentPageEl.querySelector('strong');
-//         if (!strongEl) return null;
+    // 다음 페이지 offset 존재 여부 확인
+    const nextOffset = await page.evaluate(() => {
+      const currentPageEl = document.querySelector(".paging a.on");
+      if (!currentPageEl) return null;
 
-//         let nextLink = strongEl.parentElement?.nextElementSibling as HTMLAnchorElement;
-//         while (nextLink && nextLink.tagName !== 'A') {
-//           nextLink = nextLink.nextElementSibling as HTMLAnchorElement;
-//         }
+      // 현재 페이지 strong 태그 기준으로 다음 a 태그를 찾음
+      const strongEl = currentPageEl.querySelector("strong");
+      if (!strongEl) return null;
 
-//         if (!nextLink || !nextLink.getAttribute('href')?.includes('doPaging')) return null;
+      let nextLink = strongEl.parentElement
+        ?.nextElementSibling as HTMLAnchorElement;
+      while (nextLink && nextLink.tagName !== "A") {
+        nextLink = nextLink.nextElementSibling as HTMLAnchorElement;
+      }
 
-//         // href에서 숫자 추출
-//         const match = nextLink.getAttribute('href')?.match(/doPaging\('(\d+)'\)/);
-//         return match ? parseInt(match[1]) : null;
-//       });
+      if (!nextLink || !nextLink.getAttribute("href")?.includes("doPaging"))
+        return null;
 
-//       if (nextOffset === null || nextOffset <= currentOffset) {
-//         break;
-//       }
+      // href에서 숫자 추출
+      const match = nextLink.getAttribute("href")?.match(/doPaging\('(\d+)'\)/);
+      return match ? parseInt(match[1]) : null;
+    });
 
-//       currentOffset = nextOffset;
+    if (nextOffset === null || nextOffset <= currentOffset) {
+      break;
+    }
 
-//       // doPaging 함수 호출해서 페이지 이동
-//       await page.evaluate((offset) => {
-//         // @ts-ignore
-//         window.doPaging(offset.toString());
-//       }, currentOffset);
+    currentOffset = nextOffset;
 
-//       // 페이지가 로딩 될 시간을 줌
-//       await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }).catch(() => {});
-//     }
+    // doPaging 함수 호출해서 페이지 이동
+    await page.evaluate((offset) => {
+      window.doPaging(offset.toString());
+    }, currentOffset);
 
-//     console.log(products);
+    // 페이지가 로딩 될 시간을 줌
+    await page
+      .waitForNavigation({ waitUntil: "domcontentloaded", timeout: 10000 })
+      .catch(() => {});
+  }
 
-//     await browser.close();
-//   })();
+  await browser.close();
+})();
