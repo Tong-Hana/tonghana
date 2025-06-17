@@ -1,42 +1,62 @@
+/**
+ * @swagger
+ * /api/chats:
+ *   get:
+ *     summary: 내 채팅방 목록 조회
+ *     description: |
+ *       로그인한 사용자가 속한 채팅방 리스트를 조회합니다.
+ *       각 채팅방에는 최근 메시지 1개가 함께 포함되어 있습니다.
+ *     tags: [Chat]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 채팅방 목록 반환
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 chatRooms:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       roomId:
+ *                         type: integer
+ *                         description: 채팅방 ID
+ *                       userId:
+ *                         type: integer
+ *                       userId2:
+ *                         type: integer
+ *                       isAgree:
+ *                         type: boolean
+ *                       isAgree2:
+ *                         type: boolean
+ *                       chatMessage:
+ *                         type: array
+ *                         description: 최신 메시지 1개
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             messageId:
+ *                               type: integer
+ *                             message:
+ *                               type: string
+ *                             regdate:
+ *                               type: string
+ *                               format: date-time
+ *                             userId:
+ *                               type: integer
+ */
+
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
-import { MatchStatus } from "@prisma/client";
-
-// 테스트용 매칭 데이터
-async function createTestMatchLog() {
-  const matchesToCreate = [
-    { sentId: 199, receiveId: 186, matchStatus: MatchStatus.ACCEPTED },
-    { sentId: 199, receiveId: 184, matchStatus: MatchStatus.PENDING },
-  ];
-
-  for (const match of matchesToCreate) {
-    const existing = await prisma.userMatchLog.findFirst({
-      where: {
-        sentId: match.sentId,
-        receiveId: match.receiveId,
-      },
-    });
-
-    if (!existing) {
-      await prisma.userMatchLog.create({ data: match });
-    } else {
-      console.log(
-        `이미 존재하는 매칭: ${match.sentId} → ${match.receiveId}, 생략됨`,
-      );
-    }
-  }
-}
-createTestMatchLog()
-  .catch((e) => {
-    console.error("에러 발생:", e);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
 
 // 채팅방 리스트 조회
 export async function GET(req: NextRequest) {
+  // accessToken에서 사용자 정보 추출
   const user = await getAuthUser();
   if (!user) {
     return NextResponse.json(
@@ -45,49 +65,18 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const chatRooms = await prisma.chatRooms.findMany({
+  // 로그인된 유저가 참여한 채팅방 조회
+  const chatRooms = await prisma.chatRoom.findMany({
     where: {
       OR: [{ userId: user.userId }, { userId2: user.userId }],
     },
     include: {
-      chatMessages: {
+      chatMessage: {
         orderBy: { regdate: "desc" },
-        take: 1,
+        take: 1, // 최신 메시지 1개만 포함
       },
     },
   });
 
   return NextResponse.json({ chatRooms });
-}
-
-// 채팅방 생성하기
-// TODO: 좋아요 수락/거절 여부에 따라 채팅방 자동 개설
-export async function POST() {
-  const acceptedMatches = await prisma.userMatchLog.findMany({
-    where: { matchStatus: "ACCEPTED" },
-  });
-
-  for (const match of acceptedMatches) {
-    const existingRoom = await prisma.chatRooms.findFirst({
-      where: {
-        OR: [
-          { userId: match.sentId, userId2: match.receiveId },
-          { userId: match.receiveId, userId2: match.sentId },
-        ],
-      },
-    });
-
-    if (!existingRoom) {
-      await prisma.chatRooms.create({
-        data: {
-          userId: match.sentId,
-          userId2: match.receiveId,
-          isAgree: false,
-          isAgree2: false,
-        },
-      });
-    }
-  }
-
-  return NextResponse.json({ success: true });
 }
