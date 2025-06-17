@@ -9,6 +9,7 @@ import ImageUploader from "@/components/profile/imageUploader/ImageUploader";
 import ProfileCardDetail from "@/components/profile/ProfileCardDetail";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Header from "@/components/common/Header";
 
 export default function MyPage() {
   // API로 불러올 데이터
@@ -148,6 +149,7 @@ export default function MyPage() {
   return (
     <div className="w-full h-full">
       <div className="flex flex-col gap-5 px-5 py-2">
+        <Header title="마이페이지" />
         {/* 프로필 */}
         <div className="flex justify-center items-center gap-9 pt-5">
           <ImageUploader imageUrl={user.imageUrl} onChange={() => {}} />
