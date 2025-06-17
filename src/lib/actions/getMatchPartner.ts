@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 // 사용자의 매칭 상대를 찾는 함수
 // 매칭 로그에 존재하지 않는 상대 중에서 현재 또는 선호하는 투자성향이 일치하는 사용자를 매칭시킵니다.
 export async function getMatchPartner(user: User) {
+  const dailyLimit = 30; // 하루에 최대 매칭 상대를 제한
   const oppositeGender = user.gender === "M" ? "F" : "M";
 
   const matchLogs = await prisma.userMatchLog.findMany({
@@ -23,8 +24,7 @@ export async function getMatchPartner(user: User) {
   });
 
   matchedUserIds.add(user.userId);
-
-  return prisma.user.findMany({
+  let matchResult = await prisma.user.findMany({
     where: {
       userId: {
         notIn: Array.from(matchedUserIds),
@@ -38,5 +38,26 @@ export async function getMatchPartner(user: User) {
         { currentType: user.preferredType },
       ],
     },
+    take: dailyLimit,
   });
+
+  // 매칭 상대가 충분하지 않은 경우, 추가로 매칭 상대를 찾습니다.
+  if (matchResult.length < dailyLimit) {
+    for (const user of matchResult) {
+      matchedUserIds.add(user.userId);
+    }
+    const additionalMatches = await prisma.user.findMany({
+      where: {
+        userId: {
+          notIn: [...matchedUserIds],
+        },
+        gender: oppositeGender,
+        isDeleted: false,
+      },
+      take: dailyLimit - matchResult.length,
+    });
+    matchResult = [...matchResult, ...additionalMatches];
+  }
+  // TODO 매칭 상대 기록 필요
+  return matchResult;
 }
