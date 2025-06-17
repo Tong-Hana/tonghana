@@ -32,6 +32,7 @@ const fundTypes = {
 } as const;
 
 type Fund = {
+  val2: string; // 계열/비계열 구분
   val4: string; // 국내/해외/혼합 구분
   val5: string; // 펀드명
   val9: string; // 위험등급
@@ -108,16 +109,6 @@ async function fetchHanaBankFundList(standardDt: string, fundType: string) {
   const filtered = funds.filter((fund: Fund) => fund.val2 === "계열");
 
   for (const fund of filtered) {
-    // console.log(`운용사: ${fund.val3}`);
-    // console.log(`펀드명: ${fund.val5}`);
-    // console.log(`국내/해외: ${fund.val4}`);
-    // console.log(`위험등급: ${fund.val9}`);
-    // console.log(`설정일 이후 수익률: ${fund.val11}%`);
-    // console.log(`6개월 수익률: ${fund.val12}%`);
-    // console.log(`1년 수익률: ${fund.val13}%`);
-    // console.log(`3년 수익률: ${fund.val14}%`);
-    // console.log(`5년 수익률: ${fund.val15}%`);
-
     // DB에 저장
     await prisma.hanaProduct.create({
       data: {
@@ -176,7 +167,7 @@ function getProductCategory(
   throw new Error(`알 수 없는 펀드 유형: ${fundType} 또는 지역: ${region}`);
 }
 
-// 순차 처리 실행
+// 펀드 크롤링 순차 처리 실행
 (async () => {
   try {
     const standardDT = await fetchLatestValidStandardDate();
@@ -195,68 +186,99 @@ function getProductCategory(
   }
 })();
 
-// // 금융상품 - 예금 페이지 목록 크롤링
-// import puppeteer from 'puppeteer';
-// import * as cheerio from 'cheerio';
+// 금융상품 - 예금 페이지 목록 크롤링
+import puppeteer from "puppeteer";
+import * as cheerio from "cheerio";
 
-// interface Product {
-//     category: string;
-//     // channel: string[];
-//     name: string;
-//     description: string;
-//     min_rate: string;
-//     max_rate: string;
-// }
+interface Product {
+  category: string;
+  // channel: string[];
+  name: string;
+  description: string;
+  min_rate: string;
+  max_rate: string;
+}
 
-// // 예금상품 크롤링
-// (async () => {
-//   const browser = await puppeteer.launch({
-//     headless: false,
-//     slowMo: 50,
-//     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-//   });
+// 예금상품 크롤링
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    slowMo: 50,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
 
-//   const page = await browser.newPage();
+  const page = await browser.newPage();
 
-//   const targetUrl = 'https://www.kebhana.com/cont/mall/mall08/mall0805/index.jsp?_menuNo=62608';
+  const targetUrl =
+    "https://www.kebhana.com/cont/mall/mall08/mall0805/index.jsp?_menuNo=62608";
 
-//   // 네트워크가 0개 이하로 조용해질 때까지 대기
-//   await page.goto(targetUrl, { waitUntil: 'networkidle0' });
+  // 네트워크가 0개 이하로 조용해질 때까지 대기
+  await page.goto(targetUrl, { waitUntil: "networkidle0" });
 
-//   const content = await page.content();
-//   const $ = cheerio.load(content);
+  const content = await page.content();
+  const $ = cheerio.load(content);
 
-//   const products: Product[] = [];
+  const products: Product[] = [];
 
-//   $('ul.product-list > li.item').each((_, el) => {
-//     const category = $(el).find('.product-tit > i').text().trim();
+  const items = $("ul.product-list > li.item");
 
-//     const channel = $(el)
-//       .find('.product-tit em.badge02, .product-tit em.badge34, .product-tit em.null')
-//       .map((_, em) => $(em).text().trim())
-//       .get();
+  for (const el of items) {
+    const category = ProductCategory.SAVINGS;
+    // const category = $(el).find('.product-tit > i').text().trim(); // 세부카테고리(정기예금...)
 
-//     const name = $(el).find('.product-tit > em a').text().trim();
+    // const channel = $(el)
+    //   .find('.product-tit em.badge02, .product-tit em.badge34, .product-tit em.null')
+    //   .map((_, em) => $(em).text().trim())
+    //   .get();
+    const name = $(el).find(".product-tit > em a").text().trim();
 
-//     const description = $(el).find('.tit-desc a').text().trim();
+    const description = $(el).find(".tit-desc a").text().trim();
 
-//     const rateElems = $(el).find('strong');
-//     const min_rate = $(rateElems[0]).clone().children().remove().end().text().trim();
-//     const max_rate = $(rateElems[1]).clone().children().remove().end().text().trim();
+    const rateElems = $(el).find("strong");
+    const min_rate = $(rateElems[0])
+      .clone()
+      .children()
+      .remove()
+      .end()
+      .text()
+      .trim();
+    const max_rate = $(rateElems[1])
+      .clone()
+      .children()
+      .remove()
+      .end()
+      .text()
+      .trim();
 
-//     products.push({
-//       category,
-//     // channel,
-//       name,
-//       description,
-//       min_rate,
-//       max_rate,
-//     });
-//   });
+    products.push({
+      category,
+      // channel,
+      name,
+      description,
+      min_rate,
+      max_rate,
+    });
 
-//   console.log(products);
-//   await browser.close();
-// })();
+    // DB 저장
+    await prisma.hanaProduct.create({
+      data: {
+        name: name,
+        category: category,
+        description: description,
+        interestRate: min_rate,
+        maxInterestRate: max_rate || 0,
+        minAmount: 0,
+        maxAmount: 0,
+        minPeriodMonth: 0,
+        maxPeriodMonth: 0,
+        riskLevel: RiskLevel.VERY_LOW,
+      },
+    });
+  }
+
+  console.log(products);
+  await browser.close();
+})();
 
 // // 적금 상품 크롤링
 // (async () => {
