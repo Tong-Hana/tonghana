@@ -3,7 +3,7 @@ import type { OpenAPIV3 } from "openapi-types";
 
 export function getSwaggerSpec(): OpenAPIV3.Document {
   return createSwaggerSpec({
-    apiFolder: "src/app/api", // ← 실제 API 핸들러 경로
+    apiFolder: "src/app/api",
     definition: {
       openapi: "3.0.0",
       info: {
