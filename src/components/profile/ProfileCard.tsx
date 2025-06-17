@@ -28,7 +28,8 @@ export default function ProfileCard({
   portfolioType,
   investorType,
   debtPercent,
-  showDetail = true,
+  showDetail,
+  modalView,
 }: ProfileCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function ProfileCard({
   return (
     <div
       key={id}
-      onClick={() => router.push(`/card/${id}`)}
+      onClick={() => !modalView && router.push(`/card/${id}`)}
       className="flex flex-col justify-center p-3 w-full rounded-xl bg-hanagreen-light border-hanagreen-light-active border gap-4 shadow-[0px_1px_3px_0px_#0000001A]"
     >
       {/* profile */}
@@ -124,16 +125,17 @@ export default function ProfileCard({
           values={portfolioValues}
           portfolioType={portfolioType}
           debtLabel={debtPercent}
-          valueFormat="percent"
+          showPercent={!showDetail}
         />
       </div>
       {/* 좋아요, 싫어요 버튼 */}
       <div className="flex justify-between">
-        <DislikeButton circle size="md" />
+        <DislikeButton circle size="md" modalView={modalView} />
         <LikeButton
           circle
           size="md"
           isActive={isLiked}
+          modalView={modalView}
           onClick={() => setIsLiked((prev) => !prev)}
         />
       </div>
