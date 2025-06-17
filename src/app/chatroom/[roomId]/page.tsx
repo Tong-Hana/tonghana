@@ -26,6 +26,7 @@ export default function ChatRoomPage() {
     shareStatus === "pending" || shareStatus === "other_agreed";
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [showExitDialog, setShowExitDialog] = useState(false);
 
   const scrollToBottom = (behavior?: ScrollBehavior) => {
     if (scrollRef.current) {
@@ -60,6 +61,14 @@ export default function ChatRoomPage() {
     },
   ]);
 
+  const openExitDialog = () => {
+    setShowExitDialog(true);
+  };
+
+  const closeExitDialog = () => {
+    setShowExitDialog(false);
+  };
+
   // 새 메시지 있을 때 자동 스크롤
   useEffect(() => {
     scrollToBottom("instant");
@@ -87,9 +96,13 @@ export default function ChatRoomPage() {
         <DialogButton
           title={"채팅방을 나가시겠어요?"}
           content={"채팅방을 나가면 대화 기록이 모두 삭제됩니다."}
+          open={showExitDialog}
           onAction={() => {}}
+          onClose={closeExitDialog}
         >
-          <Exit className="mx-2 h-6 w-6 fill-hanablack" />
+          <button type="button" onClick={openExitDialog}>
+            <Exit className="mx-2 h-6 w-6 fill-hanablack" />
+          </button>
         </DialogButton>
       </Header>
 
@@ -103,13 +116,11 @@ export default function ChatRoomPage() {
 
       {/* 하단 고정 입력창 */}
       <div className="fixed w-full bottom-0 left-0 z-10 flex flex-col gap-3 bg-transparent">
-        {
-          <AssetShareButton
-            status={shareStatus}
-            onAgree={() => {}}
-            onReject={() => {}}
-          />
-        }
+        <AssetShareButton
+          status={shareStatus}
+          onAgree={() => {}}
+          onReject={() => {}}
+        />
         <ChatInput inputRef={inputRef} onSend={handleSendMessage} />
       </div>
     </div>
