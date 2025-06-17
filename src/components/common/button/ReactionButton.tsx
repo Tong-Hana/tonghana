@@ -11,6 +11,7 @@ const iconButtonVariants = cva(
       size: {
         sm: "",
         md: "",
+        lg: "",
       },
       circle: {
         true: "bg-hanagreen-light-active rounded-full",
@@ -39,6 +40,8 @@ export interface IconButtonProps
   type?: "button" | "submit" | "reset";
   iconSize?: string;
   isActive?: boolean;
+  iconClassName?: string;
+  modalView?: boolean;
 }
 
 export function IconButton({
@@ -48,13 +51,17 @@ export function IconButton({
   className,
   onClick,
   isActive,
+  iconClassName,
+  modalView,
   ...props
 }: IconButtonProps) {
   const Icon = intent === "like" ? HeartIcon : XMark;
-  const iconSizeClass = size === "sm" ? "w-4 h-4" : "w-5 h-5";
+  const iconSizeClass =
+    size === "sm" ? "w-4 h-4" : size === "md" ? "w-5 h-5" : "w-6 h-6";
   const strokeWidth = size === "sm" ? "p-[0.2rem]" : "";
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (modalView) return;
     e.stopPropagation();
 
     onClick?.(e);
@@ -75,16 +82,41 @@ export function IconButton({
               ? "text-hanared-normal-active"
               : "text-white hover:text-hanared-normal-hover active:text-hanared-normal-active"
             : `text-white p-[0.1rem] ${strokeWidth} hover:text-gray-600 active:text-gray-700`,
+          iconClassName,
         )}
       />
     </button>
   );
 }
 
-export function LikeButton(props: Omit<IconButtonProps, "intent">) {
-  return <IconButton intent="like" {...props} />;
+export function LikeButton({
+  isActive = false,
+  modalView = false,
+  onClick,
+  ...props
+}: IconButtonProps) {
+  return (
+    <IconButton
+      intent="like"
+      isActive={isActive}
+      modalView={modalView}
+      onClick={onClick}
+      {...props}
+    />
+  );
 }
 
-export function DislikeButton(props: Omit<IconButtonProps, "intent">) {
-  return <IconButton intent="dislike" {...props} />;
+export function DislikeButton({
+  modalView = false,
+  onClick,
+  ...props
+}: IconButtonProps) {
+  return (
+    <IconButton
+      intent="dislike"
+      modalView={modalView}
+      onClick={onClick}
+      {...props}
+    />
+  );
 }

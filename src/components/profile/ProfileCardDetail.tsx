@@ -7,12 +7,16 @@ interface ProfileCardDetailProps {
   user: ProfileCardProps;
   answers: { id: number; answer: string }[];
   segments: { label: string; value: number }[];
+  showDetail?: boolean;
+  modalView?: boolean;
 }
 
 export default function ProfileCardDetail({
   user,
   answers,
   segments,
+  showDetail = false,
+  modalView = false,
 }: ProfileCardDetailProps) {
   return (
     <>
@@ -32,7 +36,8 @@ export default function ProfileCardDetail({
         debtPercent={user.debtPercent}
         investorType={user.investorType}
         portfolioType={user.portfolioType}
-        showDetail={user.showDetail}
+        showDetail={showDetail}
+        modalView={modalView}
       />
       <div className="flex flex-col justify-center w-full mt-4 gap-4">
         {/* paringbook */}

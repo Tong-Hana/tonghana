@@ -8,7 +8,7 @@ export default function LoginPage() {
       <Header title="로그인" />
       <div className="flex flex-col gap-5 justify-center items-center">
         <Image
-          src="hana_logo.svg"
+          src="hana_logo_text.svg"
           alt="하나은행 로고"
           width={150}
           height={150}

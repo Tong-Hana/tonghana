@@ -7,7 +7,7 @@ export default function ProfileLayout({
 }) {
   return (
     <div>
-      <Header title="마이페이지" centerTitle={false} showBackButton={false} />
+      <Header title="마이페이지" centerTitle={true} showBackButton={true} />
       {children}
     </div>
   );
