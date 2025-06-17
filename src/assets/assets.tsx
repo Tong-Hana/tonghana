@@ -14,6 +14,7 @@ import Car from "@/assets/icons/profile_card/car.svg";
 import Job from "@/assets/icons/profile_card/job.svg";
 import Map from "@/assets/icons/profile_card/map.svg";
 import Exit from "@/assets/icons/exit.svg";
+import PaperAirplane from "@/assets/icons/paper_airplane.svg";
 
 export {
   HomeIcon,
@@ -30,4 +31,5 @@ export {
   Map,
   Car,
   Exit,
+  PaperAirplane,
 };
