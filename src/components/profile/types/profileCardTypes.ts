@@ -15,4 +15,5 @@ export interface ProfileCardProps {
   portfolioType: string;
   investorType: string;
   showDetail: boolean;
+  modalView?: boolean;
 }

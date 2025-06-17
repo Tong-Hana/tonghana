@@ -18,7 +18,7 @@ export default function AddressSelectGroup({
   return (
     <div className="flex flex-col w-full">
       <label className="mb-3 text-xs font-normal text-text-secondary">
-        시군구
+        거주지
       </label>
       <div className="flex gap-3">
         <Select
