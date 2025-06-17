@@ -280,66 +280,101 @@ interface Product {
   await browser.close();
 })();
 
-// // 적금 상품 크롤링
-// (async () => {
-//   const browser = await puppeteer.launch({
-//     headless: false,
-//     slowMo: 50,
-//     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-//   });
+// 적금 상품 크롤링
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: false,
+    slowMo: 50,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
 
-//   const page = await browser.newPage();
+  const page = await browser.newPage();
 
-//   const targetUrl = 'https://www.kebhana.com/cont/mall/mall08/mall0805/index.jsp?_menuNo=62608';
+  const targetUrl =
+    "https://www.kebhana.com/cont/mall/mall08/mall0805/index.jsp?_menuNo=62608";
 
-//   // 네트워크가 0개 이하로 조용해질 때까지 대기
-//   await page.goto(targetUrl, { waitUntil: 'networkidle0' });
+  // 네트워크가 0개 이하로 조용해질 때까지 대기
+  await page.goto(targetUrl, { waitUntil: "networkidle0" });
 
-//   // 적금 탭 클릭: onclick에 doTab('spb_2812') 있는 a 태그 클릭
-//   await page.evaluate(() => {
-//     const anchors = Array.from(document.querySelectorAll('a'));
-//     const target = anchors.find(a => a.getAttribute('onclick')?.includes("doTab('spb_2812')"));
-//     if (target) {
-//       target.click();
-//     }
-//   });
-//   // 페이지가 로딩 될 시간을 줌
-//   await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }).catch(() => {});
+  // 적금 탭 클릭: onclick에 doTab('spb_2812') 있는 a 태그 클릭
+  await page.evaluate(() => {
+    const anchors = Array.from(document.querySelectorAll("a"));
+    const target = anchors.find((a) =>
+      a.getAttribute("onclick")?.includes("doTab('spb_2812')"),
+    );
+    if (target) {
+      target.click();
+    }
+  });
+  // 페이지가 로딩 될 시간을 줌
+  await page
+    .waitForNavigation({ waitUntil: "domcontentloaded", timeout: 10000 })
+    .catch(() => {});
 
-//   const content = await page.content();
-//   const $ = cheerio.load(content);
+  const content = await page.content();
+  const $ = cheerio.load(content);
 
-//   const products: Product[] = [];
+  const products: Product[] = [];
 
-//   $('ul.product-list > li.item').each((_, el) => {
-//     const category = $(el).find('.product-tit > i').text().trim();
+  const items = $("ul.product-list > li.item");
 
-//     // const channel = $(el)
-//     // .find('.product-tit em.badge02, .product-tit em.badge34, .product-tit em.null')
-//     // .map((_, em) => $(em).text().trim())
-//     // .get();
+  for (const el of items) {
+    const category = ProductCategory.SAVINGS;
+    // const category = $(el).find('.product-tit > i').text().trim(); // 세부카테고리(정기예금...)
 
-//     const name = $(el).find('.product-tit > em a').text().trim();
+    // const channel = $(el)
+    //   .find('.product-tit em.badge02, .product-tit em.badge34, .product-tit em.null')
+    //   .map((_, em) => $(em).text().trim())
+    //   .get();
+    const name = $(el).find(".product-tit > em a").text().trim();
 
-//     const description = $(el).find('.tit-desc a').text().trim();
+    const description = $(el).find(".tit-desc a").text().trim();
 
-//     const rateElems = $(el).find('strong');
-//     const min_rate = $(rateElems[0]).clone().children().remove().end().text().trim();
-//     const max_rate = $(rateElems[1]).clone().children().remove().end().text().trim();
+    const rateElems = $(el).find("strong");
+    const min_rate = $(rateElems[0])
+      .clone()
+      .children()
+      .remove()
+      .end()
+      .text()
+      .trim();
+    const max_rate = $(rateElems[1])
+      .clone()
+      .children()
+      .remove()
+      .end()
+      .text()
+      .trim();
 
-//     products.push({
-//       category,
-//     // channel,
-//       name,
-//       description,
-//       min_rate,
-//       max_rate,
-//     });
-//   });
+    products.push({
+      category,
+      // channel,
+      name,
+      description,
+      min_rate,
+      max_rate,
+    });
 
-//   console.log(products);
-//   await browser.close();
-// })();
+    // DB 저장
+    await prisma.hanaProduct.create({
+      data: {
+        name: name,
+        category: category,
+        description: description,
+        interestRate: min_rate,
+        maxInterestRate: max_rate || 0,
+        minAmount: 0,
+        maxAmount: 0,
+        minPeriodMonth: 0,
+        maxPeriodMonth: 0,
+        riskLevel: RiskLevel.VERY_LOW,
+      },
+    });
+  }
+
+  console.log(products);
+  await browser.close();
+})();
 
 // // 대출 상품 크롤링
 // (async () => {
