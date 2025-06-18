@@ -15,6 +15,8 @@ model ConsumeHistory {
   livingExpenseRate Decimal @map("living_expense_rate") @db.Decimal(5, 2)
   otherRate         Decimal @map("other_rate") @db.Decimal(5, 2)
   user              User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId], map: "ConsumeHistory_user_id_fkey")
 }
 
 model UserFinancialProduct {
@@ -26,6 +28,8 @@ model UserFinancialProduct {
 
   user             User             @relation(fields: [userId], references: [userId], onDelete: Cascade)
   financialProduct FinancialProduct @relation(fields: [productId], references: [productId])
+
+  @@index([userId], map: "UserFinancialProduct_user_id_fkey")
 }
 
 model FinancialProduct {
@@ -50,6 +54,18 @@ model UserMatchLog {
   @@index([sentId], map: "UserMatchLog_sent_id_fkey")
 }
 
+model UserRecoLog {
+  recommendId Int      @id @default(autoincrement()) @map("recommend_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  baseUserId  Int      @map("base_user")
+  candidateId Int      @map("candidate_id")
+  likeStatus  Boolean  @default(false) @map("like_status")
+
+  baseUser User @relation("BaseUserReco", fields: [baseUserId], references: [userId])
+
+  @@index([baseUserId], map: "UserRecoLog_base_user_fkey")
+}
+
 model Loan {
   loanId              Int      @default(autoincrement()) @map("loan_id")
   userId              Int      @map("user_id")
@@ -60,31 +76,36 @@ model Loan {
   loanEndDate         DateTime @map("loan_end_date")
   user                User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
-  @@id([loanId, userId])
+  @@id([loanId])
   @@index([userId], map: "Loan_user_id_fkey")
 }
 
 model ChatMessage {
-  messageId Int       @default(autoincrement()) @map("message_id")
-  roomId    Int       @map("room_id")
-  userId    Int       @map("user_id")
-  message   String    @map("message")
-  regdate   DateTime  @map("regdate")
-  chatRoom  ChatRooms @relation(fields: [roomId], references: [roomId])
-  user      User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  messageId Int      @default(autoincrement()) @map("message_id")
+  roomId    Int      @map("room_id")
+  userId    Int      @map("user_id")
+  message   String   @map("message")
+  regdate   DateTime @map("regdate")
+  chatRoom  ChatRoom @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
-  @@id([messageId, roomId, userId])
+  @@id([messageId])
   @@index([roomId], map: "ChatMessage_room_id_fkey")
   @@index([userId], map: "ChatMessage_user_id_fkey")
 }
 
-model ChatRooms {
-  roomId       Int           @id @default(autoincrement()) @map("room_id")
-  userId       Int           @map("user_id")
-  userId2      Int           @map("user_id2")
-  isAgree      Boolean       @map("is_agree")
-  isAgree2     Boolean       @map("is_agree2")
-  chatMessages ChatMessage[]
+model ChatRoom {
+  roomId        Int           @id @default(autoincrement()) @map("room_id")
+  userId        Int           @map("user_id")
+  userId2       Int           @map("user_id2")
+  isAgree       Boolean?      @map("is_agree")
+  isAgree2      Boolean?      @map("is_agree2")
+  lastMessage   String?       @map("last_message")
+  lastMessageAt DateTime?     @map("last_message_at")
+  chatMessage   ChatMessage[]
+
+  @@index([userId], map: "ChatRoom_user_id_fkey")
+  @@index([userId2], map: "ChatRoom_user_id2_fkey")
 }
 
 model PairingAnswer {
@@ -97,6 +118,8 @@ model PairingAnswer {
   idealIncomeRange IncomeRange @map("ideal_income_range")
   createdAt        DateTime    @default(now()) @map("created_at")
   user             User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId], map: "PairingAnswer_user_id_fkey")
 }
 
 model HanaProduct {
@@ -142,6 +165,7 @@ model User {
   receivedMatches      UserMatchLog[]         @relation("ReceivedMatches")
   sentMatches          UserMatchLog[]         @relation("SentMatches")
   isDeleted            Boolean                @default(false) @map("is_deleted")
+  UserRecoLog          UserRecoLog[]          @relation("BaseUserReco")
 }
 
 enum Gender {
@@ -180,6 +204,7 @@ enum ProductCategory {
   FOREIGN_BONDS
   ALTERNATIVE
   CASH
+  LOAN
 }
 
 enum RiskLevel {

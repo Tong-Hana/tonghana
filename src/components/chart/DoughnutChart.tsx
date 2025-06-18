@@ -6,13 +6,11 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-type ValueFormat = "percent" | "currency";
-
 type DoughnutChartProps = {
   values: number[];
   debtLabel: string;
   portfolioType: string;
-  valueFormat?: ValueFormat;
+  showPercent?: boolean;
 };
 
 const baseInfo = [
@@ -30,7 +28,7 @@ export default function DoughnutChart({
   values,
   debtLabel,
   portfolioType,
-  valueFormat = "percent",
+  showPercent = true,
 }: DoughnutChartProps) {
   const merged = baseInfo.map((item, idx) => ({
     ...item,
@@ -56,12 +54,10 @@ export default function DoughnutChart({
     ],
   };
 
-  const labelData = valueFormat === "percent" ? filtered : rawFiltered;
+  const labelData = showPercent ? filtered : rawFiltered;
 
   const formatValue = (val: number) => {
-    return valueFormat === "currency"
-      ? `${val.toLocaleString()}만원`
-      : `${val}%`;
+    return showPercent ? `${val}%` : `${val.toLocaleString()}만원`;
   };
 
   const options = {
