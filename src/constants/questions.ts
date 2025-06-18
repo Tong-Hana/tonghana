@@ -41,6 +41,7 @@ export const QUESTIONS = [
     index: 4,
     question:
       "🏦 지금까지 투자해본 금융상품이 있다면 모두 선택해 주세요 (중복 선택 가능)",
+    multiple: true,
     answers: [
       { content: "은행 예·적금, 국채, 지방채, 보증채, MMF, CMA 등" },
       {
