@@ -12,7 +12,7 @@ import TermsAgreementGroup from "./TermsAgreementGroup";
 import { TERMS } from "@/constants/terms";
 import { validateEmail, validatePassword } from "@/lib/validators";
 import toast from "react-hot-toast";
-import { formatYYYYMMDD } from "@/utils/dateformatter";
+import { useSignup } from "@/hooks/useSignup";
 
 export default function SignupForm() {
   const [nickname, setNickname] = useState("");
@@ -84,6 +84,17 @@ export default function SignupForm() {
     setCheckedTerms(updated);
   };
 
+  const signupMutation = useSignup(
+    () => {
+      toast.success("회원가입에 성공했습니다.");
+      router.push("/login");
+    },
+    (error) => {
+      toast.error(error.message ?? "회원가입에 실패했습니다.");
+      setIsSubmitting(false);
+    },
+  );
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
@@ -104,31 +115,15 @@ export default function SignupForm() {
 
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch("/api/signup", {
-        method: "POST",
-        body: JSON.stringify({
-          nickname: nickname,
-          email: email,
-          password: password,
-          birthYear: Number(formatYYYYMMDD(birthday)),
-          gender: gender,
-          city: `${city} ${district}`,
-        }),
-      });
-
-      if (response.ok) {
-        toast.success("회원가입에 성공했습니다.");
-        router.push("/login");
-      } else {
-        toast.error(JSON.parse(await response.text()).message);
-      }
-
-      setIsSubmitting(false);
-    } catch {
-      toast.error("회원가입에 실패했습니다.");
-      setIsSubmitting(false);
-    }
+    signupMutation.mutate({
+      nickname: nickname,
+      email: email,
+      password: password,
+      birthYear: birthday.getFullYear(),
+      gender: gender,
+      city: city,
+      district: district,
+    });
   };
 
   return (
