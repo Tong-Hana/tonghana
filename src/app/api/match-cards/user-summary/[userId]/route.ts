@@ -171,11 +171,14 @@
 
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(_: Request, context: { params: { userId: string } }) {
+export async function GET(
+  _req: NextRequest,
+  context: { params: Promise<{ userId: string }> },
+) {
   const authUser = await getAuthUser();
-  const { userId } = context.params;
+  const { userId } = await context.params;
 
   const targetUserId =
     userId === "me" ? authUser?.userId : parseInt(userId, 10);
