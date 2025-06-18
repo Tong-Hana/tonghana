@@ -61,7 +61,6 @@ export default function QuestionPage() {
           label="제출"
           onClick={() => {
             if (!isComplete) return;
-            console.log("답변:", selectedAnswers);
           }}
         />
       </div>
