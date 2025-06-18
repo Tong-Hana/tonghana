@@ -56,7 +56,6 @@ import { getAuthUser } from "@/lib/auth";
 
 // 채팅방 리스트 조회
 export async function GET(req: NextRequest) {
-  // accessToken에서 사용자 정보 추출
   const user = await getAuthUser();
   if (!user) {
     return NextResponse.json(

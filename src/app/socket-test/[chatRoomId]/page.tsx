@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import socket from "@/lib/socket/client";
 import { useParams } from "next/navigation";
 
@@ -15,13 +15,25 @@ export default function ChatRoomPage() {
   const { chatRoomId } = useParams() as { chatRoomId: string };
   const [message, setMessage] = useState("");
   const [chatList, setChatList] = useState<Message[]>([]);
+  const [userId, setUserId] = useState<number | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch("/api/profiles/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.userId) {
+          setUserId(data.userId);
+        }
+      })
+      .catch((err) => console.error("유저 정보 가져오기 실패", err));
+  }, []);
 
   useEffect(() => {
     if (!chatRoomId) return;
 
     socket.emit("joinRoom", chatRoomId);
 
-    // 저장된 메시지 불러오기
     fetch(`/api/chats/${chatRoomId}/messages`)
       .then((res) => res.json())
       .then((data) => {
@@ -33,7 +45,6 @@ export default function ChatRoomPage() {
         console.error("채팅 메시지 불러오기 실패", err);
       });
 
-    // 실시간 메시지 수신
     socket.on("receiveMessage", (msg: Message) => {
       setChatList((prev) => [...prev, msg]);
     });
@@ -43,10 +54,17 @@ export default function ChatRoomPage() {
     };
   }, [chatRoomId]);
 
+  // 스크롤 아래로 이동
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatList]);
+
   const sendMessage = () => {
+    if (!message.trim() || userId === null) return;
+
     socket.emit("sendMessage", {
       roomId: chatRoomId,
-      userId: 199,
+      userId,
       message,
       regdate: new Date().toISOString(),
     });
@@ -108,6 +126,7 @@ export default function ChatRoomPage() {
             <strong>[{msg.userId}]</strong> {msg.message} {msg.regdate}
           </li>
         ))}
+        <div ref={messagesEndRef} />
       </ul>
     </div>
   );
