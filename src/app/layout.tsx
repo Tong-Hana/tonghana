@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import localFont from "next/font/local";
+import { TQProvider } from "@/lib/TQProvider";
 
 // Pretendard 폰트 설정
 const pretendard = localFont({
@@ -36,9 +37,11 @@ export default function RootLayout({
         }}
       >
         <Toaster />
-        <div className="frame-container min-h-screen flex flex-col bg-background">
-          {children}
-        </div>
+        <TQProvider>
+          <div className="frame-container min-h-screen flex flex-col bg-background">
+            {children}
+          </div>
+        </TQProvider>
       </body>
     </html>
   );
