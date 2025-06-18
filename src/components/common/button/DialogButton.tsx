@@ -6,16 +6,16 @@ import Button from "@/components/common/button/Button";
 type Props = {
   title: string;
   content: string;
-  onAction: () => void;
   open?: boolean;
+  onAction: () => void;
   onClose: () => void;
 };
 
 export default function DialogButton({
   title,
   content,
-  onAction,
   open,
+  onAction,
   onClose,
   children,
 }: PropsWithChildren<Props>) {
