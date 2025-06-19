@@ -2,7 +2,8 @@
 
 import {
   ChatIcon,
-  FolderIcon,
+  QuizIcon,
+  FilledQuizIcon,
   HeartIcon,
   HomeIcon,
   ProfileIcon,
@@ -37,15 +38,14 @@ const navItems = [
     path: "/recommend",
     icon: {
       active: (
-        <FolderIcon
-          className={clsx("fill-hanagreen-normal stroke-white", NavIconSize)}
+        <FilledQuizIcon
+          className={clsx(
+            "fill-hanagreen-normal stroke-hanagreen-normal",
+            NavIconSize,
+          )}
         />
       ),
-      inactive: (
-        <FolderIcon
-          className={clsx("stroke-hanasilver fill-white", NavIconSize)}
-        />
-      ),
+      inactive: <QuizIcon className={clsx("fill-hanasilver", NavIconSize)} />,
     },
   },
   {

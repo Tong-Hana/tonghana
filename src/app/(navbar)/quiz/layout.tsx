@@ -1,6 +1,6 @@
 import Header from "@/components/common/Header";
 
-export default function RecommendLayout({
+export default function QuizLayout({
   children,
 }: {
   children: React.ReactNode;
