@@ -5,7 +5,7 @@
  *     tags:
  *       - Profiles
  *     summary: 투자 성향 분석 결과 저장
- *     description: 8개의 응답값을 기반으로 투자 성향을 분석하고 해당 유저의 preferredType 필드를 업데이트합니다. 4번 문항은 복수 응답이 가능하며, 각 응답은 번호로 전달됩니다.
+ *     description: 8개의 응답값을 기반으로 투자 성향을 분석하고 해당 유저의 currentType 필드를 업데이트합니다. 4번 문항은 복수 응답이 가능하며, 각 응답은 번호로 전달됩니다.
  *     requestBody:
  *       required: true
  *       content:
@@ -103,30 +103,30 @@ export async function POST(req: Request) {
     });
 
     // 5. 투자 성향 분류
-    let preferredType:
+    let currentType:
       | "CONSERVATIVE"
       | "MODERATE"
       | "NEUTRAL"
       | "AGGRESSIVE"
       | "VERY_AGGRESSIVE";
 
-    if (totalScore < 43) preferredType = "CONSERVATIVE";
-    else if (totalScore < 55) preferredType = "MODERATE";
-    else if (totalScore < 68) preferredType = "NEUTRAL";
-    else if (totalScore < 81) preferredType = "AGGRESSIVE";
-    else preferredType = "VERY_AGGRESSIVE";
+    if (totalScore < 43) currentType = "CONSERVATIVE";
+    else if (totalScore < 55) currentType = "MODERATE";
+    else if (totalScore < 68) currentType = "NEUTRAL";
+    else if (totalScore < 81) currentType = "AGGRESSIVE";
+    else currentType = "VERY_AGGRESSIVE";
 
     // 6. DB 저장
     await prisma.user.update({
       where: { userId: user.userId },
       data: {
-        preferredType,
+        currentType,
       },
     });
 
     return NextResponse.json({
       message: "투자 성향 분석 결과가 성공적으로 저장되었습니다.",
-      resultType: preferredType,
+      resultType: currentType,
       totalScore,
     });
   } catch (err) {
