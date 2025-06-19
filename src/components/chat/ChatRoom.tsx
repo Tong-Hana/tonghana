@@ -6,11 +6,11 @@ type Props = {
   roomId: number;
   imageUrl: string;
   nickname: string;
-  lastMessage: string;
-  lastMessageDate: Date;
+  lastMessage?: string;
+  lastMessageDate?: Date;
 };
 
-export default function ChatRoom({
+export default function ChatRoomTile({
   roomId,
   imageUrl,
   nickname,
@@ -25,10 +25,12 @@ export default function ChatRoom({
           <div className="flex items-center gap-2">
             <p className="text-sm font-medium flex-1">{nickname}</p>
             <p className="text-[10px] font-light text-text-secondary">
-              {formatSmartDate(lastMessageDate)}
+              {formatSmartDate(lastMessageDate ?? new Date())}
             </p>
           </div>
-          <p className="text-xs font-light">{lastMessage}</p>
+          <p className="text-xs font-light">
+            {lastMessage ?? "아직 메세지가 없습니다."}
+          </p>
         </div>
       </div>
     </Link>
