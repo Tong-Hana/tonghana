@@ -7,6 +7,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { validateEmail } from "@/lib/validators";
+import { useLogin } from "@/hooks/useLogin";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -22,6 +23,17 @@ export default function LoginForm() {
     setPassword(event.target.value);
   };
 
+  const loginMutation = useLogin(
+    () => {
+      router.push("/home");
+      setIsSubmitting(false);
+    },
+    (error) => {
+      toast.error(error.message);
+      setIsSubmitting(false);
+    },
+  );
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!(email && validateEmail(email) && password)) {
@@ -31,26 +43,10 @@ export default function LoginForm() {
 
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-
-      if (response.ok) {
-        router.push("/");
-      } else {
-        toast.error(JSON.parse(await response.text()).message);
-      }
-
-      setIsSubmitting(false);
-    } catch {
-      toast.error("로그인에 실패했습니다.");
-      setIsSubmitting(false);
-    }
+    loginMutation.mutate({
+      email: email,
+      password: password,
+    });
   };
 
   return (

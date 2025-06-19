@@ -15,7 +15,7 @@ const slides = [
     imageSrc: "/onboarding1.png",
     title: "경제 가치관 기반 매칭",
     description:
-      "FTTI 분석과 페어링북 정보를 기반으로\n당신의 재무 성향에 가장 잘 맞는 상대를 찾아드려요.",
+      "FTTI 분석과 현재 자산 보유 현황 기반으로\n당신의 재무 성향에 가장 잘 맞는 상대를 찾아드려요.",
   },
   {
     imageSrc: "/onboarding2.png",
