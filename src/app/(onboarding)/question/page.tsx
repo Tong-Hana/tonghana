@@ -9,17 +9,23 @@ import AnswerButtonGroup from "@/components/question/AnswerButtonGroup";
 import Button from "@/components/common/button/Button";
 
 export default function QuestionPage() {
-  const [selectedIndices, setSelectedIndices] = useState<(number | null)[]>(
-    Array(QUESTIONS.length).fill(null),
-  );
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    (number | number[] | null)[]
+  >(Array(QUESTIONS.length).fill(null));
 
-  const handleSelect = (questionIndex: number, answerIndex: number) => {
-    const updated = [...selectedIndices];
+  const handleSelect = (
+    questionIndex: number,
+    answerIndex: number | number[],
+  ) => {
+    const updated = [...selectedAnswers];
     updated[questionIndex] = answerIndex;
-    setSelectedIndices(updated);
+    setSelectedAnswers(updated);
   };
 
-  const isComplete = selectedIndices.every((i) => i !== null);
+  const isComplete = selectedAnswers.every((ans) => {
+    if (Array.isArray(ans)) return ans.length > 0;
+    return ans !== null;
+  });
 
   return (
     <div className="px-4 py-6 space-y-6 bg-hanagreen-normal min-h-screen">
@@ -37,12 +43,13 @@ export default function QuestionPage() {
         imageType="infoStarBoy"
       />
 
-      {QUESTIONS.map(({ index, question, answers }, i) => (
+      {QUESTIONS.map(({ index, question, answers, multiple }, i) => (
         <QuestionCard key={index} index={index} question={question}>
           <AnswerButtonGroup
             answers={answers}
-            selected={selectedIndices[i]}
-            onSelect={(answerIndex) => handleSelect(i, answerIndex)}
+            selected={selectedAnswers[i]}
+            multiple={multiple}
+            onSelect={(value) => handleSelect(i, value)}
           />
         </QuestionCard>
       ))}
@@ -53,9 +60,7 @@ export default function QuestionPage() {
           size="full"
           label="제출"
           onClick={() => {
-            if (!isComplete) {
-              return;
-            }
+            if (!isComplete) return;
           }}
         />
       </div>
