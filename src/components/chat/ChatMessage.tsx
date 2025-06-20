@@ -2,34 +2,24 @@ import { cn } from "@/utils/cn";
 import { formatTime } from "@/utils/dateformatter";
 import { Message } from "@chatscope/chat-ui-kit-react";
 import ChatProfileImage from "./ChatProfileImage";
-
-type MessageModel = {
-  message: string;
-  sender: string;
-  direction: "incoming" | "outgoing";
-  position: "single";
-  createdAt: Date;
-};
+import { ChatMessageDisplay } from "@/app/types/client-chat";
 
 type Props = {
-  message: MessageModel;
+  message: ChatMessageDisplay;
   showDate: boolean;
   isFirstOfGroup: boolean;
   isLastOfGroup: boolean;
-  other?: {
-    nickname: string;
-    imageUrl: string;
-  };
 };
 
 export default function ChatMessage({
   message,
   isFirstOfGroup,
   isLastOfGroup,
-  other,
 }: Props) {
   const isIncoming = message.direction === "incoming";
-  const showProfile = isIncoming && isFirstOfGroup && other;
+  const showProfile = isIncoming && isFirstOfGroup && message.senderProfileImg;
+  console.log(message.senderProfileImg);
+  console.log(message.senderNickname);
 
   return (
     <div
@@ -39,7 +29,10 @@ export default function ChatMessage({
       {isIncoming &&
         (showProfile ? (
           <div className="self-start mr-2">
-            <ChatProfileImage size={37} imageUrl={other.imageUrl} />
+            <ChatProfileImage
+              size={37}
+              imageUrl={message.senderProfileImg ?? ""}
+            />
           </div>
         ) : (
           <div className="mr-2 w-[37px] h-[37px]" />
@@ -47,7 +40,9 @@ export default function ChatMessage({
       {/* 메세지 및 상대방 닉네임 */}
       {showProfile ? (
         <div className="flex flex-col mt-3">
-          <div className="text-xs text-text-primary">{other?.nickname}</div>
+          <div className="text-xs text-text-primary">
+            {message.senderNickname}
+          </div>
           <Message model={message} />
         </div>
       ) : (

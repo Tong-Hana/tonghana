@@ -3,31 +3,30 @@ import DateSeparator from "./ChatDateSeparater";
 import ChatMessage from "./ChatMessage";
 import { Ref } from "react";
 import { cn } from "@/utils/cn";
-
-export type MessageModel = {
-  message: string;
-  sender: string;
-  direction: "incoming" | "outgoing";
-  position: "single";
-  createdAt: Date;
-};
+import { ChatMessageDisplay } from "@/app/types/client-chat";
 
 type Props = {
   scrollRef: Ref<HTMLDivElement>;
-  messages: MessageModel[];
+  messages: ChatMessageDisplay[];
   showShareButton: boolean;
-  other: {
-    nickname: string;
-    imageUrl: string;
-  };
+  isLoading: boolean;
+  isError: boolean;
 };
 
 export default function ChatMessageList({
   scrollRef,
   messages,
   showShareButton,
-  other,
+  isLoading,
+  isError,
 }: Props) {
+  if (isLoading || isError)
+    return (
+      <div className="flex flex-col items-center justify-center content-h text-text-secondary">
+        {isLoading ? "채팅 불러오는 중..." : isError ? "에러 발생" : ""}
+      </div>
+    );
+
   return (
     <div
       ref={scrollRef}
@@ -57,7 +56,6 @@ export default function ChatMessageList({
             {showDate && <DateSeparator date={m.createdAt} />}
             <ChatMessage
               message={m}
-              other={m.direction === "incoming" ? other : undefined}
               showDate={showDate}
               isFirstOfGroup={isFirstOfGroup}
               isLastOfGroup={isLastOfGroup}
