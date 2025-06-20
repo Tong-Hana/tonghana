@@ -1,11 +1,11 @@
 /**
  * @swagger
- * /api/chats/{chatRoomId}/assets:
+ * /api/chats/{chatRoomId}/assets/reject:
  *   patch:
- *     summary: 채팅방 자산 공개 동의
+ *     summary: 채팅방 자산 공개 거절
  *     description: |
- *       로그인한 사용자가 참여 중인 채팅방에서 자산 공개에 동의합니다.
- *       사용자는 본인에 해당하는 동의 필드(`isAgree` 또는 `isAgree2`)만 변경됩니다.
+ *       로그인한 사용자가 참여 중인 채팅방에서 자산 공개를 거절합니다.
+ *       사용자는 본인에 해당하는 동의 필드(`isAgree` 또는 `isAgree2`)만 false로 설정됩니다.
  *     tags: [Chat]
  *     security:
  *       - BearerAuth: []
@@ -15,10 +15,10 @@
  *         required: true
  *         schema:
  *           type: integer
- *         description: 동의할 채팅방 ID
+ *         description: 거절할 채팅방 ID
  *     responses:
  *       200:
- *         description: 동의 성공
+ *         description: 거절 성공
  *         content:
  *           application/json:
  *             schema:
@@ -29,7 +29,7 @@
  *                   example: SUCCESS
  *                 message:
  *                   type: string
- *                   example: 자산 공개에 동의했습니다.
+ *                   example: 자산 공개를 거절했습니다.
  *                 data:
  *                   type: object
  *                   properties:
@@ -44,10 +44,10 @@
  *                       example: 199
  *                     isAgree:
  *                       type: boolean
- *                       example: true
+ *                       example: false
  *                     isAgree2:
  *                       type: boolean
- *                       example: false
+ *                       example: true
  *       400:
  *         description: 유효하지 않은 채팅방 ID
  *       401:
@@ -58,7 +58,7 @@
  *         description: 채팅방을 찾을 수 없음
  */
 
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 
@@ -74,9 +74,10 @@ export async function PATCH(
       { status: 400 },
     );
   }
-  const chatRoomIdNum = Number(chatRoomId);
 
+  const chatRoomIdNum = Number(chatRoomId);
   const user = await getAuthUser();
+
   if (!user) {
     return NextResponse.json(
       { code: "UNAUTHORIZED", message: "로그인이 필요합니다." },
@@ -103,7 +104,7 @@ export async function PATCH(
   }
 
   const updateData =
-    chatRoom.userId === user.userId ? { isAgree: true } : { isAgree2: true };
+    chatRoom.userId === user.userId ? { isAgree: false } : { isAgree2: false };
 
   const updatedRoom = await prisma.chatRoom.update({
     where: { roomId: chatRoomIdNum },
@@ -120,7 +121,7 @@ export async function PATCH(
   return NextResponse.json(
     {
       data: updatedRoom,
-      message: "자산 공개에 동의했습니다.",
+      message: "자산 공개를 거절했습니다.",
     },
     { status: 200 },
   );

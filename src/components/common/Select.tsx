@@ -11,12 +11,19 @@ type Props = {
   value: string;
   onChange: (event: SelectChangeEvent) => void;
   options: string[];
+  className?: string;
 };
 
-export default function Select({ id, value, onChange, options }: Props) {
+export default function Select({
+  id,
+  value,
+  onChange,
+  options,
+  className,
+}: Props) {
   return (
     <FormControl
-      className="w-32"
+      className={className || "w-32"}
       variant="standard"
       sx={{
         borderRadius: "0.5rem",

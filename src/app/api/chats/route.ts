@@ -87,37 +87,25 @@ export async function GET(req: NextRequest) {
     where: {
       OR: [{ userId: user.userId }, { userId2: user.userId }],
     },
-  });
-
-  const opponentIds = chatRooms.map((room) =>
-    room.userId === user.userId ? room.userId2 : room.userId,
-  );
-  const uniqueOpponentIds = [...new Set(opponentIds)];
-
-  const opponents = await prisma.user.findMany({
-    where: {
-      userId: { in: uniqueOpponentIds },
+    include: {
+      user: true,
+      user2: true,
     },
   });
 
-  const userMap = new Map(opponents.map((u) => [u.userId, u]));
-
   const response = chatRooms.map((room) => {
     const isUser1 = room.userId === user.userId;
-    const opponentId = isUser1 ? room.userId2 : room.userId;
-    const opponent = userMap.get(opponentId);
+    const opponent = isUser1 ? room.user2 : room.user;
 
     return {
       roomId: room.roomId,
       lastMessage: room.lastMessage,
       lastMessageAt: room.lastMessageAt,
-      opponent: opponent
-        ? {
-            userId: opponent.userId,
-            nickname: opponent.nickname,
-            profileUrl: opponent.profileImage,
-          }
-        : null,
+      opponent: {
+        userId: opponent.userId,
+        nickname: opponent.nickname,
+        profileUrl: opponent.profileImage,
+      },
     };
   });
 

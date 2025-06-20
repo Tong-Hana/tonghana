@@ -9,8 +9,19 @@ import Input from "@/components/common/input/Input";
 import Tag from "@/components/common/tag/Tag";
 import AssetToggleRow from "@/components/profile/AssetToggleRow";
 import Button from "@/components/common/button/Button";
+import Select from "@/components/common/Select";
+import { SelectChangeEvent } from "@mui/material";
 
 const GOAL_TAGS = ["내 집 마련", "목돈 마련", "노후 자금", "결혼 자금"];
+
+const GOAL_PERIOD_OPTIONS = ["1년 이내", "3년 이내", "5년 이내", "5년 이상"];
+
+const GOAL_PERIOD_VALUES = [
+  "WITHIN_1_YEAR",
+  "WITHIN_3_YEARS",
+  "WITHIN_5_YEARS",
+  "MORE_THAN_5_YEARS",
+];
 
 export default function ProfileSetUpPage() {
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
@@ -26,12 +37,21 @@ export default function ProfileSetUpPage() {
     goalAmount.trim() !== "" &&
     goalPeriod.trim() !== "";
 
+  const handleGoalPeriodChange = (event: SelectChangeEvent) => {
+    const selectedIndex = GOAL_PERIOD_OPTIONS.indexOf(event.target.value);
+    setGoalPeriod(GOAL_PERIOD_VALUES[selectedIndex]);
+  };
+
+  const getDisplayValue = () => {
+    const index = GOAL_PERIOD_VALUES.indexOf(goalPeriod);
+    return index !== -1 ? GOAL_PERIOD_OPTIONS[index] : "";
+  };
+
   return (
     <div className="frame-container w-full min-h-screen bg-hanagreen-normal">
       <Header title="프로필" color="white" className="bg-hanagreen-normal" />
 
       <div className="relative mt-24 px-5">
-        {/* 프로필 이미지 업로더 */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
           <div className="w-28 h-28 rounded-full bg-background flex items-center justify-center">
             <ImageUploader onChange={() => {}} />
@@ -106,12 +126,12 @@ export default function ProfileSetUpPage() {
                   <p className="text-sm font-normal text-text-primary">
                     목표 기간 <span className="text-hanared-normal">*</span>
                   </p>
-                  <Input
-                    required
-                    placeholder="목표 기간을 선택해 주세요"
+                  <Select
+                    id="goalPeriod"
+                    value={getDisplayValue()}
+                    onChange={handleGoalPeriodChange}
+                    options={GOAL_PERIOD_OPTIONS}
                     className="w-full"
-                    value={goalPeriod}
-                    onChange={(e) => setGoalPeriod(e.target.value)}
                   />
                 </div>
               </div>

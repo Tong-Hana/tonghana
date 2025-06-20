@@ -50,7 +50,9 @@
     "swiper": "^11.2.8",
     "tailwind-merge": "^3.3.1",
     "ts-node": "^10.9.2",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "weaviate-ts-client": "^2.2.0",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.0.0",
