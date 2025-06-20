@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import { filterForbiddenWords } from "./src/lib/filterForbiddenWords";
 
 // TODO: log 지우기
 const app = express();
@@ -23,14 +24,15 @@ io.on("connection", (socket) => {
 
   // 메세지 보내기
   socket.on("sendMessage", async (msg) => {
-    const { roomId, userId, message, regdate } = msg;
+    const { roomId, userId, message: rawMessage, regdate } = msg;
+    const filteredMessage = filterForbiddenWords(rawMessage);
 
     try {
       const saved = await prisma.chatMessage.create({
         data: {
           roomId: Number(roomId),
           userId: Number(userId),
-          message,
+          message: rawMessage,
           regdate: new Date(regdate),
         },
       });
@@ -38,22 +40,23 @@ io.on("connection", (socket) => {
       await prisma.chatRoom.update({
         where: { roomId: Number(roomId) },
         data: {
-          lastMessage: message,
+          lastMessage: filteredMessage,
           lastMessageAt: new Date(regdate),
         },
       });
 
-      console.log("📝 메시지 저장 및 마지막 메시지 업데이트 완료:", saved);
-
-      io.to(String(roomId)).emit("receiveMessage", saved);
+      io.to(String(roomId)).emit("receiveMessage", {
+        ...saved,
+        message: filteredMessage,
+      });
     } catch (err) {
-      console.error("❌ 메시지 저장 실패:", err);
+      console.error("메시지 저장 실패:", err);
       socket.emit("errorMessage", { message: "메시지 저장에 실패했습니다." });
     }
   });
 
   socket.on("disconnect", () => {
-    console.log("❌ 연결 종료:", socket.id);
+    console.log("연결 종료:", socket.id);
   });
 });
 

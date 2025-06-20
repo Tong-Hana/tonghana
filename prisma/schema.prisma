@@ -103,6 +103,8 @@ model ChatRoom {
   lastMessage   String?       @map("last_message")
   lastMessageAt DateTime?     @map("last_message_at")
   chatMessage   ChatMessage[]
+  user          User          @relation("ChatUser1", fields: [userId], references: [userId])
+  user2         User          @relation("ChatUser2", fields: [userId2], references: [userId])
 
   @@index([userId], map: "ChatRoom_user_id_fkey")
   @@index([userId2], map: "ChatRoom_user_id2_fkey")
@@ -153,18 +155,20 @@ model User {
   sentMatches          UserMatchLog[]         @relation("SentMatches")
   UserRecoLog          UserRecoLog[]          @relation("BaseUserReco")
   userQuizLog          UserQuizLog[]
+  chatRooms1           ChatRoom[]             @relation("ChatUser1")
+  chatRooms2           ChatRoom[]             @relation("ChatUser2")
 }
 
 model Subject {
-  subjectId    Int       @id @default(autoincrement()) @map("subject_id")
-  title        String    @map("title")
-  description  String?   @map("description")
-  features     String?   @map("features")
-  period       String?   @map("period")
-  amount       BigInt?   @map("amount")
-  interestRate Decimal?  @map("interest_rate") @db.Decimal(5, 2)
-  productUrl   String?   @map("product_url")
-  createdAt    DateTime  @default(now()) @map("created_at")
+  subjectId    Int           @id @default(autoincrement()) @map("subject_id")
+  title        String        @map("title")
+  description  String?       @map("description")
+  features     String?       @map("features")
+  period       String?       @map("period")
+  amount       BigInt?       @map("amount")
+  interestRate Decimal?      @map("interest_rate") @db.Decimal(5, 2)
+  productUrl   String?       @map("product_url")
+  createdAt    DateTime      @default(now()) @map("created_at")
   quiz         Quiz[]
   userQuizLog  UserQuizLog[]
 }
@@ -176,7 +180,7 @@ model Quiz {
   explanation String   @map("explanation")
   answer      Boolean  @map("answer")
   createdAt   DateTime @default(now()) @map("created_at")
-  subject     Subject  @relation(fields: [subjectId], references: [subjectId], onDelete: Cascade)  
+  subject     Subject  @relation(fields: [subjectId], references: [subjectId], onDelete: Cascade)
 }
 
 model UserQuizLog {
@@ -185,8 +189,8 @@ model UserQuizLog {
   subjectId Int      @map("subject_id")
   isCorrect Boolean? @map("is_correct")
   createdAt DateTime @default(now()) @map("created_at")
-  user     User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  subject  Subject   @relation(fields: [subjectId], references: [subjectId], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  subject   Subject  @relation(fields: [subjectId], references: [subjectId], onDelete: Cascade)
 
   @@index([userId], map: "UserQuizLog_user_id_fkey")
 }

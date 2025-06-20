@@ -64,6 +64,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
+import { filterForbiddenWords } from "@/lib/filterForbiddenWords";
 
 export async function GET(
   req: NextRequest,
@@ -92,6 +93,9 @@ export async function GET(
     include: {
       chatMessage: {
         orderBy: { regdate: "asc" },
+        include: {
+          user: true,
+        },
       },
     },
   });
@@ -112,24 +116,12 @@ export async function GET(
     },
   });
 
-  const userMap = new Map([
-    [user1.userId, user1],
-    [user2.userId, user2],
-  ]);
-
-  const messagesWithSender = chatRoom.chatMessage.map((msg) => {
-    const sender = userMap.get(msg.userId);
-    return {
-      messageId: msg.messageId,
-      userId: msg.userId,
-      message: msg.message,
-      regdate: msg.regdate,
-      sender: {
-        nickname: sender?.nickname,
-        profileUrl: sender?.profileImage,
-      },
-    };
-  });
+  const messagesWithSender = chatRoom.chatMessage.map((msg) => ({
+    messageId: msg.messageId,
+    userId: msg.userId,
+    message: filterForbiddenWords(msg.message),
+    regdate: msg.regdate,
+  }));
 
   return NextResponse.json({
     chatRoomId: chatRoomIdNum,
