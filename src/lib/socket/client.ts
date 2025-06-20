@@ -7,6 +7,7 @@ export const getSocket = () => {
     socket = io("http://localhost:3001", {
       path: "/socket.io",
       transports: ["websocket"],
+      autoConnect: false,
     });
   }
   return socket;

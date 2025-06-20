@@ -1,11 +1,6 @@
 "use client";
 
-export type AssetShareStatus =
-  | "pending"
-  | "me_agreed"
-  | "other_agreed"
-  | "both_agreed"
-  | "rejected";
+import { AssetShareStatus } from "@/app/types/client-chat";
 
 type Props = {
   status: AssetShareStatus;
@@ -26,7 +21,7 @@ export default function AssetShareButtonGroup({
     return null;
 
   // 내가 아직 동의하지 않았고, 둘 다 미동의
-  if (status === "pending") {
+  if (status === AssetShareStatus.PENDING) {
     return (
       <button
         type="button"
@@ -39,7 +34,7 @@ export default function AssetShareButtonGroup({
   }
 
   // 내가 동의했고 상대가 아직 동의 안 했음
-  if (status === "other_agreed") {
+  if (status === AssetShareStatus.PARTNER_AGREED) {
     return (
       <div className="flex gap-2 self-center">
         <button

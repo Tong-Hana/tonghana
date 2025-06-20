@@ -7,36 +7,64 @@ import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ChatInput from "@/components/chat/ChatInput";
 import DialogButton from "@/components/common/button/DialogButton";
-import AssetShareButton, {
-  AssetShareStatus,
-} from "@/components/chat/AssetShareButton";
+import AssetShareButton from "@/components/chat/AssetShareButton";
 import { useMyProfile } from "@/hooks/useMyProfile";
-import { useChatMessages } from "@/hooks/useChatMessages";
-import { ChatMessageDisplay } from "@/app/types/client-chat";
+import { useChatMessages } from "@/hooks/chat/useChatMessages";
+import { AssetShareStatus, ChatMessageDisplay } from "@/app/types/client-chat";
 import ChatMessageList from "@/components/chat/ChatMessageList";
-import { getSocket } from "@/lib/socket/client";
 import { SocketChatMessage } from "@/app/types/chat";
+import { useChatPartnerInfo } from "@/hooks/chat/useChatPartnerInfo";
+import { useChatRoomInfo } from "@/hooks/chat/useChatRoomInfo";
+import { useSocket } from "@/hooks/chat/useSocket";
 
 export default function ChatRoomPage() {
   const params = useParams();
   const roomId = Number(params.roomId);
+
   const {
     data: myProfile,
     isLoading: isLoadingProfile,
     isError: isErrorProfile,
   } = useMyProfile();
   const {
+    data: roomInfo,
+    isLoading: isLoadingRoomInfo,
+    isError: isErrorRoomInfo,
+  } = useChatRoomInfo(myProfile?.userId, roomId);
+  const {
+    data: chatPartner,
+    isLoading: isLoadingChatPartner,
+    isError: isErrorChatPartner,
+  } = useChatPartnerInfo(roomInfo?.partnerId);
+  const {
     data: chatHistory,
     isLoading: isLoadingChats,
     isError: isErrorChats,
   } = useChatMessages(roomId);
-  const shareStatus: AssetShareStatus = "pending";
+
   const showShareButton =
-    shareStatus === "pending" || shareStatus === "other_agreed";
+    roomInfo?.agreeStatus === AssetShareStatus.PENDING ||
+    roomInfo?.agreeStatus === AssetShareStatus.PARTNER_AGREED;
+
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isAtBottom = () => {
+    const position = scrollRef.current;
+    if (!position) return false;
+    return (
+      position.scrollHeight - position.scrollTop - position.clientHeight < 50
+    ); // 거의 바닥 근처면 true
+  };
   const inputRef = useRef<HTMLInputElement>(null);
   const [showExitDialog, setShowExitDialog] = useState(false);
-  const socket = getSocket();
+  const socket = useSocket();
+
+  const isLoading =
+    isLoadingChats ||
+    isLoadingProfile ||
+    isLoadingChatPartner ||
+    isLoadingRoomInfo;
+  const isError =
+    isErrorChats || isErrorProfile || isErrorChatPartner || isErrorRoomInfo;
 
   const scrollToBottom = (behavior?: ScrollBehavior) => {
     if (scrollRef.current) {
@@ -60,45 +88,68 @@ export default function ChatRoomPage() {
   useEffect(() => {
     if (!chatHistory || !myProfile || !roomId) return;
 
-    // 채팅방 입장
-    socket.emit("joinRoom", roomId);
-
-    // 메세지 리스너
-    socket.on("receiveMessage", (msg: SocketChatMessage) => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          message: msg.content,
-          sender: msg.userId === myProfile.userId ? "me" : "other",
-          direction: msg.userId === myProfile.userId ? "outgoing" : "incoming",
-          position: "single",
-          createdAt: new Date(Date.parse(msg.sentAt)),
-        },
-      ]);
-    });
-
     const parsedMessages =
-      chatHistory?.messages.map<ChatMessageDisplay>((message) => ({
-        message: message.message,
-        sender: message.userId !== myProfile?.userId ? "other" : "me",
-        direction:
-          message.userId !== myProfile?.userId ? "incoming" : "outgoing",
-        position: "single",
-        createdAt: message.regdate,
-        senderNickname: message.sender.nickname,
-        senderProfileImg: message.sender.profileUrl,
-      })) ?? [];
+      chatHistory?.messages.map<ChatMessageDisplay>((message) => {
+        const isMine = message.userId === myProfile.userId;
+        return {
+          message: message.message,
+          sender: isMine ? "me" : "other",
+          direction: isMine ? "outgoing" : "incoming",
+          position: "single",
+          createdAt: message.regdate,
+          senderNickname: isMine ? undefined : chatPartner?.nickname,
+          senderProfileImg: isMine ? undefined : chatPartner?.profileImage,
+        };
+      }) ?? [];
 
     setMessages(parsedMessages);
 
     // 가장 최신 채팅으로 스크롤
     setTimeout(() => scrollToBottom("instant"), 0);
+  }, [roomId, chatHistory, myProfile, chatPartner]);
 
-    // 채팅방 연결 종료
+  useEffect(() => {
+    // 채팅방 입장
+    socket.emit("joinRoom", roomId);
+
     return () => {
-      socket.disconnect();
+      socket.emit("leaveRoom", roomId);
     };
-  }, [roomId, chatHistory, myProfile]);
+  }, [roomId, socket]);
+
+  useEffect(() => {
+    if (!myProfile || !chatPartner) return;
+
+    // 메세지 핸들러
+    const handler = (msg: SocketChatMessage) => {
+      const isMine = msg.userId === myProfile.userId;
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          message: msg.message,
+          sender: isMine ? "me" : "other",
+          direction: isMine ? "outgoing" : "incoming",
+          position: "single",
+          createdAt: new Date(Date.parse(msg.regdate)),
+          senderNickname: isMine ? undefined : chatPartner?.nickname,
+          senderProfileImg: isMine ? undefined : chatPartner?.profileImage,
+        },
+      ]);
+
+      if (isAtBottom()) {
+        setTimeout(() => scrollToBottom("smooth"), 30);
+      }
+    };
+
+    // 메세지 리스너
+    socket.on("receiveMessage", handler);
+
+    // 메세지 리스너 해제
+    return () => {
+      socket.off("receiveMessage", handler);
+    };
+  }, [myProfile, chatPartner, socket]);
 
   const handleSendMessage = (message: string) => {
     if (!myProfile) return;
@@ -117,7 +168,7 @@ export default function ChatRoomPage() {
   return (
     <div className="h-[100dvh] flex flex-col scrollbar-hide">
       {/* 상단 고정 헤더 */}
-      <Header title={""} scrollHide={false}>
+      <Header title={chatPartner?.nickname ?? ""} scrollHide={false}>
         <DialogButton
           title={"채팅방을 나가시겠어요?"}
           content={"채팅방을 나가면 대화 기록이 모두 삭제됩니다."}
@@ -137,15 +188,15 @@ export default function ChatRoomPage() {
           scrollRef={scrollRef}
           messages={messages}
           showShareButton={showShareButton}
-          isLoading={isLoadingChats || isLoadingProfile}
-          isError={isErrorChats || isErrorProfile}
+          isLoading={isLoading}
+          isError={isError}
         />
       }
 
       {/* 하단 고정 입력창 */}
       <div className="fixed w-full bottom-0 left-0 z-10 flex flex-col gap-3 bg-transparent">
         <AssetShareButton
-          status={shareStatus}
+          status={roomInfo?.agreeStatus ?? AssetShareStatus.REJECTED}
           onAgree={() => {}}
           onReject={() => {}}
         />

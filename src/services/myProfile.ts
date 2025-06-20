@@ -1,12 +1,12 @@
 import { ProductCategory, RiskLevel } from "@/lib/constants/enums";
-export type MyProfileResponse = {
+type MyProfileResponse = {
   userId: number;
   nickname: string;
   consumeHistory: ConsumeHistoryResponse;
   userFinancialProduct: UserFinancialProductResponse[];
 };
 
-export type ConsumeHistoryResponse = {
+type ConsumeHistoryResponse = {
   userId: number;
   savingsRate: number;
   investmentRate: number;
@@ -15,7 +15,7 @@ export type ConsumeHistoryResponse = {
   otherRate: number;
 };
 
-export type UserFinancialProductResponse = {
+type UserFinancialProductResponse = {
   userProductId: number;
   userId: number;
   productId: number;

@@ -2,7 +2,7 @@
 
 import { ChatRoom } from "@/app/types/client-chat";
 import ChatRoomTile from "@/components/chat/ChatRoom";
-import { useChatRooms } from "@/hooks/useChatRooms";
+import { useChatRooms } from "@/hooks/chat/useChatRooms";
 
 export default function ChatPage() {
   const { data, isLoading, isError, error } = useChatRooms();

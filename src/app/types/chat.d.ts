@@ -14,8 +14,8 @@ export interface NextApiResponseServerIO extends NextApiResponse {
 export interface SocketChatMessage {
   roomId: number;
   userId: number;
-  content: string;
-  sentAt: string;
+  message: string;
+  regdate: string;
 }
 
 export interface ServerToClientEvents {

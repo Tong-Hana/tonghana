@@ -18,8 +18,6 @@ export default function ChatMessage({
 }: Props) {
   const isIncoming = message.direction === "incoming";
   const showProfile = isIncoming && isFirstOfGroup && message.senderProfileImg;
-  console.log(message.senderProfileImg);
-  console.log(message.senderNickname);
 
   return (
     <div
