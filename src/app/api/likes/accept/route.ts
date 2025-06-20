@@ -55,5 +55,25 @@ export async function PATCH(req: Request) {
     data: { matchStatus: "ACCEPTED" },
   });
 
-  return NextResponse.json({ message: "수락 처리되었습니다." });
+  const existingRoom = await prisma.chatRoom.findFirst({
+    where: {
+      OR: [
+        { userId: match.sentId, userId2: match.receiveId },
+        { userId: match.receiveId, userId2: match.sentId },
+      ],
+    },
+  });
+
+  if (!existingRoom) {
+    await prisma.chatRoom.create({
+      data: {
+        userId: match.sentId,
+        userId2: match.receiveId,
+      },
+    });
+  }
+
+  return NextResponse.json({
+    message: "좋아요 수락처리와 채팅방이 생성되었습니다.",
+  });
 }

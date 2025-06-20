@@ -103,6 +103,8 @@ model ChatRoom {
   lastMessage   String?       @map("last_message")
   lastMessageAt DateTime?     @map("last_message_at")
   chatMessage   ChatMessage[]
+  user          User          @relation("ChatUser1", fields: [userId], references: [userId])
+  user2         User          @relation("ChatUser2", fields: [userId2], references: [userId])
 
   @@index([userId], map: "ChatRoom_user_id_fkey")
   @@index([userId2], map: "ChatRoom_user_id2_fkey")
@@ -120,20 +122,6 @@ model PairingAnswer {
   user             User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@index([userId], map: "PairingAnswer_user_id_fkey")
-}
-
-model HanaProduct {
-  productId       BigInt          @id @default(autoincrement()) @map("product_id")
-  name            String          @map("name")
-  category        ProductCategory @map("category")
-  description     String          @map("description")
-  interestRate    Decimal         @map("interest_rate") @db.Decimal(5, 2)
-  maxInterestRate Decimal         @map("max_interest_rate") @db.Decimal(5, 2)
-  minAmount       BigInt          @map("min_amount")
-  maxAmount       BigInt          @map("max_amount")
-  minPeriodMonth  Int             @map("min_period_month")
-  maxPeriodMonth  Int             @map("max_period_month")
-  riskLevel       RiskLevel       @map("risk_level")
 }
 
 model User {
@@ -157,15 +145,54 @@ model User {
   password             String                 @db.VarChar(100)
   preferredType        InvestmentType?        @map("preferred_type")
   profileImage         String?                @map("profile_image")
-  chatMessage          ChatMessage[]
   consumeHistory       ConsumeHistory?
-  loan                 Loan[]
   pairingAnswer        PairingAnswer?
+  isDeleted            Boolean                @default(false) @map("is_deleted")
+  chatMessage          ChatMessage[]
+  loan                 Loan[]
   userFinancialProduct UserFinancialProduct[]
   receivedMatches      UserMatchLog[]         @relation("ReceivedMatches")
   sentMatches          UserMatchLog[]         @relation("SentMatches")
-  isDeleted            Boolean                @default(false) @map("is_deleted")
   UserRecoLog          UserRecoLog[]          @relation("BaseUserReco")
+  userQuizLog          UserQuizLog[]
+  chatRooms1           ChatRoom[]             @relation("ChatUser1")
+  chatRooms2           ChatRoom[]             @relation("ChatUser2")
+}
+
+model Subject {
+  subjectId    Int           @id @default(autoincrement()) @map("subject_id")
+  title        String        @map("title")
+  description  String?       @map("description")
+  features     String?       @map("features")
+  period       String?       @map("period")
+  amount       BigInt?       @map("amount")
+  interestRate Decimal?      @map("interest_rate") @db.Decimal(5, 2)
+  productUrl   String?       @map("product_url")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  quiz         Quiz[]
+  userQuizLog  UserQuizLog[]
+}
+
+model Quiz {
+  quizId      Int      @id @default(autoincrement()) @map("quiz_id")
+  subjectId   Int      @map("subject_id")
+  question    String   @map("question")
+  explanation String   @map("explanation")
+  answer      Boolean  @map("answer")
+  createdAt   DateTime @default(now()) @map("created_at")
+  subject     Subject  @relation(fields: [subjectId], references: [subjectId], onDelete: Cascade)
+}
+
+model UserQuizLog {
+  quizLogId Int      @id @default(autoincrement()) @map("quiz_log_id")
+  userId    Int      @map("user_id")
+  subjectId Int      @map("subject_id")
+  isCorrect Boolean? @map("is_correct")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  subject   Subject  @relation(fields: [subjectId], references: [subjectId], onDelete: Cascade)
+
+  @@index([userId], map: "UserQuizLog_user_id_fkey")
 }
 
 enum Gender {

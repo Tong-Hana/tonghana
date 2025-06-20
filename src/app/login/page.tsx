@@ -4,14 +4,15 @@ import Header from "@/components/common/Header";
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-col h-screen justify-center px-5">
+    <div className="flex flex-col h-screen">
       <Header title="로그인" />
-      <div className="flex flex-col gap-5 justify-center items-center">
+      <div className="flex flex-1 flex-col items-center justify-center px-5">
         <Image
-          src="hana_logo_text.svg"
-          alt="하나은행 로고"
+          src="/tonghana.png"
+          alt="통하나 로고"
           width={150}
           height={150}
+          className="mb-10"
         />
         <LoginForm />
       </div>

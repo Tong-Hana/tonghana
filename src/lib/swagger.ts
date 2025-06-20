@@ -26,6 +26,28 @@ export function getSwaggerSpec(): OpenAPIV3.Document {
           BearerAuth: [],
         },
       ],
+      tags: [
+        {
+          name: "Auth",
+          description: "인증 및 로그인 관련 API",
+        },
+        {
+          name: "Profiles",
+          description: "사용자 프로필 관련 API",
+        },
+        {
+          name: "MatchCards",
+          description: "매칭 카드 조회 API",
+        },
+        {
+          name: "MatchLikes",
+          description: "좋아요 및 매칭 상태 관련 API",
+        },
+        {
+          name: "Chat",
+          description: "채팅 기능 관련 API",
+        },
+      ],
     },
   }) as OpenAPIV3.Document;
 }

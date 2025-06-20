@@ -3,7 +3,7 @@ import HanaAdCard from "@/components/advertisement/HanaAdCard";
 import HanaProductListItem from "@/components/advertisement/HanaProductListItem";
 import { useRouter } from "next/navigation";
 
-export default function RecommendListPage() {
+export default function QuizPage() {
   const user = {
     id: 1,
     name: "제니",
