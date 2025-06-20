@@ -1,14 +1,14 @@
 /**
  * @swagger
- * /api/profiles:
+ * /api/profiles/me:
  *   patch:
  *     tags:
  *       - Profiles
  *     summary: 사용자 프로필 최초 등록
  *     description: |
- *       최초 가입 후 사용자 프로필을 등록합니다.
+ *       회원가입 후후 사용자가 자신의 프로필 정보를 최초 등록합니다.
  *       한 줄 소개, 직업, 목표 설정, 목표 금액, 목표 기간,
- *       실물 자산 보유 현황(자차, 부동산) 여부, 보유 시 시세 정보를 포함합니다.
+ *       실물 자산 보유 현황(자차, 부동산) 및 시세 정보, 프로필 이미지를 포함합니다.
  *     consumes:
  *       - multipart/form-data
  *     requestBody:
@@ -21,7 +21,7 @@
  *               img:
  *                 type: string
  *                 format: binary
- *                 description: 업로드할 이미지 파일
+ *                 description: 업로드할 프로필 이미지 파일 (선택)
  *               description:
  *                 type: string
  *                 example: "안녕하세요!"
@@ -53,7 +53,7 @@
  *                 example: "300000000"
  *     responses:
  *       200:
- *         description: 프로필 등록 완료
+ *         description: 프로필 등록 성공
  *         content:
  *           application/json:
  *             schema:
@@ -67,66 +67,41 @@
  *                   properties:
  *                     userId:
  *                       type: integer
- *                       example: 186
- *                     email:
+ *                       example: 204
+ *                     nickname:
  *                       type: string
- *                       example: "abcd@naver.com"
- *                     birthYear:
- *                       type: integer
- *                       example: 2000
- *                     carValue:
+ *                       example: "테스트1"
+ *                     profileImage:
  *                       type: string
- *                       example: "12000000"
- *                     city:
- *                       type: string
- *                       example: "서울시 동작구"
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       example: "2025-06-12T06:30:22.409Z"
- *                     currentType:
- *                       type: string
- *                       nullable: true
+ *                       format: uri
+ *                       example: "https://tonghanabucket.s3.ap-northeast-2.amazonaws.com/example.jpeg"
  *                     description:
  *                       type: string
- *                       example: "안녕하세요! "
- *                     gender:
+ *                       example: "안녕하세요!"
+ *                     job:
  *                       type: string
- *                       example: "M"
- *                     goalAmount:
+ *                       example: "백엔드 개발자"
+ *                     goalType:
  *                       type: string
- *                       example: "50000000"
+ *                       example: "MARRIAGE"
  *                     goalPeriod:
  *                       type: string
  *                       example: "WITHIN_3_YEARS"
- *                     goalType:
+ *                     goalAmount:
  *                       type: string
- *                       example: "HOUSE"
+ *                       example: "50000000"
  *                     hasCar:
  *                       type: boolean
  *                       example: true
+ *                     carValue:
+ *                       type: string
+ *                       example: "12000000"
  *                     hasHouse:
  *                       type: boolean
  *                       example: false
  *                     houseValue:
  *                       type: string
  *                       nullable: true
- *                     job:
- *                       type: string
- *                       example: "백엔드 개발자"
- *                     nickname:
- *                       type: string
- *                       example: "테스트"
- *                     password:
- *                       type: string
- *                       example: "$2b$10$************"  # 실제 해시값 일부 마스킹
- *                     preferredType:
- *                       type: string
- *                       nullable: true
- *                     profileImage:
- *                       type: string
- *                       format: uri
- *                       example: "https://tonghanabucket.s3.ap-northeast-2.amazonaws.com/..."
  *       400:
  *         description: 잘못된 요청
  *       401:
@@ -248,9 +223,17 @@ export async function PATCH(req: NextRequest) {
       {
         message: "프로필 등록 완료이 완료되었습니다.",
         user: {
-          ...updatedUser,
+          userId: updatedUser.userId,
+          nickname: updatedUser.nickname,
+          profileImage: updatedUser.profileImage,
+          description: updatedUser.description,
+          job: updatedUser.job,
+          goalType: updatedUser.goalType,
+          goalPeriod: updatedUser.goalPeriod,
           goalAmount: updatedUser.goalAmount?.toString() ?? null,
+          hasCar: updatedUser.hasCar,
           carValue: updatedUser.carValue?.toString() ?? null,
+          hasHouse: updatedUser.hasHouse,
           houseValue: updatedUser.houseValue?.toString() ?? null,
         },
       },
