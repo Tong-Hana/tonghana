@@ -160,15 +160,16 @@ model User {
 }
 
 model Subject {
-  subjectId    Int           @id @default(autoincrement()) @map("subject_id")
-  title        String        @map("title")
-  description  String?       @map("description")
-  features     String?       @map("features")
-  period       String?       @map("period")
-  amount       BigInt?       @map("amount")
-  interestRate Decimal?      @map("interest_rate") @db.Decimal(5, 2)
-  productUrl   String?       @map("product_url")
-  createdAt    DateTime      @default(now()) @map("created_at")
+  subjectId    Int             @id @default(autoincrement()) @map("subject_id")
+  subjectType  String          @map("subject_type")
+  title        String          @map("title")
+  description  String          @map("description")
+  features     String          @map("features")
+  period       String          @map("period")
+  amount       String          @map("amount")
+  interestRate String          @map("interest_rate")
+  subjectUrl   String?         @map("subject_url")
+  createdAt    DateTime        @default(now()) @map("created_at")
   quiz         Quiz[]
   userQuizLog  UserQuizLog[]
 }
@@ -181,18 +182,20 @@ model Quiz {
   answer      Boolean  @map("answer")
   createdAt   DateTime @default(now()) @map("created_at")
   subject     Subject  @relation(fields: [subjectId], references: [subjectId], onDelete: Cascade)
+
+  @@index([subjectId], map: "Quiz_subject_id_idx")
 }
 
 model UserQuizLog {
   quizLogId Int      @id @default(autoincrement()) @map("quiz_log_id")
   userId    Int      @map("user_id")
   subjectId Int      @map("subject_id")
-  isCorrect Boolean? @map("is_correct")
+  isPassed  Boolean  @map("is_passed")
   createdAt DateTime @default(now()) @map("created_at")
   user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   subject   Subject  @relation(fields: [subjectId], references: [subjectId], onDelete: Cascade)
 
-  @@index([userId], map: "UserQuizLog_user_id_fkey")
+  @@index([userId, subjectId], map: "UserQuizLog_user_subject_idx")
 }
 
 enum Gender {
