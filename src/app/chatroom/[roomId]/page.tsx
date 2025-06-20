@@ -14,6 +14,8 @@ import { useMyProfile } from "@/hooks/useMyProfile";
 import { useChatMessages } from "@/hooks/useChatMessages";
 import { ChatMessageDisplay } from "@/app/types/client-chat";
 import ChatMessageList from "@/components/chat/ChatMessageList";
+import { getSocket } from "@/lib/socket/client";
+import { SocketChatMessage } from "@/app/types/chat";
 
 export default function ChatRoomPage() {
   const params = useParams();
@@ -34,6 +36,7 @@ export default function ChatRoomPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const socket = getSocket();
 
   const scrollToBottom = (behavior?: ScrollBehavior) => {
     if (scrollRef.current) {
@@ -55,7 +58,25 @@ export default function ChatRoomPage() {
   };
 
   useEffect(() => {
-    if (!chatHistory || !myProfile) return;
+    if (!chatHistory || !myProfile || !roomId) return;
+
+    // 채팅방 입장
+    socket.emit("joinRoom", roomId);
+
+    // 메세지 리스너
+    socket.on("receiveMessage", (msg: SocketChatMessage) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          message: msg.content,
+          sender: msg.userId === myProfile.userId ? "me" : "other",
+          direction: msg.userId === myProfile.userId ? "outgoing" : "incoming",
+          position: "single",
+          createdAt: new Date(Date.parse(msg.sentAt)),
+        },
+      ]);
+    });
+
     const parsedMessages =
       chatHistory?.messages.map<ChatMessageDisplay>((message) => ({
         message: message.message,
@@ -70,22 +91,27 @@ export default function ChatRoomPage() {
 
     setMessages(parsedMessages);
 
+    // 가장 최신 채팅으로 스크롤
     setTimeout(() => scrollToBottom("instant"), 0);
-  }, [chatHistory, myProfile]);
 
-  const handleSendMessage = (text: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        message: text,
-        sender: "me",
-        direction: "outgoing",
-        position: "single",
-        createdAt: new Date(),
-      },
-    ]);
+    // 채팅방 연결 종료
+    return () => {
+      socket.disconnect();
+    };
+  }, [roomId, chatHistory, myProfile]);
+
+  const handleSendMessage = (message: string) => {
+    if (!myProfile) return;
+
+    socket.emit("sendMessage", {
+      roomId: roomId,
+      userId: myProfile.userId,
+      message,
+      regdate: new Date().toISOString(),
+    });
+
     inputRef.current?.focus();
-    setTimeout(() => scrollToBottom(), 30);
+    setTimeout(() => scrollToBottom(), 200);
   };
 
   return (
