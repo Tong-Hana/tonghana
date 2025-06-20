@@ -7,17 +7,15 @@ import { useChatRooms } from "@/hooks/useChatRooms";
 export default function ChatPage() {
   const { data, isLoading, isError, error } = useChatRooms();
 
-  if (isLoading) return <p>채팅방 불러오는 중...</p>;
-  if (isError) return <p>에러 발생: {(error as Error).message}</p>;
-  if (data?.chatRooms.length === 0) {
+  if (isLoading || isError || data?.chatRooms.length === 0) {
     return (
-      <div
-        className="flex flex-col items-center justify-center"
-        // 전체 화면 크기에 헤더와 바텀바 높이 뺀 크기
-        style={{ height: "calc(100vh - 48px - 48px)" }}
-      >
+      <div className="flex flex-col items-center justify-center content-h">
         <p className="text-text-secondary text-base ">
-          아직 만들어진 채팅방이 없어요.
+          {isLoading
+            ? "채팅방 불러오는 중..."
+            : isError
+              ? `에러 발생: ${(error as Error).message}`
+              : "아직 만들어진 채팅방이 없어요."}
         </p>
       </div>
     );
