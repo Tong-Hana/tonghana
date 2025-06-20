@@ -45,6 +45,32 @@ const calcMutualSimilarity = (
 export async function getMatchPartner(user: User, findNum = 10) {
   const oppositeGender = user.gender === "M" ? "F" : "M";
 
+  // 오늘 생성된 추천 기록 확인
+  const now = new Date();
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+  );
+  const startOfTomorrow = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+  );
+  let count = 0;
+  if (findNum !== 10) {
+    count = await prisma.userRecoLog.count({
+      where: {
+        baseUserId: 123,
+        createdAt: {
+          gte: startOfToday,
+          lt: startOfTomorrow,
+        },
+        likeStatus: true,
+      },
+    });
+  }
+
   const matchLogs = await prisma.userMatchLog.findMany({
     where: {
       OR: [{ sentId: user.userId }, { receiveId: user.userId }],
@@ -100,14 +126,29 @@ export async function getMatchPartner(user: User, findNum = 10) {
       };
     })
     .sort((a, b) => b.mutualScore - a.mutualScore)
-    .slice(0, findNum);
-  for (const result of results) {
+    .slice(0, findNum + count);
+  for (let i = count; i < results.length; i++) {
+    const result = results[i];
     await prisma.userRecoLog.create({
       data: {
         baseUserId: user.userId,
         candidateId: result.userId,
+        createdAt: startOfToday,
       },
     });
   }
   return results;
 }
+async function main() {
+  const user = await prisma.user.findFirst({
+    where: { userId: 123 },
+  });
+  if (!user) {
+    console.error("User not found");
+    return;
+  }
+
+  const partners = await getMatchPartner(user, 5);
+  console.log("Matched Partners:", partners);
+}
+main();

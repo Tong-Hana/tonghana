@@ -4,7 +4,7 @@ import { saveUserVector } from "@/lib/actions/saveUserVector";
 
 export const client = weaviate.client({
   scheme: "http",
-  host: "localhost:8080",
+  host: process.env.WEAVIATE_URL || "localhost:8080",
 });
 
 // weaviate에 User 클래스를 정의
