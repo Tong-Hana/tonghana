@@ -13,10 +13,12 @@ import AssetShareButton, {
 import ChatMessageList, {
   MessageModel,
 } from "@/components/chat/ChatMessageList";
+// import { useMyProfile } from "@/hooks/useMyProfile";
 
 export default function ChatRoomPage() {
   // const params = useParams();
   // const roomId = Number(params.roomId);
+  // const { myProfile } = useMyProfile();
   const other = {
     nickname: "성동구 제니",
     imageUrl: "/jennie.jpg",
