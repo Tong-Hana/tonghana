@@ -79,8 +79,6 @@ export async function DELETE(
     );
   }
 
-  await prisma.chatMessage.deleteMany({ where: { roomId } });
-
   const match = await prisma.userMatchLog.findFirst({
     where: {
       OR: [

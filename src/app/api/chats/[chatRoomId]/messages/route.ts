@@ -92,6 +92,9 @@ export async function GET(
     include: {
       chatMessage: {
         orderBy: { regdate: "asc" },
+        include: {
+          user: true,
+        },
       },
     },
   });
@@ -117,19 +120,16 @@ export async function GET(
     [user2.userId, user2],
   ]);
 
-  const messagesWithSender = chatRoom.chatMessage.map((msg) => {
-    const sender = userMap.get(msg.userId);
-    return {
-      messageId: msg.messageId,
-      userId: msg.userId,
-      message: msg.message,
-      regdate: msg.regdate,
-      sender: {
-        nickname: sender?.nickname,
-        profileUrl: sender?.profileImage,
-      },
-    };
-  });
+  const messagesWithSender = chatRoom.chatMessage.map((msg) => ({
+    messageId: msg.messageId,
+    userId: msg.userId,
+    message: msg.message,
+    regdate: msg.regdate,
+    sender: {
+      nickname: msg.user.nickname,
+      profileUrl: msg.user.profileImage,
+    },
+  }));
 
   return NextResponse.json({
     chatRoomId: chatRoomIdNum,
