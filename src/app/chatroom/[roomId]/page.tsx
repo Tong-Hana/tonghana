@@ -1,12 +1,10 @@
 "use client";
 
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import { Exit } from "@/assets/assets";
 import Header from "@/components/common/Header";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ChatInput from "@/components/chat/ChatInput";
-import DialogButton from "@/components/common/button/DialogButton";
 import AssetShareButton from "@/components/chat/AssetShareButton";
 import { useMyProfile } from "@/hooks/useMyProfile";
 import { useChatMessages } from "@/hooks/chat/useChatMessages";
@@ -16,6 +14,7 @@ import { SocketChatMessage } from "@/app/types/chat";
 import { useChatPartnerInfo } from "@/hooks/chat/useChatPartnerInfo";
 import { useChatRoomInfo } from "@/hooks/chat/useChatRoomInfo";
 import { useSocket } from "@/hooks/chat/useSocket";
+import LeaveChatRoomButton from "@/components/chat/LeaveChatRoomButton";
 
 export default function ChatRoomPage() {
   const params = useParams();
@@ -48,7 +47,6 @@ export default function ChatRoomPage() {
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [showExitDialog, setShowExitDialog] = useState(false);
   const socket = useSocket();
 
   const isLoading =
@@ -69,14 +67,6 @@ export default function ChatRoomPage() {
   };
 
   const [messages, setMessages] = useState<ChatMessageDisplay[]>([]);
-
-  const openExitDialog = () => {
-    setShowExitDialog(true);
-  };
-
-  const closeExitDialog = () => {
-    setShowExitDialog(false);
-  };
 
   useEffect(() => {
     if (!roomId || !chatHistory || !myProfile || !chatPartner) return;
@@ -155,17 +145,7 @@ export default function ChatRoomPage() {
     <div className="h-[100dvh] flex flex-col scrollbar-hide">
       {/* 상단 고정 헤더 */}
       <Header title={chatPartner?.nickname ?? ""} scrollHide={false}>
-        <DialogButton
-          title={"채팅방을 나가시겠어요?"}
-          content={"채팅방을 나가면 대화 기록이 모두 삭제됩니다."}
-          open={showExitDialog}
-          onAction={() => {}}
-          onClose={closeExitDialog}
-        >
-          <button type="button" onClick={openExitDialog}>
-            <Exit className="mx-2 h-6 w-6 fill-hanablack" />
-          </button>
-        </DialogButton>
+        <LeaveChatRoomButton roomId={roomId} />
       </Header>
 
       {/* 메시지 영역 (스크롤 가능) */}

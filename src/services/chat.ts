@@ -191,3 +191,14 @@ export const rejectAssetShare = async (
 
   return chatRoomResponse;
 };
+
+export const leaveChatRoom = async (roomId: number): Promise<void> => {
+  const res = await fetch(`/api/chats/${roomId}/leave`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message ?? "채팅방 나가기에 실패했습니다.");
+  }
+};
