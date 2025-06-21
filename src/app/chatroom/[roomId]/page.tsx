@@ -183,8 +183,8 @@ export default function ChatRoomPage() {
       <div className="fixed w-full bottom-0 left-0 z-10 flex flex-col gap-3 bg-transparent">
         <AssetShareButton
           status={roomInfo?.agreeStatus ?? AssetShareStatus.REJECTED}
-          onAgree={() => {}}
-          onReject={() => {}}
+          myId={myProfile?.userId}
+          roomId={roomId}
         />
         <ChatInput inputRef={inputRef} onSend={handleSendMessage} />
       </div>
