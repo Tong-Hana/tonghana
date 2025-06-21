@@ -62,14 +62,6 @@ export default function AssetShareButtonGroup({ status, myId, roomId }: Props) {
     });
   };
 
-  if (
-    !myId ||
-    status === "rejected" ||
-    status === "both_agreed" ||
-    status === "me_agreed"
-  )
-    return null;
-
   // 내가 아직 동의하지 않았고, 둘 다 미동의
   if (status === AssetShareStatus.PENDING) {
     return (
