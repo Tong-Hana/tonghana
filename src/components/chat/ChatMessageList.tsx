@@ -20,6 +20,8 @@ export default function ChatMessageList({
   isLoading,
   isError,
 }: Props) {
+  const reversedMessage = [...messages].reverse();
+
   if (isLoading || isError)
     return (
       <div className="flex flex-col items-center justify-center content-h text-text-secondary">
@@ -31,13 +33,13 @@ export default function ChatMessageList({
     <div
       ref={scrollRef}
       className={cn(
-        "flex-1 overflow-y-scroll px-4 py-2 scrollbar-hide",
+        "flex flex-col-reverse overflow-y-scroll px-4 py-2 scrollbar-hide",
         showShareButton ? "pb-32" : "pb-20",
       )}
     >
-      {messages.map((m, idx) => {
-        const prev = messages[idx - 1];
-        const next = messages[idx + 1];
+      {reversedMessage.map((m, idx) => {
+        const prev = reversedMessage[idx + 1];
+        const next = reversedMessage[idx - 1];
 
         const showDate = !prev || !isSameDay(prev.createdAt, m.createdAt);
 

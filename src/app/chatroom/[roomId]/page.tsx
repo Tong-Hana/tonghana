@@ -47,13 +47,6 @@ export default function ChatRoomPage() {
     roomInfo?.agreeStatus === AssetShareStatus.PARTNER_AGREED;
 
   const scrollRef = useRef<HTMLDivElement>(null);
-  const isAtBottom = () => {
-    const position = scrollRef.current;
-    if (!position) return false;
-    return (
-      position.scrollHeight - position.scrollTop - position.clientHeight < 50
-    ); // 거의 바닥 근처면 true
-  };
   const inputRef = useRef<HTMLInputElement>(null);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const socket = useSocket();
@@ -86,7 +79,7 @@ export default function ChatRoomPage() {
   };
 
   useEffect(() => {
-    if (!chatHistory || !myProfile || !roomId) return;
+    if (!roomId || !chatHistory || !myProfile || !chatPartner) return;
 
     const parsedMessages =
       chatHistory?.messages.map<ChatMessageDisplay>((message) => {
@@ -103,9 +96,6 @@ export default function ChatRoomPage() {
       }) ?? [];
 
     setMessages(parsedMessages);
-
-    // 가장 최신 채팅으로 스크롤
-    setTimeout(() => scrollToBottom("instant"), 0);
   }, [roomId, chatHistory, myProfile, chatPartner]);
 
   useEffect(() => {
@@ -136,10 +126,6 @@ export default function ChatRoomPage() {
           senderProfileImg: isMine ? undefined : chatPartner?.profileImage,
         },
       ]);
-
-      if (isAtBottom()) {
-        setTimeout(() => scrollToBottom("smooth"), 30);
-      }
     };
 
     // 메세지 리스너
