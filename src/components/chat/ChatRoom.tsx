@@ -25,7 +25,7 @@ export default function ChatRoomTile({
           <div className="flex items-center gap-2">
             <p className="text-sm font-medium flex-1">{nickname}</p>
             <p className="text-[10px] font-light text-text-secondary">
-              {formatSmartDate(lastMessageDate ?? new Date())}
+              {lastMessageDate && formatSmartDate(lastMessageDate)}
             </p>
           </div>
           <p className="text-xs font-light">
