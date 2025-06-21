@@ -1,14 +1,14 @@
 /**
  * @swagger
  * /api/delete-account:
- *   delete:
+ *   patch:
  *     tags:
  *       - Auth
- *     summary: 사용자 회원 탈퇴
- *     description: 로그인한 사용자의 계정을 삭제하고 accessToken 쿠키도 제거합니다.
+ *     summary: 사용자 회원탈퇴
+ *     description: 로그인한 사용자의 계정을 탈퇴 처리합니다. 실제로 삭제하지 않고 isDeleted 값을 true로 설정합니다. (Soft Delete)
  *     responses:
  *       200:
- *         description: 회원 탈퇴 성공
+ *         description: 회원 탈퇴가 성공적으로 처리됨
  *         content:
  *           application/json:
  *             schema:
@@ -16,26 +16,29 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "회원 탈퇴가 완료되었습니다."
+ *                   example: 회원 탈퇴가 완료되었습니다.
  *       401:
- *         description: 인증 실패
+ *         description: 인증 실패 (토큰 없음 또는 만료)
  *       500:
- *         description: 서버 오류
+ *         description: 서버 내부 오류
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAuthUser } from "@/lib/auth"; // accessToken → userId 추출 함수
+import { getAuthUser } from "@/lib/auth";
 
-export async function DELETE(req: NextRequest) {
+export async function PATCH(req: NextRequest) {
   const user = await getAuthUser();
   if (!user) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    await prisma.user.delete({
+    await prisma.user.update({
       where: { userId: user.userId },
+      data: {
+        isDeleted: true,
+      },
     });
 
     const response = NextResponse.json({
@@ -52,7 +55,7 @@ export async function DELETE(req: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("DeleteAccount Error:", error);
+    console.error("SoftDelete Error:", error);
     return NextResponse.json({ message: "서버 오류" }, { status: 500 });
   }
 }
