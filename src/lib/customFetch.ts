@@ -16,10 +16,15 @@ export async function customFetch<T = unknown>(
       ? `${BASE_URL}${input}`
       : input;
 
+  const headers: Record<string, string> = {};
+  if (!(init?.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const res = await fetch(url, {
     credentials: "include",
     headers: {
-      "Content-Type": "application/json",
+      ...headers,
       ...(init?.headers || {}),
     },
     ...init,
