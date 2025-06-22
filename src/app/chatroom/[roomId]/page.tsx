@@ -15,6 +15,7 @@ import { useChatPartnerInfo } from "@/hooks/chat/useChatPartnerInfo";
 import { useChatRoomInfo } from "@/hooks/chat/useChatRoomInfo";
 import { useSocket } from "@/hooks/chat/useSocket";
 import LeaveChatRoomButton from "@/components/chat/LeaveChatRoomButton";
+import ChatWarningModal from "@/components/chat/ChatWarningModal";
 
 export default function ChatRoomPage() {
   const params = useParams();
@@ -143,6 +144,7 @@ export default function ChatRoomPage() {
 
   return (
     <div className="h-[100dvh] flex flex-col scrollbar-hide">
+      <ChatWarningModal />
       {/* 상단 고정 헤더 */}
       <Header title={chatPartner?.nickname ?? ""} scrollHide={false}>
         <LeaveChatRoomButton roomId={roomId} />
