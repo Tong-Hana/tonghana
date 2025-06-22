@@ -14,6 +14,6 @@ export interface ProfileCardProps {
   debtPercent: string;
   portfolioType: string;
   investorType: string;
-  showDetail: boolean;
+  showDetail?: boolean;
   modalView?: boolean;
 }

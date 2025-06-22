@@ -10,6 +10,30 @@ import ProfileCardDetail from "@/components/profile/ProfileCardDetail";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Header from "@/components/common/Header";
+// import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+// // API 호출 함수들
+// async function fetchUserProfile() {
+//   const response = await fetch("/api/profile");
+//   if (!response.ok) {
+//     throw new Error("Failed to fetch profile");
+//   }
+//   return response.json();
+// }
+
+// async function updateUserProfile(data: any) {
+//   const response = await fetch("/api/profile", {
+//     method: "PUT",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(data),
+//   });
+//   if (!response.ok) {
+//     throw new Error("Failed to update profile");
+//   }
+//   return response.json();
+// }
 
 export default function MyPage() {
   // API로 불러올 데이터

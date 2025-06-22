@@ -28,8 +28,8 @@ export default function ProfileCard({
   portfolioType,
   investorType,
   debtPercent,
-  showDetail,
-  modalView,
+  showDetail = false,
+  modalView = false,
 }: ProfileCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const router = useRouter();
