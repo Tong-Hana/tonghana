@@ -47,6 +47,10 @@ export function getSwaggerSpec(): OpenAPIV3.Document {
           name: "Chat",
           description: "채팅 기능 관련 API",
         },
+        {
+          name: "Quiz",
+          description: "퀴즈 기능 관련 API",
+        },
       ],
     },
   }) as OpenAPIV3.Document;
