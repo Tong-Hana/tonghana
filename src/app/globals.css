@@ -39,6 +39,11 @@ body {
 
     scrollbar-width: none;
   }
+
+  /* 전체 화면 크기에 헤더와 바텀바 높이 뺀 크기 */
+  .content-h {
+    height: calc(100vh - 48px - 48px);
+  }
 }
 
 /* 보낸 메시지 말풍선 (outgoing) */

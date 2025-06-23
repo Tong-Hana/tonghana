@@ -17,7 +17,6 @@ const nextConfig: NextConfig = {
     },
   },
   webpack: (config) => {
-    // @ts-expect-error 타입 에러 무시
     const fileLoaderRule = config.module.rules.find((rule) =>
       rule.test?.test?.(".svg"),
     );
@@ -45,6 +44,16 @@ const nextConfig: NextConfig = {
     );
     fileLoaderRule.exclude = /\.svg$/i;
     return config;
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "tonghanabucket.s3.ap-northeast-2.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

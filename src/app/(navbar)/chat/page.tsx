@@ -1,47 +1,36 @@
-import ChatRoom from "@/components/chat/ChatRoom";
+"use client";
 
-const chatRoomDummy = [
-  {
-    roomId: 1,
-    imageUrl: "/jennie.jpg",
-    nickname: "성북동 제니",
-    lastMessage: "안녕하세요..! 좋아요 감사합니다",
-    lastMessageDate: new Date(),
-  },
-  {
-    roomId: 2,
-    imageUrl: "/jennie.jpg",
-    nickname: "성북동 제니",
-    lastMessage: "안녕하세요..! 좋아요 감사합니다",
-    lastMessageDate: new Date(new Date().setDate(new Date().getDate() - 4)),
-  },
-  {
-    roomId: 3,
-    imageUrl: "/jennie.jpg",
-    nickname: "성북동 제니",
-    lastMessage: "안녕하세요..! 좋아요 감사합니다",
-    lastMessageDate: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-  },
-  {
-    roomId: 4,
-    imageUrl: "/jennie.jpg",
-    nickname: "성북동 제니",
-    lastMessage: "안녕하세요..! 좋아요 감사합니다",
-    lastMessageDate: new Date(new Date().setFullYear(2024)),
-  },
-];
+import { ChatRoom } from "@/app/types/client-chat";
+import ChatRoomTile from "@/components/chat/ChatRoom";
+import { useChatRooms } from "@/hooks/chat/useChatRooms";
 
 export default function ChatPage() {
+  const { data, isLoading, isError, error } = useChatRooms();
+
+  if (isLoading || isError || data?.chatRooms.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center content-h">
+        <p className="text-text-secondary text-base ">
+          {isLoading
+            ? "채팅방 불러오는 중..."
+            : isError
+              ? `에러 발생: ${(error as Error).message}`
+              : "아직 만들어진 채팅방이 없어요."}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col w-full h-full">
-      {chatRoomDummy.map((chatroom) => (
-        <ChatRoom
+      {data?.chatRooms.map((chatroom: ChatRoom) => (
+        <ChatRoomTile
           key={chatroom.roomId}
           roomId={chatroom.roomId}
-          imageUrl={chatroom.imageUrl}
-          nickname={chatroom.nickname}
+          imageUrl={chatroom.opponent.profileUrl}
+          nickname={chatroom.opponent.nickname}
           lastMessage={chatroom.lastMessage}
-          lastMessageDate={chatroom.lastMessageDate}
+          lastMessageDate={chatroom.lastMessageAt}
         />
       ))}
     </div>
