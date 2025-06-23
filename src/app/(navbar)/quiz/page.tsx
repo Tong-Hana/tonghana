@@ -1,107 +1,83 @@
-"use client";
-import HanaAdCard from "@/components/advertisement/HanaAdCard";
-import HanaProductListItem from "@/components/advertisement/HanaProductListItem";
-import { useRouter } from "next/navigation";
+import InfoCard from "@/components/common/InfoCard";
+import QuizButton from "@/components/quiz/QuizButton";
+import ClientProductLinkButton from "@/components/quiz/ClientProductLinkButton";
+import HanaLogo from "../../../../public/hana_logo.svg";
+
+type Quiz = {
+  subjectType: string;
+  description: string;
+  title: string;
+  feature: string;
+  period: string;
+  amount: string;
+  interestRate: string;
+  subjectUrl: string;
+};
+const dummyQuiz: Quiz = {
+  subjectType: "정기예금",
+  description:
+    "자유롭게 자금관리가 가능한 하나원큐(스마트폰 뱅킹) 전용 정기예금",
+  title: "하나원큐 정기예금",
+  feature: "하나원큐(스마트폰 뱅킹) 전용 상품",
+  period: "1년",
+  amount: "1,000,000원",
+  interestRate: "3.00%",
+  subjectUrl: "https://www.hanabank.com/",
+};
 
 export default function QuizPage() {
-  const user = {
-    id: 1,
-    name: "제니",
-    investorType: "안전투자형",
-  };
-  const currentAd = {
-    id: 1,
-    name: "청년도약계좌",
-    interest_rate: 4.5,
-    max_interest_rate: 6.0,
-    max_amount: 50000000,
-  };
-
-  const ads = [
-    {
-      id: 1,
-      name: "급여 하나 월복리 적금",
-      interest_rate: 2.95,
-      max_interest_rate: 5.25,
-      max_amount: 0,
-    },
-    {
-      id: 2,
-      name: "하나 청년도약계좌",
-      interest_rate: 4.5,
-      max_interest_rate: 6.0,
-      max_amount: 0,
-    },
-    {
-      id: 3,
-      name: "청년 주택드림 청약통장",
-      interest_rate: 2.8,
-      max_interest_rate: 4.2,
-      max_amount: 0,
-    },
-    {
-      id: 4,
-      name: "내맘적금",
-      interest_rate: 1.8,
-      max_interest_rate: 2.3,
-      max_amount: 0,
-    },
-    {
-      id: 5,
-      name: "주택청약종합저축",
-      interest_rate: 0,
-      max_interest_rate: 0,
-      max_amount: 0,
-    },
-  ];
-
-  const router = useRouter();
-
+  //TODO: Quiz 불러오기
+  const quizData = dummyQuiz;
+  const productCardStyle =
+    "flex flex-col gap-5 p-5  rounded-3xl shadow-card-shadow";
+  const cardTitleStyle = "text-lg font-semibold text-text-primary leading-7";
+  const cardTextStyle = "text-base/light leading-6 text-text-primary";
+  const cardSpanStyle = "text-lg text-hanagreen-normal font-medium";
   return (
-    <div className="flex flex-col gap-12 p-5 bg-gray-100 h-full overflow-y-scroll">
-      <div className="space-y-3 py-5">
-        <div className="text-text-primary text-lg font-normal">
-          <span className="text-text-primary font-medium">
-            {user.investorType}
-          </span>
-          인 {user.name}님께
-          <div className="text-hanagreen-normal text-lg font-medium">
-            {currentAd.name}
-            <span className="text-text-primary font-normal">
-              {" "}
-              상품을 추천해요.
-            </span>
-          </div>
+    <div className="flex flex-col relative w-full p-5 overflow-y-scroll gap-8 scrollbar-hide">
+      <div className="font-light text-xl leading-7 tracking-normal text-text-primary">
+        퀴즈를 풀고 매칭 상대를 더 만나 보세요!
+      </div>
+      <InfoCard
+        content={
+          <>
+            오늘은{" "}
+            <span className="text-hanagreen-normal">하나은행 금융 상품</span>{" "}
+            퀴즈에요!
+            <br />
+            아래 정보를 잘 읽고 풀어보세요
+            <br />
+            기회는 단 한번!
+          </>
+        }
+        imageType={"infoStarBoy"}
+      />
+      <div className={productCardStyle + " bg-hanared-light"}>
+        <div className={`${cardTitleStyle} flex items-center gap-2`}>
+          <HanaLogo className="w-5 h-5" />
+          {quizData.title}
         </div>
-
-        <div className="mt-4">
-          <HanaAdCard
-            key={`ad-${currentAd.id}`}
-            name={currentAd.name}
-            interestRate={currentAd.interest_rate}
-            maxInterestRate={currentAd.max_interest_rate}
-            maxAmount={currentAd.max_amount}
-          />
+        <div className={cardTextStyle + " whitespace-pre-wrap"}>
+          {quizData.description}
+        </div>
+        <ClientProductLinkButton subjectUrl={quizData.subjectUrl} />
+      </div>
+      <div className={productCardStyle + " bg-hanagreen-light"}>
+        <div className={cardTitleStyle}>상세정보</div>
+        <div className={cardTextStyle}>
+          <span className={cardSpanStyle}>특징.</span> {quizData.feature}
+          <br />
+          <span className={cardSpanStyle}>기간.</span> {quizData.period}
+          <br />
+          <span className={cardSpanStyle}>최고가입한도. </span>{" "}
+          {quizData.amount}
+          <br />
+          <span className={cardSpanStyle}>금리. </span> {quizData.interestRate}
+          <br />
         </div>
       </div>
-
-      <div className="space-y-3">
-        <div className="text-text-primary text-lg font-medium">
-          더 많은 상품들
-        </div>
-        <div className="space-y-3">
-          {ads.map((ad, index) => (
-            <HanaProductListItem
-              key={ad.id}
-              order={index + 1}
-              name={ad.name}
-              interestRate={ad.interest_rate}
-              maxInterestRate={ad.max_interest_rate}
-              maxAmount={ad.max_amount}
-              onClick={() => router.push(`/recommend/${ad.id}`)}
-            />
-          ))}
-        </div>
+      <div className="fixed bottom-12 left-0 right-0 w-full px-5 py-3">
+        <QuizButton />
       </div>
     </div>
   );

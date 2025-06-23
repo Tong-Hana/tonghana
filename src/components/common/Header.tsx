@@ -82,7 +82,7 @@ export default function Header({
 
           <h1
             className={clsx(
-              "text-xl font-normal  absolute left-0 right-0",
+              "text-2xl font-normal  absolute left-0 right-0",
               centerTitle ? "text-center" : "pl-5 text-left",
               color === "black" ? "text-text-primary" : "text-white",
             )}

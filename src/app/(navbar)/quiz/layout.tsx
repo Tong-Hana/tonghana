@@ -6,13 +6,9 @@ export default function QuizLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <Header
-        title="맞춤 상품 추천"
-        centerTitle={false}
-        showBackButton={false}
-      />
+    <>
+      <Header title="오늘의 퀴즈" centerTitle={false} showBackButton={false} />
       {children}
-    </div>
+    </>
   );
 }
