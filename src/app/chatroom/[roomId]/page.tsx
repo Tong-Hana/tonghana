@@ -17,6 +17,7 @@ import { useSocket } from "@/hooks/chat/useSocket";
 import LeaveChatRoomButton from "@/components/chat/LeaveChatRoomButton";
 import ChatWarningModal from "@/components/chat/ChatWarningModal";
 import ChatPortfolioButton from "@/components/chat/portfolio/ChatPortfolioButton";
+import ChatPortfolioBottomSheet from "@/components/chat/portfolio/ChatPortfolioBottomSheet";
 
 export default function ChatRoomPage() {
   const params = useParams();
@@ -67,7 +68,7 @@ export default function ChatRoomPage() {
       });
     }
   };
-
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [messages, setMessages] = useState<ChatMessageDisplay[]>([]);
 
   useEffect(() => {
@@ -163,14 +164,13 @@ export default function ChatRoomPage() {
       }
 
       {/* 하단 고정 입력창 */}
-      <div className="fixed w-full bottom-0 left-0 z-10 flex flex-col gap-3 bg-transparent">
+      <div
+        className="fixed w-full bottom-0 left-0 flex flex-col gap-3 bg-transparent"
+        style={{ zIndex: 5 }}
+      >
         <div className="flex justify-center">
           {myProfile && chatPartner && (
-            <ChatPortfolioButton
-              partnerNickname={chatPartner?.nickname}
-              myPortfolioData={myProfile.categoryRatios}
-              partnerPortfolioData={chatPartner.categoryRatios}
-            />
+            <ChatPortfolioButton onOpen={() => setShowBottomSheet(true)} />
           )}
           <AssetShareButton
             status={roomInfo?.agreeStatus ?? AssetShareStatus.REJECTED}
@@ -180,6 +180,15 @@ export default function ChatRoomPage() {
         </div>
         <ChatInput inputRef={inputRef} onSend={handleSendMessage} />
       </div>
+      {myProfile && chatPartner && (
+        <ChatPortfolioBottomSheet
+          open={showBottomSheet}
+          partnerNickname={chatPartner.nickname}
+          myPortfolioData={myProfile.categoryRatios}
+          partnerPortfolioData={chatPartner.categoryRatios}
+          onClose={() => setShowBottomSheet(false)}
+        />
+      )}
     </div>
   );
 }
