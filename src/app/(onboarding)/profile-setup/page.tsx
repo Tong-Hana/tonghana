@@ -145,7 +145,7 @@ export default function ProfileSetUpPage() {
                   </p>
                   <Input
                     required
-                    placeholder="예: 1억"
+                    placeholder="예: 10000000"
                     className="w-full"
                     value={goalAmount}
                     onChange={(e) => setGoalAmount(e.target.value)}
