@@ -21,13 +21,13 @@ type DoughnutChartProps = {
 };
 
 export default function DoughnutChart({
-  values,
+  values = {} as CategoryRatios,
   debtLabel,
   portfolioType,
 }: DoughnutChartProps) {
   const portfolioData = categoryKeys
     .map((key) => {
-      const value = values[key];
+      const value = values[key] ?? 0;
       if (!value || value === 0) {
         return null;
       }
