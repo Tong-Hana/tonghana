@@ -14,7 +14,7 @@ type Quiz = {
   subjectUrl: string;
 };
 const dummyQuiz: Quiz = {
-  subjectType: "정기예금",
+  subjectType: "대출",
   description:
     "자유롭게 자금관리가 가능한 하나원큐(스마트폰 뱅킹) 전용 정기예금",
   title: "하나원큐 정기예금",
@@ -33,6 +33,9 @@ export default function QuizPage() {
   const cardTitleStyle = "text-lg font-semibold text-text-primary leading-7";
   const cardTextStyle = "text-base/light leading-6 text-text-primary";
   const cardSpanStyle = "text-lg text-hanagreen-normal font-medium";
+  const spanType =
+    quizData.subjectType === "대출" ? "대출 한도." : "가입 금액.";
+  const needDetail = quizData.subjectType !== "금융상식";
   return (
     <div className="flex flex-col relative w-full p-5 overflow-y-scroll gap-8 scrollbar-hide">
       <div className="font-light text-xl leading-7 tracking-normal text-text-primary">
@@ -62,20 +65,24 @@ export default function QuizPage() {
         </div>
         <ClientProductLinkButton subjectUrl={quizData.subjectUrl} />
       </div>
-      <div className={productCardStyle + " bg-hanagreen-light"}>
-        <div className={cardTitleStyle}>상세정보</div>
-        <div className={cardTextStyle}>
-          <span className={cardSpanStyle}>특징.</span> {quizData.feature}
-          <br />
-          <span className={cardSpanStyle}>기간.</span> {quizData.period}
-          <br />
-          <span className={cardSpanStyle}>최고가입한도. </span>{" "}
-          {quizData.amount}
-          <br />
-          <span className={cardSpanStyle}>금리. </span> {quizData.interestRate}
-          <br />
+      {needDetail ? (
+        <div className={productCardStyle + " bg-hanagreen-light"}>
+          <div className={cardTitleStyle}>상세정보</div>
+          <div className={cardTextStyle}>
+            <span className={cardSpanStyle}>특징.</span> {quizData.feature}
+            <br />
+            <span className={cardSpanStyle}>기간.</span> {quizData.period}
+            <br />
+            <span className={cardSpanStyle}>{spanType} </span> {quizData.amount}
+            <br />
+            <span className={cardSpanStyle}>금리. </span>{" "}
+            {quizData.interestRate}
+            <br />
+          </div>
         </div>
-      </div>
+      ) : (
+        <></>
+      )}
       <div className="fixed bottom-12 left-0 right-0 w-full px-5 py-3">
         <QuizButton />
       </div>
