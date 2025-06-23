@@ -56,6 +56,14 @@ export default function ProfileSetUpPage() {
 
     if (!goalType || !goalPeriodValue) return;
 
+    const convertedCarValue =
+      hasCar && carValue ? (parseInt(carValue) * 10000000).toString() : "";
+
+    const convertedHouseValue =
+      hasHouse && houseValue
+        ? (parseInt(houseValue) * 100000000).toString()
+        : "";
+
     submitProfile({
       img,
       description: introduction,
@@ -64,9 +72,9 @@ export default function ProfileSetUpPage() {
       goalAmount,
       goalPeriod: goalPeriodValue,
       hasCar,
-      carValue,
+      carValue: convertedCarValue,
       hasHouse,
-      houseValue,
+      houseValue: convertedHouseValue,
     });
   };
 
