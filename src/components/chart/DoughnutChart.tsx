@@ -6,12 +6,11 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-type ValueFormat = "percent" | "currency";
-
 type DoughnutChartProps = {
   values: number[];
   debtLabel: string;
-  valueFormat?: ValueFormat;
+  portfolioType: string;
+  showPercent?: boolean;
 };
 
 const baseInfo = [
@@ -28,7 +27,8 @@ const baseInfo = [
 export default function DoughnutChart({
   values,
   debtLabel,
-  valueFormat = "percent",
+  portfolioType,
+  showPercent = true,
 }: DoughnutChartProps) {
   const merged = baseInfo.map((item, idx) => ({
     ...item,
@@ -54,12 +54,10 @@ export default function DoughnutChart({
     ],
   };
 
-  const labelData = valueFormat === "percent" ? filtered : rawFiltered;
+  const labelData = showPercent ? filtered : rawFiltered;
 
   const formatValue = (val: number) => {
-    return valueFormat === "currency"
-      ? `${val.toLocaleString()}만원`
-      : `${val}%`;
+    return showPercent ? `${val}%` : `${val.toLocaleString()}만원`;
   };
 
   const options = {
@@ -83,7 +81,7 @@ export default function DoughnutChart({
   };
 
   return (
-    <div className="flex flex-row gap-5 justify-center items-center w-full max-w-[100%]">
+    <div className="flex flex-row gap-5 justify-center items-center w-full max-w-[100%] my-2">
       <div className="w-[8rem] min-w-[8rem] p-2 relative">
         <Doughnut data={data} options={options} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] text-center text-[#c2a244] font-semibold whitespace-nowrap leading-snug">
@@ -93,7 +91,7 @@ export default function DoughnutChart({
       </div>
 
       <div className="flex flex-col justify-center w-full max-w-[250px] gap-2">
-        <p className="text-hanagold text-sm font-medium">#안정형</p>
+        <p className="text-hanagold text-sm font-medium">#{portfolioType}</p>
         <ul className="text-xs text-hanablack space-y-1">
           {labelData.map((item, index) => (
             <li key={index} className="flex items-center justify-between">

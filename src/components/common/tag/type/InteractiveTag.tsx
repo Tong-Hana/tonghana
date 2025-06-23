@@ -11,7 +11,7 @@ export default function InteractiveTag({
   disabled,
   className,
   onClick,
-  ...props
+  ...rest
 }: Omit<TagProps, "selectable">) {
   const variant = selected ? "selected" : "interactive";
 
@@ -24,7 +24,7 @@ export default function InteractiveTag({
         "cursor-pointer",
         className,
       )}
-      {...props}
+      {...rest}
     >
       {text}
     </div>

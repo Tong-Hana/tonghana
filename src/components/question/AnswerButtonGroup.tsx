@@ -1,31 +1,47 @@
 "use client";
 
-import { useState } from "react";
-import AnswerButton from "./AnswerButton";
+import AnswerButton from "@/components/question/AnswerButton";
 
 type Props = {
-  answers: {
-    content: string;
-  }[];
+  answers: { content: string }[];
+  selected: number | number[] | null;
+  onSelect: (updated: number | number[]) => void;
+  multiple?: boolean;
 };
 
-export default function AnswerButtonGroup({ answers }: Props) {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+export default function AnswerButtonGroup({
+  answers,
+  selected,
+  onSelect,
+  multiple = false,
+}: Props) {
+  const isSelected = (index: number) =>
+    multiple
+      ? Array.isArray(selected) && selected.includes(index)
+      : selected === index;
 
-  const handleSelectAnswer = (index: number) => {
-    setSelectedIndex(selectedIndex === index ? null : index);
+  const handleClick = (index: number) => {
+    if (multiple) {
+      if (!Array.isArray(selected)) return onSelect([index]);
+      const exists = selected.includes(index);
+      const updated = exists
+        ? selected.filter((i) => i !== index)
+        : [...selected, index];
+      onSelect(updated);
+    } else {
+      onSelect(index);
+    }
   };
 
   return (
-    <div className="flex flex-col gap-3 items-center">
+    <div className="flex flex-col gap-3 items-center w-full max-w-[500px] mx-auto">
       {answers.map((answer, index) => (
-        <div key={index}>
-          <AnswerButton
-            content={answer.content}
-            isSelected={selectedIndex === index}
-            onClick={() => handleSelectAnswer(index)}
-          />
-        </div>
+        <AnswerButton
+          key={index}
+          content={answer.content}
+          isSelected={isSelected(index)}
+          onClick={() => handleClick(index)}
+        />
       ))}
     </div>
   );

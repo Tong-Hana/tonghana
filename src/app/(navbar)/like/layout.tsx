@@ -7,7 +7,7 @@ export default function LikeLayout({
 }) {
   return (
     <div>
-      <Header title="좋아요" centerTitle={false} showBackButton={false} />
+      <Header title="받은 좋아요" centerTitle={false} showBackButton={false} />
       {children}
     </div>
   );

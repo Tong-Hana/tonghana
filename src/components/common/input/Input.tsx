@@ -63,7 +63,7 @@ const Input = forwardRef<HTMLInputElement, CustomInputProps>(
           ),
         }}
         sx={{
-          "& .MuiOutlinedInput-root": {
+          "& .MuiInputBase-root": {
             borderRadius: "0.5rem",
             height: "36px",
             "& fieldset": {

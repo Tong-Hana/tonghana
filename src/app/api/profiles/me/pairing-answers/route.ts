@@ -2,6 +2,8 @@
  * @swagger
  * /app/profiles/me/pairing-answers:
  *   post:
+ *     tags:
+ *       - Profiles
  *     summary: 페어링북 응답 저장
  *     description: 로그인한 사용자의 페어링북 설문 응답(예산, 선호 도시, 이상적 소득 범위 등)을 저장하거나 업데이트합니다.
  *     requestBody:
@@ -12,27 +14,27 @@
  *             type: object
  *             required:
  *               - car_budget
- *               - date_budget
- *               - shoes_budget
- *               - preferred_city
- *               - ideal_income_range
+ *               - dateBudget
+ *               - shoesBudget
+ *               - preferredCity
+ *               - idealIncomeRange
  *             properties:
  *               car_budget:
  *                 type: string
  *                 example: "2000"
  *                 description: 자동차 예산 (숫자지만 BigInt 처리로 문자열로 받음)
- *               date_budget:
+ *               dateBudget:
  *                 type: integer
  *                 example: 10
  *                 description: 데이트 예산
- *               shoes_budget:
+ *               shoesBudget:
  *                 type: integer
  *                 example: 30
  *                 description: 신발 예산
- *               preferred_city:
+ *               preferredCity:
  *                 type: string
  *                 example: "서울시 강남구"
- *               ideal_income_range:
+ *               idealIncomeRange:
  *                 type: string
  *                 enum: [NEAR_300, NEAR_500, NEAR_800, OVER_1000]
  *                 example: "NEAR_800"
@@ -59,16 +61,16 @@
  *                     car_budget:
  *                       type: string
  *                       example: "2000"
- *                     date_budget:
+ *                     dateBudget:
  *                       type: integer
  *                       example: 10
- *                     shoes_budget:
+ *                     shoesBudget:
  *                       type: integer
  *                       example: 30
- *                     preferred_city:
+ *                     preferredCity:
  *                       type: string
  *                       example: "서울시 강남구"
- *                     ideal_income_range:
+ *                     idealIncomeRange:
  *                       type: string
  *                       example: "NEAR_800"
  *                     created_at:
@@ -100,18 +102,18 @@ export async function POST(req: Request) {
     const body = await req.json();
     const {
       car_budget,
-      date_budget,
-      shoes_budget,
-      preferred_city,
-      ideal_income_range,
+      dateBudget,
+      shoesBudget,
+      preferredCity,
+      idealIncomeRange,
     } = body;
 
     if (
       !car_budget ||
-      !date_budget ||
-      !shoes_budget ||
-      !preferred_city ||
-      !ideal_income_range
+      !dateBudget ||
+      !shoesBudget ||
+      preferredCity ||
+      !idealIncomeRange
     ) {
       return NextResponse.json(
         { code: "INVALID_INPUT", message: "모든 항목을 입력해주세요." },
@@ -120,21 +122,21 @@ export async function POST(req: Request) {
     }
 
     const answer = await prisma.pairingAnswer.upsert({
-      where: { user_id: authUser.userId },
+      where: { userId: authUser.userId },
       update: {
-        car_budget: BigInt(car_budget),
-        date_budget,
-        shoes_budget,
-        preferred_city,
-        ideal_income_range,
+        carBudget: BigInt(car_budget),
+        dateBudget,
+        shoesBudget,
+        preferredCity,
+        idealIncomeRange,
       },
       create: {
-        user_id: authUser.userId,
-        car_budget: BigInt(car_budget),
-        date_budget,
-        shoes_budget,
-        preferred_city,
-        ideal_income_range,
+        userId: authUser.userId,
+        carBudget: BigInt(car_budget),
+        dateBudget,
+        shoesBudget,
+        preferredCity,
+        idealIncomeRange,
       },
     });
 
@@ -143,7 +145,7 @@ export async function POST(req: Request) {
         message: "페어링북 응답이 저장되었습니다.",
         data: {
           ...answer,
-          car_budget: answer.car_budget.toString(), // JSON.stringify()는 BigInt를 처리할 수 없으므로 BigInt → .toString()
+          car_budget: answer.carBudget.toString(), // JSON.stringify()는 BigInt를 처리할 수 없으므로 BigInt → .toString()
         },
       },
       { status: 201 },

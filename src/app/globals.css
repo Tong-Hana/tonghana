@@ -1,3 +1,5 @@
+@import "swiper/css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -27,6 +29,24 @@ body {
 
 @layer utilities {
   .frame-container {
-    @apply w-full max-w-[1024px] mx-auto px-5;
+    @apply w-full max-w-[1024px] mx-auto;
   }
+
+  .scrollbar-hide {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    scrollbar-width: none;
+  }
+}
+
+/* 보낸 메시지 말풍선 (outgoing) */
+.cs-message--outgoing .cs-message__content {
+  @apply bg-hanagreen-normal text-white !important;
+}
+
+/* 받은 메시지 말풍선 (incoming) */
+.cs-message--incoming .cs-message__content {
+  @apply bg-hanagreen-light text-text-primary !important;
 }
