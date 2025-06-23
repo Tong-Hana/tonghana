@@ -11,10 +11,9 @@ import DatePicker from "@/components/common/DatePicker";
 import Input from "@/components/common/input/Input";
 import Tag from "@/components/common/tag/Tag";
 import AssetToggleRow from "@/components/profile/AssetToggleRow";
-
 import QuestionCard from "@/components/question/QuestionCard";
+import { GOAL_TAGS, type GoalTag } from "@/lib/constants/profile";
 
-const GOAL_TAGS = ["내 집 마련", "목돈 마련", "노후 자금", "결혼 자금"];
 const INCOME_OPTIONS = [
   "400만 원대",
   "600만 원대",
@@ -35,7 +34,9 @@ export default function ProfileEditForm() {
   const [job, setJob] = useState("프리랜서");
   const [goalAmount, setGoalAmount] = useState("1억");
   const [goalPeriod, setGoalPeriod] = useState("3년");
-  const [selectedGoal, setSelectedGoal] = useState<string | null>("내 집 마련");
+  const [selectedGoal, setSelectedGoal] = useState<GoalTag | null>(
+    "내 집 마련",
+  );
   const [, setProfileImage] = useState<File | null>(null);
   const [carPrice, setCarPrice] = useState("5000");
   const [datePrice, setDatePrice] = useState("30");
