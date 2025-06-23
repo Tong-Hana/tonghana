@@ -7,7 +7,6 @@ export interface LoginResponse {
   message: string;
   accessToken?: string;
   user?: {
-    userId: number;
     nickname: string;
   };
 }
