@@ -1,12 +1,12 @@
 /**
  * @swagger
- * /api/profiles/me:
+ * /api/profiles:
  *   patch:
  *     tags:
  *       - Profiles
- *     summary: 사용자 프로필 최초 등록
+ *     summary: 사용자 프로필 등록 및 수정
  *     description: |
- *       회원가입 후후 사용자가 자신의 프로필 정보를 최초 등록합니다.
+ *       회원가입 후후 사용자가 자신의 프로필 정보를 등록 및 수정합니다.
  *       한 줄 소개, 직업, 목표 설정, 목표 금액, 목표 기간,
  *       실물 자산 보유 현황(자차, 부동산) 및 시세 정보, 프로필 이미지를 포함합니다.
  *     consumes:
