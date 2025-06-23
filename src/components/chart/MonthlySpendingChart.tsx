@@ -1,9 +1,17 @@
-import { ConsumeHistory } from "@/services/userProfile";
+import { ConsumeHistory } from "@/app/types/profiles";
+
+const emptyConsumeHistory: ConsumeHistory = {
+  savingsRate: 0,
+  investmentRate: 0,
+  leisureRate: 0,
+  livingExpenseRate: 0,
+  otherRate: 0,
+};
 
 export default function MonthlySpendingChart({
-  data,
+  data = emptyConsumeHistory,
 }: {
-  data: ConsumeHistory;
+  data?: ConsumeHistory;
 }) {
   const monthlySpendingRaw = [
     { label: "저축", value: data.savingsRate, color: "#4c5caa" },
