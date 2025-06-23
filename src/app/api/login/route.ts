@@ -93,6 +93,10 @@ export async function POST(req: Request) {
     const response = NextResponse.json({
       message: "로그인에 성공하였습니다.",
       accessToken: token,
+      user: {
+        userId: user.userId,
+        nickname: user.nickname,
+      },
     });
 
     response.cookies.set({

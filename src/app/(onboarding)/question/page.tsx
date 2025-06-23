@@ -35,9 +35,9 @@ export default function QuestionPage() {
         content={
           <>
             나는 어떤 투자 스타일일까? <br />
-            10개의 질문으로 <br />
-            나에게 맞는 <span className="text-hanagreen-normal">투자 성향</span>
-            을 찾아보세요!
+            8개의 FTTI(Financial Type Test Indicator) 질문으로 <br />
+            나의 <span className="text-hanagreen-normal">투자 성향</span>을
+            알아보세요!
           </>
         }
         imageType="infoStarBoy"

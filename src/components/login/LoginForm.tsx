@@ -8,12 +8,14 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { validateEmail } from "@/lib/validators";
 import { useLogin } from "@/hooks/useLogin";
+import { useUserStore } from "@/lib/store/userStore";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const setNickname = useUserStore((state) => state.setNickname);
 
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -24,7 +26,10 @@ export default function LoginForm() {
   };
 
   const loginMutation = useLogin(
-    () => {
+    (data) => {
+      if (data.user) {
+        setNickname(data.user.nickname);
+      }
       router.push("/home");
       setIsSubmitting(false);
     },

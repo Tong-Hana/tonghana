@@ -16,6 +16,8 @@ import Job from "@/assets/icons/profile_card/job.svg";
 import Map from "@/assets/icons/profile_card/map.svg";
 import Exit from "@/assets/icons/exit.svg";
 import PaperAirplane from "@/assets/icons/paper_airplane.svg";
+import CheckCircle from "@/assets/icons/check_circle_icon.svg";
+import Chart from "@/assets/icons/chart_icon.svg";
 
 export {
   HomeIcon,
@@ -34,4 +36,6 @@ export {
   Car,
   Exit,
   PaperAirplane,
+  CheckCircle,
+  Chart,
 };

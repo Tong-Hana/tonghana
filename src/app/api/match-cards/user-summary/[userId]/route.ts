@@ -15,7 +15,6 @@
  *       위 조건 중 하나라도 충족하면 다음 항목이 포함됩니다:
  *       - carValue: 자동차 자산 금액
  *       - houseValue: 부동산 자산 금액
- *       - goalAmount: 목표 금액
  *       - totalAsset: 총 자산 (금융상품 + 자동차 + 부동산)
 
  *       비율 관련 정보:
@@ -347,7 +346,7 @@ export async function GET(
     // 총합 계산
     const consumeTotal = savings + investment + leisure + living + other;
 
-    // 총합이 0일 경우 각 비율은 0 처리, 아니면 소수점 3자리 비율 계산
+    // 총합이 0일 경우 각 비율은 0 처리, 아니면 소수점 2자리 비율 계산
     const consumeRatios =
       consumeTotal > 0
         ? {
@@ -370,7 +369,6 @@ export async function GET(
       ...userData,
       carValue: showAssetValues ? Number(userData.carValue ?? 0) : null,
       houseValue: showAssetValues ? Number(userData.houseValue ?? 0) : null,
-      goalAmount: showAssetValues ? Number(userData.goalAmount ?? 0) : null,
       totalAsset: showAssetValues ? assetTotal : null,
       financialProductRatio: {
         financeRatio: parseFloat((financeTotal / totalValue).toFixed(2)),

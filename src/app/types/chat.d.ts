@@ -11,21 +11,21 @@ export interface NextApiResponseServerIO extends NextApiResponse {
 }
 
 // 채팅 메시지 구조
-export interface ChatMessage {
+export interface SocketChatMessage {
   roomId: number;
   userId: number;
-  content: string;
-  sentAt: string;
+  message: string;
+  regdate: string;
 }
 
 export interface ServerToClientEvents {
-  receiveMessage: (message: ChatMessage) => void;
+  receiveMessage: (message: SocketChatMessage) => void;
   connectUser: (userId: number) => void;
   disconnectUser: (userId: number) => void;
 }
 
 export interface ClientToServerEvents {
-  sendMessage: (message: ChatMessage) => void;
+  sendMessage: (message: SocketChatMessage) => void;
   joinRoom: (roomId: number) => void;
   leaveRoom: (roomId: number) => void;
 }
