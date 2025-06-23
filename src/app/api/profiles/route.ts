@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /api/profiles/me:
+ * /api/profiles:
  *   patch:
  *     tags:
  *       - Profiles
