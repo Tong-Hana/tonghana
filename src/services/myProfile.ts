@@ -14,6 +14,22 @@ export interface ProfilePayload {
   houseValue?: string;
 }
 
+export interface ProfileRegistrationStatus {
+  isRegistered: boolean;
+}
+
+export async function checkProfileRegistrationStatus(): Promise<ProfileRegistrationStatus> {
+  try {
+    const response = (await customFetch("/profiles/is-registered", {
+      method: "GET",
+    })) as unknown as ProfileRegistrationStatus;
+
+    return response;
+  } catch {
+    return { isRegistered: false };
+  }
+}
+
 export async function submitProfile(payload: ProfilePayload) {
   const formData = new FormData();
 

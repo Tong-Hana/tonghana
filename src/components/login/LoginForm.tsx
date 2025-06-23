@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { validateEmail } from "@/lib/validators";
 import { useLogin } from "@/hooks/useLogin";
 import { useUserStore } from "@/lib/store/userStore";
+import { checkProfileRegistrationStatus } from "@/services/myProfile";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -26,11 +27,24 @@ export default function LoginForm() {
   };
 
   const loginMutation = useLogin(
-    (data) => {
+    async (data) => {
       if (data.user) {
         setNickname(data.user.nickname);
+
+        try {
+          const profileStatus = await checkProfileRegistrationStatus();
+
+          if (profileStatus.isRegistered) {
+            router.push("/home");
+          } else {
+            router.push("/profile-setup");
+          }
+        } catch {
+          toast.error("프로필 상태 확인에 실패했습니다. 다시 시도해주세요.");
+        }
+      } else {
+        toast.error("로그인 정보를 확인할 수 없습니다. 다시 시도해주세요.");
       }
-      router.push("/home");
       setIsSubmitting(false);
     },
     (error) => {
