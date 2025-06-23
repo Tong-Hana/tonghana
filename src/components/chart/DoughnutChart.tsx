@@ -3,12 +3,12 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { CategoryRatios } from "@/app/types/profiles";
 import {
   PortfolioCategoryLabelMap,
   PortfolioCategoryColorMap,
   InvestmentTypeLabelMap,
   categoryKeys,
+  CategoryRatios,
 } from "@/app/types/profiles";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -25,18 +25,6 @@ export default function DoughnutChart({
   debtLabel,
   portfolioType,
 }: DoughnutChartProps) {
-  console.log("doghnut:", values, debtLabel, portfolioType);
-
-  // {
-  //   "DOMESTIC_STOCKS": 0.11,
-  //   "FOREIGN_BONDS": 0.07,
-  //   "DEVELOPED_STOCKS": 0.18,
-  //   "CASH": 0.05,
-  //   "EMERGING_STOCKS": 0.3,
-  //   "SAVINGS": 0.14,
-  //   "ALTERNATIVE": 0.15
-  // }
-
   const portfolioData = categoryKeys
     .map((key) => {
       const value = values[key];
