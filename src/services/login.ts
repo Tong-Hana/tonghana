@@ -6,6 +6,10 @@ export type LoginRequest = {
 export interface LoginResponse {
   message: string;
   accessToken?: string;
+  user?: {
+    userId: number;
+    nickname: string;
+  };
 }
 
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {

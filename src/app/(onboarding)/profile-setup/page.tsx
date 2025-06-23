@@ -19,6 +19,7 @@ import {
   type GoalTag,
   type GoalPeriodOption,
 } from "@/lib/constants/profile";
+import { useUserStore } from "@/lib/store/userStore";
 
 export default function ProfileSetUpPage() {
   const [img, setImg] = useState<File | null>(null);
@@ -33,6 +34,7 @@ export default function ProfileSetUpPage() {
   const [houseValue, setHouseValue] = useState("");
 
   const { mutate: submitProfile } = useSubmitProfile();
+  const nickname = useUserStore((state) => state.nickname);
 
   const isFormComplete =
     introduction.trim() !== "" &&
@@ -81,7 +83,7 @@ export default function ProfileSetUpPage() {
         <div className="bg-background w-full min-h-[calc(100vh-64px)] pt-24 pb-10 px-4 shadow-md rounded-t-3xl">
           <div className="flex flex-col space-y-[1.875rem]">
             <div className="text-3xl font-semibold text-text-primary">
-              승희님, 안녕하세요
+              {nickname || "회원"}님, 안녕하세요
             </div>
 
             <InfoCard
