@@ -1,3 +1,6 @@
+import { GoalType, GoalPeriod, ProductCategory } from "@/lib/constants/enums";
+export { GoalType, GoalPeriod };
+
 export interface PairingAnswer {
   carBudget: number;
   dateBudget: number;
@@ -22,6 +25,31 @@ export type CategoryKey = `${ProductCategory}`;
 export const categoryKeys: CategoryKey[] = Object.values(ProductCategory);
 
 export type CategoryRatios = Record<CategoryKey, number>;
+
+export interface UserProfile {
+  userId: number;
+  nickname: string;
+  gender: string;
+  birthYear: number;
+  city: string;
+  job: string;
+  description: string;
+  profileImage: string;
+  hasCar: boolean;
+  hasHouse: boolean;
+  carValue: number;
+  houseValue: number;
+  goalAmount: number;
+  totalAsset: number;
+  goalPeriod: string;
+  goalType: string;
+  currentType: string;
+  preferredType: string;
+  pairingAnswer: PairingAnswer;
+  consumeHistory: ConsumeHistory;
+  financialProductRatio: FinancialProductRatio;
+  categoryRatios: CategoryRatios;
+}
 
 export const PortfolioCategoryLabelMap: Record<string, string> = {
   SAVINGS: "입출금/예적금",
@@ -53,7 +81,12 @@ export const InvestmentTypeLabelMap: Record<string, string> = {
   VERY_AGGRESSIVE: "공격투자형",
 };
 
-import { GoalType, GoalPeriod, ProductCategory } from "@/lib/constants/enums";
+export const IdealIncomeRangeLabelMap: Record<string, string> = {
+  NEAR_400: "400만원대",
+  NEAR_600: "600만원대",
+  NEAR_800: "800만원대",
+  OVER_1000: "1000만원대 이상",
+};
 
 export const GOAL_TAGS = [
   "내 집 마련",

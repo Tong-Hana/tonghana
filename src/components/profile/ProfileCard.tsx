@@ -11,6 +11,7 @@ import {
 import { ProfileCardProps } from "@/components/profile/types/profileCardTypes";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { InvestmentTypeLabelMap } from "@/app/types/profiles";
 
 export default function ProfileCard({
   id,
@@ -91,10 +92,10 @@ export default function ProfileCard({
             />
           )}
           <Tag
-            text={`#${investorType} 선호`}
+            text={`#${InvestmentTypeLabelMap[investorType]} 선호`}
             size="xs"
             variant="outlined"
-            className="font-normal text-[0.6rem] px-[0.6rem]"
+            className="font-medium text-[0.65rem] px-[0.6rem]"
           />
         </div>
         <div className="flex flex-col gap-2">
