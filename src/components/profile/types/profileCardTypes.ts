@@ -1,3 +1,5 @@
+import { CategoryRatios } from "@/app/types/profiles";
+
 export interface ProfileCardProps {
   id: number;
   name: string;
@@ -10,7 +12,7 @@ export interface ProfileCardProps {
   totalAsset: string;
   carCost: string;
   houseCost: string;
-  portfolioRatios: number[];
+  portfolioRatios: CategoryRatios;
   debtPercent: string;
   portfolioType: string;
   investorType: string;

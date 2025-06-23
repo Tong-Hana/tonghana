@@ -2,11 +2,12 @@ import ProfileCard from "@/components/profile/ProfileCard";
 import PairingBook from "@/components/profile/ParingBook";
 import MonthlySpendingChart from "@/components/chart/MonthlySpendingChart";
 import { ProfileCardProps } from "./types/profileCardTypes";
+import { ConsumeHistory } from "@/app/types/profiles";
 
 interface ProfileCardDetailProps {
   user: ProfileCardProps;
   answers: { id: number; answer: string }[];
-  segments: { label: string; value: number }[];
+  data: ConsumeHistory;
   showDetail?: boolean;
   modalView?: boolean;
 }
@@ -14,7 +15,7 @@ interface ProfileCardDetailProps {
 export default function ProfileCardDetail({
   user,
   answers,
-  segments,
+  data,
   showDetail = false,
   modalView = false,
 }: ProfileCardDetailProps) {
@@ -43,7 +44,7 @@ export default function ProfileCardDetail({
         {/* paringbook */}
         <PairingBook answers={answers} />
         {/* 지난 달 소비 */}
-        <MonthlySpendingChart segments={segments} />
+        <MonthlySpendingChart data={data} />
       </div>
     </>
   );
