@@ -15,7 +15,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const setUser = useUserStore((state) => state.setUser);
+  const setNickname = useUserStore((state) => state.setNickname);
 
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -28,7 +28,7 @@ export default function LoginForm() {
   const loginMutation = useLogin(
     (data) => {
       if (data.user) {
-        setUser(data.user.nickname, data.user.userId);
+        setNickname(data.user.nickname);
       }
       router.push("/home");
       setIsSubmitting(false);
