@@ -32,7 +32,7 @@ export default function ProfileCardDetail({
         totalAsset={user.totalAsset}
         carCost={user.carCost}
         houseCost={user.houseCost}
-        portfolioValues={user.portfolioValues}
+        portfolioRatios={user.portfolioRatios}
         debtPercent={user.debtPercent}
         investorType={user.investorType}
         portfolioType={user.portfolioType}

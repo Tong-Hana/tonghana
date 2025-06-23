@@ -24,7 +24,7 @@ export default function ProfileCard({
   totalAsset,
   carCost,
   houseCost,
-  portfolioValues,
+  portfolioRatios,
   portfolioType,
   investorType,
   debtPercent,
@@ -122,7 +122,7 @@ export default function ProfileCard({
           )}
         </div>
         <DoughnutChart
-          values={portfolioValues}
+          values={portfolioRatios}
           portfolioType={portfolioType}
           debtLabel={debtPercent}
           showPercent={!showDetail}

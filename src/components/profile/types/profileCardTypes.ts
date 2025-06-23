@@ -10,7 +10,7 @@ export interface ProfileCardProps {
   totalAsset: string;
   carCost: string;
   houseCost: string;
-  portfolioValues: number[];
+  portfolioRatios: number[];
   debtPercent: string;
   portfolioType: string;
   investorType: string;
