@@ -5,75 +5,120 @@ import Button from "@/components/common/button/Button";
 import DialogButton from "@/components/common/button/DialogButton";
 import { DislikeButton } from "@/components/common/button/ReactionButton";
 import RightArrow from "@/assets/icons/right_arrow_icon.svg";
-import ImageUploader from "@/components/profile/imageUploader/ImageUploader";
 import ProfileCardDetail from "@/components/profile/ProfileCardDetail";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Header from "@/components/common/Header";
+import { useUserProfileQuery } from "@/hooks/useUserProfileQuery";
+import Image from "next/image";
+import {
+  CategoryRatios,
+  PairingAnswer,
+  ConsumeHistory,
+  UserProfile,
+  goalUtils,
+  GoalPeriod,
+  GoalType,
+  IdealIncomeRangeLabelMap,
+} from "@/app/types/profiles";
 
-export default function MyPage() {
-  // API로 불러올 데이터
-  const user = {
-    id: 1,
-    name: "김하나",
-    age: 30,
-    job: "회사원",
-    location: "경기도 성남시",
-    description: "성남에 살고 서울에서 일해요 😊",
-    imageUrl: "/jennie.jpg",
-    target: "5년 안에 내집마련!",
-    totalAsset: "5억",
-    carCost: "5천만원",
-    houseCost: "3억",
-    portfolioValues: [300, 200, 165, 100, 0, 0, 0, 100],
-    debtPercent: "200%",
-    investorType: "적극투자",
-    portfolioType: "안정형",
-    showDetail: false,
-  };
+const emptyCategoryRatios = {
+  SAVINGS: 0,
+  DOMESTIC_STOCKS: 0,
+  DEVELOPED_STOCKS: 0,
+  EMERGING_STOCKS: 0,
+  DOMESTIC_BONDS: 0,
+  FOREIGN_BONDS: 0,
+  ALTERNATIVE: 0,
+  CASH: 0,
+};
 
-  const consumeHistoryData = {
-    user_id: 1,
-    savings_rate: 0.3,
-    investment_rate: 0.2,
-    leisure_rate: 0.15,
-    living_expense_rate: 0.25,
-    other_rate: 0.1,
-  };
-  const segments = [
-    { label: "저축", value: consumeHistoryData.savings_rate * 100 },
-    { label: "투자", value: consumeHistoryData.investment_rate * 100 },
-    { label: "여가/취미", value: consumeHistoryData.leisure_rate * 100 },
-    { label: "생활", value: consumeHistoryData.living_expense_rate * 100 },
-    { label: "기타", value: consumeHistoryData.other_rate * 100 },
-  ];
+const emptyConsumeHistory = {
+  savingsRate: 0,
+  investmentRate: 0,
+  leisureRate: 0,
+  livingExpenseRate: 0,
+  otherRate: 0,
+};
 
-  const pairingAnswerData = {
-    id: 1,
-    user_id: 1,
-    car_budget: 50000000,
-    date_budget: 300000,
-    shoes_budget: 200000,
-    preferred_city: "서울시",
-    preferred_district: "압구정동",
-    ideal_income_range: "1000만원대 이상",
-    created_at: "2023-01-01T10:00:00Z",
+function getUser(data: UserProfile | undefined) {
+  if (!data) {
+    return {
+      id: 0,
+      name: "이름 없음",
+      age: 0,
+      job: "직업 정보 없음",
+      location: "지역 정보 없음",
+      description: "소개 정보 없음",
+      imageUrl: "/jennie.jpg",
+      target: "목표 없음",
+      totalAsset: "0원",
+      carCost: "0원",
+      houseCost: "0원",
+      portfolioRatios: emptyCategoryRatios as CategoryRatios,
+      debtPercent: "0%",
+      investorType: "정보 없음",
+      portfolioType: "정보 없음",
+    };
+  }
+  return {
+    id: data.userId,
+    name: data.nickname || "이름 없음",
+    age: new Date().getFullYear() - (data.birthYear || 2000),
+    job: data.job || "직업 정보 없음",
+    location: data.city || "지역 정보 없음",
+    description: data.description || "소개 정보 없음",
+    imageUrl: data.profileImage || "/jennie.jpg",
+    target:
+      (goalUtils.periodValueToOption(data.goalPeriod as GoalPeriod) || "") +
+      " " +
+      (goalUtils.enumToTag(data.goalType as GoalType) || "") +
+      "!",
+    totalAsset: data.totalAsset
+      ? `${(data.totalAsset / 10000).toLocaleString()}만원`
+      : "0원",
+    carCost: data.carValue
+      ? `${(data.carValue / 10000).toLocaleString()}만원`
+      : "0원",
+    houseCost: data.houseValue
+      ? `${(data.houseValue / 10000).toLocaleString()}만원`
+      : "0원",
+    portfolioRatios: (data.categoryRatios ||
+      emptyCategoryRatios) as CategoryRatios,
+    debtPercent: `${data.financialProductRatio?.loanRatio}%` || "0%",
+    investorType: data.currentType || "정보 없음",
+    portfolioType: data.preferredType || "정보 없음",
   };
-  const answer = [
+}
+
+function getConsumeHistory(data: UserProfile | undefined): ConsumeHistory {
+  return data?.consumeHistory || emptyConsumeHistory;
+}
+
+function getPairingAnswers(pairingAnswerData: PairingAnswer | undefined) {
+  if (!pairingAnswerData) return [];
+  return [
     {
       id: 1,
-      answer: `${(pairingAnswerData.car_budget / 10000).toLocaleString()}만원, ${(pairingAnswerData.date_budget / 10000).toLocaleString()}만원, ${(pairingAnswerData.shoes_budget / 10000).toLocaleString()}만원`,
+      answer: `${(pairingAnswerData.carBudget / 10000).toLocaleString()}만원, ${(pairingAnswerData.dateBudget / 10000).toLocaleString()}만원, ${(pairingAnswerData.shoesBudget / 10000).toLocaleString()}만원`,
     },
     {
       id: 2,
-      answer: `${pairingAnswerData.preferred_city} ${pairingAnswerData.preferred_district}`,
+      answer: `${pairingAnswerData.preferredCity || ""}`,
     },
     {
       id: 3,
-      answer: `${pairingAnswerData.ideal_income_range}`,
+      answer: `${IdealIncomeRangeLabelMap[pairingAnswerData.idealIncomeRange] || ""}`,
     },
   ];
+}
 
+export default function MyPage() {
+  const { data } = useUserProfileQuery();
+
+  const user = getUser(data?.data);
+  const consumeHistoryData = getConsumeHistory(data?.data);
+  const answer = getPairingAnswers(data?.data?.pairingAnswer);
   const router = useRouter();
 
   const [showCard, setShowCard] = useState(false);
@@ -151,8 +196,17 @@ export default function MyPage() {
       <div className="flex flex-col gap-5 px-5 py-2">
         <Header title="마이페이지" />
         {/* 프로필 */}
-        <div className="flex justify-center items-center gap-9 pt-5">
-          <ImageUploader imageUrl={user.imageUrl} onChange={() => {}} />
+        <div className="flex justify-center items-center gap-10 pt-5 pb-3">
+          <div className="flex rounded-full w-28 h-28 overflow-hidden">
+            <Image
+              src={user.imageUrl}
+              alt="profile img"
+              width={100}
+              height={100}
+              className="h-full w-full object-cover"
+            />
+          </div>
+
           <div className="flex flex-col gap-2 items-start">
             <p className="text-text-primary text-lg font-medium">{user.name}</p>
             <Button
@@ -176,7 +230,7 @@ export default function MyPage() {
                   <ProfileCardDetail
                     user={user}
                     answers={answer}
-                    segments={segments}
+                    data={consumeHistoryData}
                     showDetail={true}
                     modalView={true}
                   />
@@ -191,14 +245,14 @@ export default function MyPage() {
             내 자산
           </h2>
           <DoughnutChart
-            values={user.portfolioValues}
+            values={user.portfolioRatios}
             portfolioType={user.portfolioType}
             debtLabel={user.debtPercent}
             showPercent={true}
           />
         </div>
 
-        <MonthlySpendingChart segments={segments} />
+        <MonthlySpendingChart data={consumeHistoryData} />
       </div>
       {/* 메뉴 리스트 부분 */}
       <div className="bg-white mt-4 shadow-sm">

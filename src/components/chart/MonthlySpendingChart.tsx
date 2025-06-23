@@ -1,36 +1,43 @@
-type Segment = {
-  label: string;
-  value: number; // %
-};
+import { ConsumeHistory } from "@/services/userProfile";
 
-type Props = {
-  segments: Segment[];
-};
+export default function MonthlySpendingChart({
+  data,
+}: {
+  data: ConsumeHistory;
+}) {
+  const monthlySpendingRaw = [
+    { label: "저축", value: data.savingsRate, color: "#4c5caa" },
+    { label: "투자", value: data.investmentRate, color: "#7DB9F5" },
+    { label: "여가/취미", value: data.leisureRate, color: "#9b8df1" },
+    { label: "생활", value: data.livingExpenseRate, color: "#f29090" },
+    { label: "기타", value: data.otherRate, color: "#C4C4DE" },
+  ];
 
-const COLOR_MAP: Record<Segment["label"], string> = {
-  저축: "#4c5caa",
-  투자: "#7DB9F5",
-  "여가/취미": "#9b8df1",
-  생활: "#f29090",
-  기타: "#C4C4DE",
-};
+  const total = monthlySpendingRaw.reduce((sum, seg) => sum + seg.value, 0);
 
-export default function MonthlySpendingChart({ segments }: Props) {
+  const monthlySpending = monthlySpendingRaw.map((seg) => ({
+    ...seg,
+    width: total > 0 ? (seg.value / total) * 100 : 0,
+    percent: Math.round(seg.value * 100),
+  }));
+
   return (
     <div className="rounded-xl p-5 bg-white w-full space-y-5 shadow-[0px_1px_3px_0px_#0000001A]">
       <h2 className="text-hanagreen-normal font-semibold text-lg">
         지난 달 소비
       </h2>
       {/* 그래프 막대 */}
-      <div className="w-full h-4 rounded-sm overflow-hidden flex">
-        {segments.map((seg, idx) => (
+      <div className="w-full px-1 h-4 overflow-hidden flex">
+        {monthlySpending.map((seg, idx) => (
           <div
             key={idx}
             style={{
-              width: `${seg.value}%`,
-              backgroundColor: COLOR_MAP[seg.label],
+              width: `${seg.width}%`,
+              backgroundColor: seg.color,
               borderRight:
-                idx !== segments.length - 1 ? "0.5px solid white" : "none",
+                idx !== monthlySpending.length - 1
+                  ? "0.5px solid white"
+                  : "none",
             }}
           />
         ))}
@@ -38,14 +45,14 @@ export default function MonthlySpendingChart({ segments }: Props) {
 
       {/* 하단 라벨 */}
       <div className="flex flex-wrap justify-around text-hanablack text-[0.8rem]">
-        {segments.map((seg, idx) => (
+        {monthlySpending.map((seg, idx) => (
           <div key={idx} className="flex items-center text-center gap-1 mb-2">
             <span
               className="w-[0.4rem] h-[0.4rem] rounded-full"
-              style={{ backgroundColor: COLOR_MAP[seg.label] }}
+              style={{ backgroundColor: seg.color }}
             />
             <span className="flex-1">{seg.label}</span>
-            <span>{seg.value}%</span>
+            <span>{seg.percent}%</span>
           </div>
         ))}
       </div>
