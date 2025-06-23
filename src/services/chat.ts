@@ -50,31 +50,6 @@ export const fetchChatMessages = async (
   };
 };
 
-type ChatPartnerInfoResponse = {
-  userId: number;
-  nickname: string;
-  profileImage: string;
-};
-
-export const fetchChatPartnerInfo = async (
-  userId: number,
-): Promise<ChatPartnerInfoResponse> => {
-  const res = await fetch(`/api/match-cards/user-summary/${userId}`);
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message ?? "채팅 상대 정보 조회에 실패했습니다.");
-  }
-
-  const parsedData = await res.json();
-
-  return {
-    userId: parsedData.userId,
-    nickname: parsedData.nickname,
-    profileImage: parsedData.profileImage,
-  };
-};
-
 export type ChatRoomInfoResponse = {
   roomId: number;
   myId: number;

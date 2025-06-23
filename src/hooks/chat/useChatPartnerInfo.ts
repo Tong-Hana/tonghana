@@ -1,5 +1,5 @@
+import { fetchChatPartnerInfo } from "@/services/profile";
 import { useQuery } from "@tanstack/react-query";
-import { fetchChatPartnerInfo } from "@/services/chat";
 
 export const useChatPartnerInfo = (partnerId?: number) => {
   return useQuery({

@@ -16,6 +16,7 @@ import { useChatRoomInfo } from "@/hooks/chat/useChatRoomInfo";
 import { useSocket } from "@/hooks/chat/useSocket";
 import LeaveChatRoomButton from "@/components/chat/LeaveChatRoomButton";
 import ChatWarningModal from "@/components/chat/ChatWarningModal";
+import ChatPortfolioButton from "@/components/chat/portfolio/ChatPortfolioButton";
 
 export default function ChatRoomPage() {
   const params = useParams();
@@ -163,11 +164,20 @@ export default function ChatRoomPage() {
 
       {/* 하단 고정 입력창 */}
       <div className="fixed w-full bottom-0 left-0 z-10 flex flex-col gap-3 bg-transparent">
-        <AssetShareButton
-          status={roomInfo?.agreeStatus ?? AssetShareStatus.REJECTED}
-          myId={myProfile?.userId}
-          roomId={roomId}
-        />
+        <div className="flex justify-center">
+          {myProfile && chatPartner && (
+            <ChatPortfolioButton
+              partnerNickname={chatPartner?.nickname}
+              myPortfolioData={myProfile.categoryRatios}
+              partnerPortfolioData={chatPartner.categoryRatios}
+            />
+          )}
+          <AssetShareButton
+            status={roomInfo?.agreeStatus ?? AssetShareStatus.REJECTED}
+            myId={myProfile?.userId}
+            roomId={roomId}
+          />
+        </div>
         <ChatInput inputRef={inputRef} onSend={handleSendMessage} />
       </div>
     </div>
