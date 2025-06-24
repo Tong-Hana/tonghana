@@ -21,7 +21,10 @@ export default function ChatMessage({
 
   return (
     <div
-      className={cn("items-end", isIncoming ? "flex" : "flex flex-row-reverse")}
+      className={cn(
+        "mt-1 items-end",
+        isIncoming ? "flex mr-10" : "flex flex-row-reverse ml-10",
+      )}
     >
       {/* 상대방 이미지 (상대방 그룹의 첫번째 메세지일 경우만) */}
       {isIncoming &&
@@ -51,11 +54,11 @@ export default function ChatMessage({
       {isLastOfGroup && (
         <div
           className={cn(
-            "mt-1 text-xs text-text-secondary",
+            "flex-none mt-1 text-xs text-text-secondary",
             isIncoming ? "ml-1 text-left" : "mr-1 text-right",
           )}
         >
-          {formatTime(message.createdAt, "hh:mm a")}
+          {formatTime(message.createdAt, "a hh:mm")}
         </div>
       )}
     </div>
