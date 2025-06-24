@@ -1,17 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import Input from "@/components/common/input/Input";
 import Tag from "@/components/common/tag/Tag";
 
 interface AssetToggleRowProps {
   unit: string;
+  value: string;
+  onToggle: (checked: boolean) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  isOwned: boolean;
 }
 
-export default function AssetToggleRow({ unit }: AssetToggleRowProps) {
-  const [isOwned, setIsOwned] = useState<boolean>(false);
-  const [marketPrice, setMarketPrice] = useState<string>("");
-
+export default function AssetToggleRow({
+  unit,
+  value,
+  onToggle,
+  onChange,
+  isOwned,
+}: AssetToggleRowProps) {
   return (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-2 whitespace-nowrap">
@@ -19,13 +25,13 @@ export default function AssetToggleRow({ unit }: AssetToggleRowProps) {
           text="보유"
           selectable
           selected={isOwned}
-          onClick={() => setIsOwned(true)}
+          onClick={() => onToggle(true)}
         />
         <Tag
           text="미보유"
           selectable
           selected={!isOwned}
-          onClick={() => setIsOwned(false)}
+          onClick={() => onToggle(false)}
         />
       </div>
 
@@ -35,8 +41,8 @@ export default function AssetToggleRow({ unit }: AssetToggleRowProps) {
             placeholder="시세 입력"
             unit={unit}
             unitPosition="end"
-            value={marketPrice}
-            onChange={(e) => setMarketPrice(e.target.value)}
+            value={value}
+            onChange={onChange}
             className="w-full"
           />
         </div>

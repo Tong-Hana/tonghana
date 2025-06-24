@@ -106,8 +106,8 @@ export default function BottomNav() {
   return (
     <nav>
       <div className="h-12"></div>
-      <div className="fixed bottom-0 left-0 w-full z-50 border-t border-hanasilver bg-white">
-        <div className="frame-container flex items-center justify-evenly py-2">
+      <div className="fixed frame-container bottom-0 w-full z-50  bg-white">
+        <div className=" flex items-center justify-evenly py-2">
           {navItems.map((item) => (
             <BottomNavButton
               key={item.label}

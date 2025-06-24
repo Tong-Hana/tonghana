@@ -238,7 +238,6 @@ export default function HomePage() {
                 debtPercent={user.debtPercent}
                 investorType={user.investorType}
                 portfolioType={user.portfolioType}
-                showDetail={user.showDetail}
               />
               {(index + 1) % 9 === 0 && ads.length > 0 && (
                 <HanaAdCard

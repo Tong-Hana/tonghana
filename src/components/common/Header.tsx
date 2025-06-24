@@ -72,12 +72,12 @@ export default function Header({
       <div className="h-12"></div>
       <div
         className={clsx(
-          "fixed z-50 left-0 top-0 w-full bg-background transition-transform duration-300",
+          "fixed z-10 left-0 top-0 w-full bg-background transition-transform duration-300",
           scrollHide ? (show ? "translate-y-0" : "-translate-y-full") : "",
           className,
         )}
       >
-        <div className="relative flex items-center h-12">
+        <div className="relative flex items-center frame-container h-12">
           {showBackButton && <BackButton color={color} />}
 
           <h1
