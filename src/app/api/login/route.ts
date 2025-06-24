@@ -76,6 +76,13 @@ export async function POST(req: Request) {
       );
     }
 
+    if (user.isDeleted) {
+      return NextResponse.json(
+        { code: "DELETED_USER", message: "탈퇴한 사용자입니다." },
+        { status: 403 },
+      );
+    }
+
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       return NextResponse.json(
