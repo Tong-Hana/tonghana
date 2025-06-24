@@ -139,6 +139,8 @@
  *                       format: uri
  *                       example: https://www.kebhana.com/cont/mall/mall08/mall0801/mall080102/1486817_115157.jsp
  */
+import { getMatchPartner } from "@/lib/actions/getMatchPartner";
+import { getAuthUser } from "@/lib/auth";
 
 type SubjectResponse = {
   subjectId: number;
@@ -156,10 +158,18 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(_req: NextRequest) {
-  // 여기에 대현오빠가 만든 함수로 유저 아이디 넘겨주면 됨
-  const userIds = [
-    109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123,
-  ];
+  const user = await getAuthUser();
+  if (!user) {
+    return NextResponse.json(
+      { message: "인증되지 않은 사용자입니다." },
+      { status: 401 },
+    );
+  }
+  const baseUser = await prisma.user.findUniqueOrThrow({
+    where: { userId: user.userId },
+  });
+
+  const userIds = await getMatchPartner(baseUser);
 
   const [randomSubject] = await prisma.$queryRaw<SubjectResponse[]>`
   SELECT 

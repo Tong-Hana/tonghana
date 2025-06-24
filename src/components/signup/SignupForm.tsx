@@ -89,8 +89,8 @@ export default function SignupForm() {
       toast.success("회원가입에 성공했습니다.");
       router.push("/login");
     },
-    (error) => {
-      toast.error(error.message ?? "회원가입에 실패했습니다.");
+    () => {
+      toast.error("회원가입에 실패했습니다. 다시 시도해주세요.");
       setIsSubmitting(false);
     },
   );

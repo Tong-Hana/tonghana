@@ -77,12 +77,12 @@ export default function Header({
           className,
         )}
       >
-        <div className="relative flex items-center h-12">
+        <div className="relative flex items-center frame-container h-12">
           {showBackButton && <BackButton color={color} />}
 
           <h1
             className={clsx(
-              "text-xl font-normal  absolute left-0 right-0",
+              "text-2xl font-normal  absolute left-0 right-0",
               centerTitle ? "text-center" : "pl-5 text-left",
               color === "black" ? "text-text-primary" : "text-white",
             )}
