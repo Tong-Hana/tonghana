@@ -7,7 +7,7 @@ export default function BottomNavLayout({
 }) {
   return (
     <div className="w-full h-screen">
-      <div className="px-5 h-full">{children}</div>
+      <div className="px-5">{children}</div>
       <BottomNav />
     </div>
   );
