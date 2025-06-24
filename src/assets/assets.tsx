@@ -19,6 +19,9 @@ import PaperAirplane from "@/assets/icons/paper_airplane.svg";
 import CheckCircle from "@/assets/icons/check_circle_icon.svg";
 import Chart from "@/assets/icons/chart_icon.svg";
 
+import SelectO from "@/assets/icons/select_O.svg";
+import SelectX from "@/assets/icons/select_X.svg";
+
 export {
   HomeIcon,
   FilledQuizIcon,
@@ -38,4 +41,6 @@ export {
   PaperAirplane,
   CheckCircle,
   Chart,
+  SelectX,
+  SelectO,
 };
