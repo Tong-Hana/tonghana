@@ -36,7 +36,8 @@ const quizData: QuizDetail[] = [
 export default function QuizDetailPage() {
   const [idx, setIdx] = useState(0);
   const [answer, setAnswer] = useState<boolean | null>(null);
-  const selectCardStyle = "shadow-card-shadow rounded-3xl p-8 w-[45%]";
+  const selectCardStyle =
+    "shadow-card-shadow rounded-3xl p-12 w-[45%] aspect-square flex justify-center items-center";
   const submitAnswer = () => {
     if (answer === null) {
       alert("답변을 선택해주세요.");
@@ -66,42 +67,40 @@ export default function QuizDetailPage() {
     setIdx(idx + 1);
   };
   return (
-    <div className={"h-full"}>
+    <div>
       <Header
         title={`Quiz ${idx + 1}`}
         centerTitle={false}
         showBackButton={false}
       />
-      <div className={"flex flex-col h-[80%] justify-center"}>
-        <div className={"flex-1"}>
-          <div className="flex items-start pb-4">
-            <DotIndicator total={quizData.length} current={idx} />
+      <div className={"flex flex-col justify-center"}>
+        <div className="flex items-start pb-4">
+          <DotIndicator total={quizData.length} current={idx} />
+        </div>
+        <div className="text-2xl text-text-primary leading-8">
+          {quizData[idx].question}
+        </div>
+        <div className="flex justify-between items-center">
+          <div
+            className={makeSelectCardStyle(true)}
+            onClick={() => chooseAnswer(true)}
+          >
+            <SelectO className="w-full h-full overflow-visible" />
           </div>
-          <div className="text-2xl text-text-primary leading-8">
-            {quizData[idx].question}
+          <div
+            className={makeSelectCardStyle(false)}
+            onClick={() => chooseAnswer(false)}
+          >
+            <SelectX className="w-full h-full overflow-visible" />
           </div>
-          <div className="flex justify-between items-center w-full h-full">
-            <div
-              className={makeSelectCardStyle(true)}
-              onClick={() => chooseAnswer(true)}
-            >
-              <SelectO />
-            </div>
-            <div
-              className={makeSelectCardStyle(false)}
-              onClick={() => chooseAnswer(false)}
-            >
-              <SelectX />
-            </div>
-          </div>
-          <div className="fixed bottom-12 left-0 right-0 w-full px-5 py-3">
-            <Button
-              intent={"green"}
-              size={"full"}
-              label="완료"
-              onClick={() => submitAnswer()}
-            />
-          </div>
+        </div>
+        <div className="fixed bottom-12 left-0 right-0 w-full px-5 py-3">
+          <Button
+            intent={"green"}
+            size={"full"}
+            label="완료"
+            onClick={() => submitAnswer()}
+          />
         </div>
       </div>
     </div>
