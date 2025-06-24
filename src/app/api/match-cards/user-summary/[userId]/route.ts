@@ -164,7 +164,7 @@
  *                   example: "서버 내부 오류가 발생했습니다."
  */
 
-import { prisma } from "@/lib/prisma";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { getAuthUser } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -191,7 +191,7 @@ export async function GET(
     // 유저 정보 + 채팅방 정보 동시 조회
     const [userData, chatRoom] = await Promise.all([
       // 유저 프로필 및 소비 성향 정보 조회
-      prisma.user.findUnique({
+      replicaPrisma.user.findUnique({
         where: { userId: targetUserId },
         select: {
           userId: true,
@@ -234,7 +234,7 @@ export async function GET(
 
       // 상대방 정보일 경우, 둘 간의 채팅방이 존재하는지 확인 (자산 공개 여부 판단용)
       !isMe && authUserId
-        ? prisma.chatRoom.findFirst({
+        ? replicaPrisma.chatRoom.findFirst({
             where: {
               OR: [
                 { userId: authUserId, userId2: targetUserId },
@@ -261,7 +261,7 @@ export async function GET(
 
     // 금융상품 및 대출 정보 조회
     const [products, loans] = await Promise.all([
-      prisma.userFinancialProduct.findMany({
+      replicaPrisma.userFinancialProduct.findMany({
         where: { userId: targetUserId },
         select: {
           currentValue: true,
@@ -275,7 +275,7 @@ export async function GET(
           },
         },
       }),
-      prisma.loan.findMany({
+      replicaPrisma.loan.findMany({
         where: { userId: targetUserId },
         select: {
           loanBalance: true,

@@ -27,7 +27,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { masterPrisma } from "@/lib/prisma/masterClient";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { getAuthUser } from "@/lib/auth";
 
 export async function POST(req: Request) {
@@ -48,7 +49,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const existing = await prisma.userMatchLog.findFirst({
+  const existing = await replicaPrisma.userMatchLog.findFirst({
     where: { sentId, receiveId },
   });
 
@@ -59,7 +60,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const match = await prisma.userMatchLog.create({
+  const match = await masterPrisma.userMatchLog.create({
     data: {
       sentId,
       receiveId,

@@ -69,7 +69,7 @@
  *                   example: 인증되지 않았습니다.
  */
 
-import { prisma } from "@/lib/prisma";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { NextResponse, NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 
@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const chatRooms = await prisma.chatRoom.findMany({
+  const chatRooms = await replicaPrisma.chatRoom.findMany({
     where: {
       OR: [{ userId: user.userId }, { userId2: user.userId }],
     },

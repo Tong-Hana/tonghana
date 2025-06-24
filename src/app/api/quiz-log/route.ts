@@ -114,10 +114,11 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { getTodaySubjectId } from "@/lib/getTodaySubjectId";
 import { isSameDay } from "date-fns";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
+import { masterPrisma } from "@/lib/prisma/masterClient";
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser();
@@ -137,7 +138,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const existingLog = await prisma.userQuizLog.findFirst({
+    const existingLog = await replicaPrisma.userQuizLog.findFirst({
       where: { subjectId: todaySubjectId, userId: user.userId },
       select: {
         isPassed: true,
@@ -187,7 +188,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const existingLog = await prisma.userQuizLog.findFirst({
+    const existingLog = await replicaPrisma.userQuizLog.findFirst({
       where: { subjectId: todaySubjectId, userId: user.userId },
       select: {
         createdAt: true,
@@ -205,7 +206,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const quizzes = await prisma.quiz.findMany({
+    const quizzes = await replicaPrisma.quiz.findMany({
       where: { subjectId: todaySubjectId },
       orderBy: { quizId: "asc" },
       select: { answer: true },
@@ -235,7 +236,7 @@ export async function POST(req: NextRequest) {
       (quiz, index) => quiz.answer === answers[index],
     );
 
-    const newQuizLog = await prisma.userQuizLog.create({
+    const newQuizLog = await masterPrisma.userQuizLog.create({
       data: {
         userId: user.userId,
         subjectId: todaySubjectId,

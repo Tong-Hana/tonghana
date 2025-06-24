@@ -57,9 +57,9 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { getTodaySubjectId } from "@/lib/getTodaySubjectId";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser();
@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const quiz = await prisma.quiz.findMany({
+    const quiz = await replicaPrisma.quiz.findMany({
       where: { subjectId: todaySubjectId },
       select: {
         question: true,

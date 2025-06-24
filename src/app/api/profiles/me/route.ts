@@ -120,9 +120,10 @@
  *         description: 서버 오류
  */
 
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
+import { masterPrisma } from "@/lib/prisma/masterClient";
 
 // 내 정보 조회
 export async function GET(req: NextRequest) {
@@ -131,7 +132,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   try {
-    const profile = await prisma.user.findUnique({
+    const profile = await replicaPrisma.user.findUnique({
       where: { userId: user.userId },
       select: {
         userId: true,
@@ -209,7 +210,7 @@ export async function PATCH(req: NextRequest) {
       pairingAnswer,
     } = body;
 
-    await prisma.user.update({
+    await masterPrisma.user.update({
       where: { userId: user.userId },
       data: {
         ...(nickname && { nickname }),
@@ -228,7 +229,7 @@ export async function PATCH(req: NextRequest) {
     });
 
     if (pairingAnswer) {
-      await prisma.pairingAnswer.update({
+      await masterPrisma.pairingAnswer.update({
         where: { userId: user.userId },
         data: {
           ...(pairingAnswer.carBudget !== undefined && {

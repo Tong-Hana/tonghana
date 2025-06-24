@@ -1,11 +1,11 @@
 import { dummyFinancialProductAll } from "@/lib/actions/dummyProduct";
-import { prisma } from "@/lib/prisma";
 import { dummyUserAll } from "@/lib/actions/dummyUser";
 import { dummyUserProductAll } from "@/lib/actions/dummyUserProduct";
 import { dummyConsumeAll } from "@/lib/actions/dummyConsume";
 import { dummyLoanAll } from "@/lib/actions/dummyLoan";
 import { dummyPairAll } from "@/lib/actions/dummyPair";
 import { updateAllUsersCurrentType } from "@/lib/actions/calculateCurrentType";
+import { masterPrisma } from "../prisma/masterClient";
 
 // 모든 더미 데이터를 생성하는 함수
 async function main() {
@@ -27,6 +27,6 @@ if (require.main === module) {
       console.error("Error creating dummy data:", error);
     })
     .finally(async () => {
-      await prisma.$disconnect();
+      await masterPrisma.$disconnect();
     });
 }

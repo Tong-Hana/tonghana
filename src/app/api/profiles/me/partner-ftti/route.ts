@@ -50,8 +50,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
+import { masterPrisma } from "@/lib/prisma/masterClient";
 
 export async function PATCH(req: Request) {
   try {
@@ -86,7 +86,7 @@ export async function PATCH(req: Request) {
     const mappedType = typeMap[type as keyof typeof typeMap];
 
     // 4. DB 저장
-    await prisma.user.update({
+    await masterPrisma.user.update({
       where: { userId: user.userId },
       data: {
         preferredType: mappedType,

@@ -70,9 +70,9 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { getTodaySubjectId } from "@/lib/getTodaySubjectId";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser();
@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const subject = await prisma.subject.findUnique({
+    const subject = await replicaPrisma.subject.findUnique({
       where: { subjectId: todaySubjectId },
       select: {
         subjectType: true,
