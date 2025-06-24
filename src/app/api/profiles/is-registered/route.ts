@@ -21,9 +21,16 @@
  *             schema:
  *               type: object
  *               properties:
- *                 isRegistered:
+ *                 isProfileCompleted:
  *                   type: boolean
- *                   example: true
+ *                 isPairingCompleted:
+ *                   type: boolean
+ *                 isMyFTTICompleted:
+ *                   type: boolean
+ *                 isPreferredFTTICompleted:
+ *                   type: boolean
+ *                 isAllCompleted:
+ *                   type: boolean
  *       401:
  *         description: 인증되지 않음
  *         content:
@@ -86,22 +93,34 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    const isProfileFilled = !!(
+    const isProfileCompleted = !!(
       currentUser?.profileImage &&
       currentUser?.description &&
       currentUser?.job &&
       currentUser?.goalType &&
       currentUser?.goalAmount &&
-      currentUser?.goalPeriod &&
-      currentUser?.preferredType &&
-      currentUser?.currentType
+      currentUser?.goalPeriod
     );
 
-    const isPairingAnswered = !!pairingAnswer;
+    const isPairingCompleted = !!pairingAnswer;
+    const isMyFTTICompleted = !!currentUser?.currentType;
+    const isPreferredFTTICompleted = !!currentUser?.preferredType;
+    const isAllCompleted =
+      isProfileCompleted &&
+      isPairingCompleted &&
+      isMyFTTICompleted &&
+      isPreferredFTTICompleted;
 
-    const isRegistered = isProfileFilled && isPairingAnswered;
-
-    return NextResponse.json({ isRegistered }, { status: 200 });
+    return NextResponse.json(
+      {
+        isProfileCompleted,
+        isPairingCompleted,
+        isMyFTTICompleted,
+        isPreferredFTTICompleted,
+        isAllCompleted,
+      },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("❌ 등록 여부 확인 실패:", error);
     return NextResponse.json(

@@ -8,6 +8,7 @@ import Input from "@/components/common/input/Input";
 import Button from "@/components/common/button/Button";
 import InfoCard from "@/components/common/InfoCard";
 import AddressSelectGroup from "@/components/common/AddressSelectGroup";
+import { useUserStore } from "@/lib/store/userStore";
 
 const incomeOptions = [
   "400만 원대",
@@ -23,6 +24,7 @@ export default function PairingBookPage() {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedIncome, setSelectedIncome] = useState<string | null>(null);
+  const nickname = useUserStore((state) => state.nickname);
 
   const isValid = [
     carPrice.trim(),
@@ -47,7 +49,7 @@ export default function PairingBookPage() {
       <InfoCard
         content={
           <>
-            페어링북 문항에 승희님의{" "}
+            페어링북 문항에 {nickname || "회원"}님의{" "}
             <span className="text-hanagreen-normal">경제 가치관</span>을
             담아보세요!
           </>

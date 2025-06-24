@@ -15,7 +15,11 @@ export interface ProfilePayload {
 }
 
 export interface ProfileRegistrationStatus {
-  isRegistered: boolean;
+  isProfileCompleted: boolean;
+  isPairingCompleted: boolean;
+  isMyFTTICompleted: boolean;
+  isPreferredFTTICompleted: boolean;
+  isAllCompleted: boolean;
 }
 
 export async function checkProfileRegistrationStatus(): Promise<ProfileRegistrationStatus> {
@@ -26,7 +30,13 @@ export async function checkProfileRegistrationStatus(): Promise<ProfileRegistrat
 
     return response;
   } catch {
-    return { isRegistered: false };
+    return {
+      isProfileCompleted: false,
+      isPairingCompleted: false,
+      isMyFTTICompleted: false,
+      isPreferredFTTICompleted: false,
+      isAllCompleted: false,
+    };
   }
 }
 
