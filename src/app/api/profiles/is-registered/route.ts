@@ -54,7 +54,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser();
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const [currentUser, pairingAnswer] = await Promise.all([
-      prisma.user.findUnique({
+      replicaPrisma.user.findUnique({
         where: { userId: user.userId },
         select: {
           profileImage: true,
@@ -80,7 +80,7 @@ export async function GET(req: NextRequest) {
           currentType: true,
         },
       }),
-      prisma.pairingAnswer.findUnique({
+      replicaPrisma.pairingAnswer.findUnique({
         where: { userId: user.userId },
         select: { id: true }, // 존재 여부만 확인
       }),

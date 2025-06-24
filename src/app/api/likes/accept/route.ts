@@ -27,7 +27,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { masterPrisma } from "@/lib/prisma/masterClient";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { getAuthUser } from "@/lib/auth";
 
 export async function PATCH(req: Request) {
@@ -41,7 +42,9 @@ export async function PATCH(req: Request) {
   }
   const userId = user.userId;
 
-  const match = await prisma.userMatchLog.findUnique({ where: { matchId } });
+  const match = await replicaPrisma.userMatchLog.findUnique({
+    where: { matchId },
+  });
 
   if (!match || match.receiveId !== userId) {
     return NextResponse.json(
@@ -50,12 +53,12 @@ export async function PATCH(req: Request) {
     );
   }
 
-  await prisma.userMatchLog.update({
+  await masterPrisma.userMatchLog.update({
     where: { matchId },
     data: { matchStatus: "ACCEPTED" },
   });
 
-  const existingRoom = await prisma.chatRoom.findFirst({
+  const existingRoom = await replicaPrisma.chatRoom.findFirst({
     where: {
       OR: [
         { userId: match.sentId, userId2: match.receiveId },
@@ -65,7 +68,7 @@ export async function PATCH(req: Request) {
   });
 
   if (!existingRoom) {
-    await prisma.chatRoom.create({
+    await masterPrisma.chatRoom.create({
       data: {
         userId: match.sentId,
         userId2: match.receiveId,

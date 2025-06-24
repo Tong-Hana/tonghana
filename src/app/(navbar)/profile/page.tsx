@@ -9,7 +9,7 @@ import ProfileCardDetail from "@/components/profile/ProfileCardDetail";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Header from "@/components/common/Header";
-import { useUserProfileQuery } from "@/hooks/useUserProfileQuery";
+import { userProfileOptions } from "@/hooks/useUserProfileQuery";
 import Image from "next/image";
 import {
   CategoryRatios,
@@ -21,6 +21,9 @@ import {
   GoalType,
   IdealIncomeRangeLabelMap,
 } from "@/app/types/profiles";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useLogout } from "@/hooks/useLogout";
+import { useWithdraw } from "@/hooks/useWithdraw";
 
 const emptyCategoryRatios = {
   SAVINGS: 0,
@@ -114,7 +117,7 @@ function getPairingAnswers(pairingAnswerData: PairingAnswer | undefined) {
 }
 
 export default function MyPage() {
-  const { data } = useUserProfileQuery();
+  const { data } = useSuspenseQuery(userProfileOptions("me"));
 
   const user = getUser(data?.data);
   const consumeHistoryData = getConsumeHistory(data?.data);
@@ -124,6 +127,24 @@ export default function MyPage() {
   const [showCard, setShowCard] = useState(false);
 
   const [activeDialog, setActiveDialog] = useState<string | null>(null);
+
+  const logoutMutation = useLogout({
+    onSuccess: () => {
+      router.push("/login");
+    },
+    onError: (e) => {
+      alert(e.message || "로그아웃 실패");
+    },
+  });
+
+  const withdrawMutation = useWithdraw({
+    onSuccess: () => {
+      router.push("/login");
+    },
+    onError: (e) => {
+      alert(e.message || "회원탈퇴 실패");
+    },
+  });
 
   type MenuItem =
     | {
@@ -159,8 +180,7 @@ export default function MyPage() {
         title: "로그아웃 하시겠어요?",
         content: "다시 로그인할 수 있습니다.",
         onAction: () => {
-          console.log("로그아웃 처리");
-          router.push("/login");
+          logoutMutation.mutate();
         },
       },
     },
@@ -171,25 +191,11 @@ export default function MyPage() {
         title: "탈퇴 하시겠어요?",
         content: "모든 기록이 삭제됩니다.",
         onAction: () => {
-          console.log("탈퇴 처리");
-          router.push("/login");
+          withdrawMutation.mutate();
         },
       },
     },
   ];
-
-  // const handleLogoutAction = () => {
-  //   // 실제 로그아웃 처리 로직 (API 호출 등)
-  //   console.log("로그아웃 처리 실행!");
-  //   router.push("/login"); // 예시: 로그인 페이지로 이동
-  // };
-
-  // const handleWithdrawAction = () => {
-  //   // 실제 회원탈퇴 처리 로직 (API 호출 등)
-  //   console.log("회원탈퇴 처리 실행!");
-  //   // API 호출 후 성공 시 라우팅
-  //   router.push("/login"); // 예시: 로그인 페이지로 이동
-  // };
 
   return (
     <div className="w-full h-full">
@@ -254,7 +260,7 @@ export default function MyPage() {
 
         <MonthlySpendingChart data={consumeHistoryData} />
       </div>
-      {/* 메뉴 리스트 부분 */}
+      {/* 하단 메뉴 리스트 */}
       <div className="bg-white mt-4 shadow-sm">
         {menuItems.map((item) => {
           const commonClass =

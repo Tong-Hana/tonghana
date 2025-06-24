@@ -55,7 +55,7 @@
  *         description: 채팅방 접근 권한 없음
  */
 
-import { prisma } from "@/lib/prisma";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { NextResponse, NextRequest } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 
@@ -82,7 +82,7 @@ export async function GET(
     );
   }
 
-  const chatRoom = await prisma.chatRoom.findUnique({
+  const chatRoom = await replicaPrisma.chatRoom.findUnique({
     where: { roomId: chatRoomIdNum },
     select: {
       roomId: true,

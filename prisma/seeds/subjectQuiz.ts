@@ -1,4 +1,4 @@
-import { prisma } from "../../src/lib/prisma";
+import { masterPrisma } from "../../src/lib/prisma/masterClient";
 
 export const depositSeed = [
   {
@@ -203,7 +203,7 @@ export const loanSeed = [
 
 export async function createDepositSeed() {
   for (const subject of depositSeed) {
-    await prisma.subject.create({
+    await masterPrisma.subject.create({
       data: {
         subjectType: subject.subjectType,
         title: subject.title,
@@ -227,7 +227,7 @@ export async function createDepositSeed() {
 
 export async function createSavingSeed() {
   for (const subject of savingSeed) {
-    await prisma.subject.create({
+    await masterPrisma.subject.create({
       data: {
         subjectType: subject.subjectType,
         title: subject.title,
@@ -251,7 +251,7 @@ export async function createSavingSeed() {
 
 export async function createCommonSeed() {
   for (const subject of commonSeed) {
-    await prisma.subject.create({
+    await masterPrisma.subject.create({
       data: {
         subjectType: subject.subjectType,
         title: subject.title,
@@ -275,7 +275,7 @@ export async function createCommonSeed() {
 
 export async function createLoanSeed() {
   for (const subject of loanSeed) {
-    await prisma.subject.create({
+    await masterPrisma.subject.create({
       data: {
         subjectType: subject.subjectType,
         title: subject.title,

@@ -61,7 +61,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { getAuthUser } from "@/lib/auth";
 
 export async function GET() {
@@ -74,7 +74,7 @@ export async function GET() {
   }
   const userId = user.userId;
 
-  const receivedLikes = await prisma.userMatchLog.findMany({
+  const receivedLikes = await replicaPrisma.userMatchLog.findMany({
     where: {
       receiveId: userId,
       matchStatus: "PENDING",
