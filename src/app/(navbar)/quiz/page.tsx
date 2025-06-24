@@ -2,17 +2,8 @@ import InfoCard from "@/components/common/InfoCard";
 import QuizButton from "@/components/quiz/QuizButton";
 import ClientProductLinkButton from "@/components/quiz/ClientProductLinkButton";
 import HanaLogo from "../../../../public/hana_logo.svg";
+import { Quiz } from "@/app/types/quiz";
 
-type Quiz = {
-  subjectType: string;
-  description: string;
-  title: string;
-  feature: string;
-  period: string;
-  amount: string;
-  interestRate: string;
-  subjectUrl: string;
-};
 const dummyQuiz: Quiz = {
   subjectType: "대출",
   description:

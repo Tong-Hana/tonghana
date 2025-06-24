@@ -6,12 +6,8 @@ import { useState } from "react";
 import DotIndicator from "@/components/intro/DotIndicator";
 import { SelectO, SelectX } from "@/assets/assets";
 import QuizAnswerModal from "@/components/quiz/QuizAnswerModal";
+import { QuizDetail } from "@/app/types/quiz";
 
-type QuizDetail = {
-  question: string;
-  explanation: string;
-  answer: boolean;
-};
 // 더미데이터
 const quizData: QuizDetail[] = [
   {
