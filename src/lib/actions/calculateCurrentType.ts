@@ -1,6 +1,7 @@
-import { prisma } from "@/lib/prisma";
 import { RiskLevel } from "@/lib/constants/enums";
 import { InvestmentType } from "@/lib/constants/enums";
+import { replicaPrisma } from "../prisma/replicaClient";
+import { masterPrisma } from "../prisma/masterClient";
 
 function getInvestmentType(userWeightedLevel: number): InvestmentType {
   if (userWeightedLevel <= 1.5) return InvestmentType.VERY_AGGRESSIVE;
@@ -11,7 +12,7 @@ function getInvestmentType(userWeightedLevel: number): InvestmentType {
 }
 
 export async function calculateCurrentType(userId: number) {
-  const financialProducts = await prisma.userFinancialProduct.findMany({
+  const financialProducts = await replicaPrisma.userFinancialProduct.findMany({
     where: { userId: userId },
     include: {
       financialProduct: {
@@ -61,7 +62,7 @@ export async function calculateCurrentType(userId: number) {
     );
 
     const userWeightedType = getInvestmentType(score);
-    await prisma.user.update({
+    await masterPrisma.user.update({
       where: { userId: userId },
       data: {
         currentType: userWeightedType,
@@ -72,7 +73,7 @@ export async function calculateCurrentType(userId: number) {
 
 //생성된 더미데이터 유저들의 현재 소비 성향 업데이트
 export async function updateAllUsersCurrentType() {
-  const users = await prisma.user.findMany({
+  const users = await replicaPrisma.user.findMany({
     select: { userId: true },
   });
 

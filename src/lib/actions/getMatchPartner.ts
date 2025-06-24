@@ -1,8 +1,9 @@
 import { User } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
 import { InvestmentType } from "@/lib/constants/enums";
 import { investmentTypeToVector } from "@/lib/actions/saveUserVector";
 import { client } from "../weaviate";
+import { replicaPrisma } from "../prisma/replicaClient";
+import { masterPrisma } from "../prisma/masterClient";
 
 type WeaviateCandidate = {
   userId: string;
@@ -59,7 +60,7 @@ export async function getMatchPartner(user: User, findNum = 10) {
   );
   let count = 0;
   if (findNum !== 10) {
-    count = await prisma.userRecoLog.count({
+    count = await replicaPrisma.userRecoLog.count({
       where: {
         baseUserId: user.userId,
         createdAt: {
@@ -71,7 +72,7 @@ export async function getMatchPartner(user: User, findNum = 10) {
     });
   }
 
-  const matchLogs = await prisma.userMatchLog.findMany({
+  const matchLogs = await replicaPrisma.userMatchLog.findMany({
     where: {
       OR: [{ sentId: user.userId }, { receiveId: user.userId }],
     },
@@ -131,7 +132,7 @@ export async function getMatchPartner(user: User, findNum = 10) {
   for (let i = count; i < slice.length; i++) {
     const result = slice[i];
     results.push(result.userId);
-    await prisma.userRecoLog.create({
+    await masterPrisma.userRecoLog.create({
       data: {
         baseUserId: user.userId,
         candidateId: result.userId,
@@ -142,7 +143,7 @@ export async function getMatchPartner(user: User, findNum = 10) {
   return results;
 }
 async function main() {
-  const user = await prisma.user.findFirst({
+  const user = await replicaPrisma.user.findFirst({
     where: { userId: 123 },
   });
   if (!user) {

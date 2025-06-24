@@ -52,7 +52,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await replicaPrisma.user.findUnique({ where: { email } });
     if (!user) {
       return NextResponse.json(
         { code: "NON_EXIST_USER", message: "존재하지 않는 사용자입니다." },

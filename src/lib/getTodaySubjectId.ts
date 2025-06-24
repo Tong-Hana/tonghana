@@ -1,11 +1,11 @@
 import { startOfDay, differenceInDays } from "date-fns";
-import { prisma } from "@/lib/prisma";
+import { replicaPrisma } from "./prisma/replicaClient";
 
 // 기준 날짜
 const BASE_DATE = new Date("2025-06-01");
 
 export async function getTodaySubjectId(): Promise<number> {
-  const totalSubjects = await prisma.subject.count();
+  const totalSubjects = await replicaPrisma.subject.count();
   if (totalSubjects === 0) {
     throw new Error("등록된 주제가 없습니다.");
   }
@@ -14,7 +14,7 @@ export async function getTodaySubjectId(): Promise<number> {
   const dayOffset = differenceInDays(today, startOfDay(BASE_DATE));
   const index = dayOffset % totalSubjects;
 
-  const subject = await prisma.subject.findFirst({
+  const subject = await replicaPrisma.subject.findFirst({
     orderBy: { subjectId: "asc" },
     skip: index,
     select: { subjectId: true },
