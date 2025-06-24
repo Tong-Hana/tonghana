@@ -6,8 +6,8 @@ export default function BottomNavLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full h-screen px-5">
-      {children}
+    <div className="w-full h-screen">
+      <div className="px-5">{children}</div>
       <BottomNav />
     </div>
   );

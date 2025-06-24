@@ -35,7 +35,7 @@ export default function InfoCard({
   const image = <div className="w-20 h-20">{imageMap[imageType]}</div>;
 
   return (
-    <div className="flex p-5 bg-white rounded-3xl items-center shadow-card-shadow">
+    <div className="flex p-5 bg-white rounded-3xl justify-between items-center shadow-card-shadow">
       {imagePosition === "left" && image}
       <p className="text-base font-light text-text-primary">{content}</p>
       {imagePosition === "right" && image}
