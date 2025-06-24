@@ -9,7 +9,7 @@ import ProfileCardDetail from "@/components/profile/ProfileCardDetail";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Header from "@/components/common/Header";
-import { useUserProfileQuery } from "@/hooks/useUserProfileQuery";
+import { userProfileOptions } from "@/hooks/useUserProfileQuery";
 import Image from "next/image";
 import {
   CategoryRatios,
@@ -21,6 +21,7 @@ import {
   GoalType,
   IdealIncomeRangeLabelMap,
 } from "@/app/types/profiles";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const emptyCategoryRatios = {
   SAVINGS: 0,
@@ -114,7 +115,7 @@ function getPairingAnswers(pairingAnswerData: PairingAnswer | undefined) {
 }
 
 export default function MyPage() {
-  const { data } = useUserProfileQuery();
+  const { data } = useSuspenseQuery(userProfileOptions("me"));
 
   const user = getUser(data?.data);
   const consumeHistoryData = getConsumeHistory(data?.data);
