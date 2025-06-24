@@ -4,11 +4,15 @@
  *   get:
  *     tags:
  *       - Profiles
- *     summary: 프로필 및 페어링북 등록 여부 확인
+ *     summary: 프로필, 페어링북, FTTI(나/상대방) 등록 여부 확인
  *     description: |
- *       현재 로그인한 사용자가 프로필과 페어링북(PairingAnswer) 입력을 모두 완료했는지 여부를 확인합니다.
- *       - profileImage, description, job, goalType, goalAmount, goalPeriod 필드가 모두 채워져 있어야 하며
- *       - PairingAnswer 테이블에 해당 유저의 응답이 존재해야 true를 반환합니다.
+ *       현재 로그인한 사용자가 다음을 모두 완료했는지 확인합니다:
+ *       - 프로필 필수 정보 (profileImage, description, job, goalType, goalAmount, goalPeriod)
+ *       - 페어링북 응답(PairingAnswer) 존재
+ *       - 내 FTTI(currentType) 존재
+ *       - 이상형 FTTI(preferredType) 존재재
+ *       모두 충족 시 true를 반환합니다.
+ *
  *     responses:
  *       200:
  *         description: 등록 여부 응답
@@ -72,6 +76,8 @@ export async function GET(req: NextRequest) {
           goalType: true,
           goalAmount: true,
           goalPeriod: true,
+          preferredType: true,
+          currentType: true,
         },
       }),
       prisma.pairingAnswer.findUnique({
@@ -86,7 +92,9 @@ export async function GET(req: NextRequest) {
       currentUser?.job &&
       currentUser?.goalType &&
       currentUser?.goalAmount &&
-      currentUser?.goalPeriod
+      currentUser?.goalPeriod &&
+      currentUser?.preferredType &&
+      currentUser?.currentType
     );
 
     const isPairingAnswered = !!pairingAnswer;
