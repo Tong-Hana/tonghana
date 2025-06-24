@@ -38,7 +38,7 @@ export default function QuizDetailPage() {
   const [idx, setIdx] = useState(0);
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [showModal, setShowModal] = useState(false);
-  //TODO 퀴즈 정답여부 저장하는 로직 필요
+  const [fullAnswer, setFullAnswer] = useState<boolean | null>(null);
   const selectCardStyle =
     "shadow-card-shadow rounded-3xl p-12 w-[45%] aspect-square flex justify-center items-center";
 
@@ -70,6 +70,14 @@ export default function QuizDetailPage() {
       return;
     } else {
       setShowModal(true);
+
+      if (fullAnswer === null) {
+        setFullAnswer(answer === quizData[idx].answer);
+      } else {
+        if (fullAnswer) {
+          setFullAnswer(answer === quizData[idx].answer);
+        }
+      }
     }
   };
 
@@ -79,7 +87,7 @@ export default function QuizDetailPage() {
       setAnswer(null);
     } else {
       //TODO 퀴즈 완료후 로직 추가
-      alert("모든 퀴즈를 완료했습니다!");
+      alert(`${fullAnswer ? "정답" : "오답"} 모든 퀴즈를 완료했습니다!`);
     }
     setShowModal(false);
   };
