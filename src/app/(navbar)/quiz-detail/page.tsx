@@ -36,14 +36,10 @@ const quizData: QuizDetail[] = [
 export default function QuizDetailPage() {
   const [idx, setIdx] = useState(0);
   const [answer, setAnswer] = useState<boolean | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  //TODO 퀴즈 정답여부 저장하는 로직 필요
   const selectCardStyle =
     "shadow-card-shadow rounded-3xl p-12 w-[45%] aspect-square flex justify-center items-center";
-  const submitAnswer = () => {
-    if (answer === null) {
-      alert("답변을 선택해주세요.");
-      return;
-    }
-  };
 
   const makeSelectCardStyle = (bool: boolean) => {
     if (answer === null) {
@@ -54,6 +50,7 @@ export default function QuizDetailPage() {
       return selectCardStyle + " bg-white";
     }
   };
+
   const chooseAnswer = (bool: boolean) => {
     if (answer === null) {
       setAnswer(bool);
@@ -64,8 +61,32 @@ export default function QuizDetailPage() {
         setAnswer(bool);
       }
     }
-    setIdx(idx + 1);
   };
+
+  const submitAnswer = () => {
+    if (answer === null) {
+      alert("답변을 선택해주세요.");
+      return;
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const nextQuiz = () => {
+    if (idx + 1 < quizData.length) {
+      setIdx(idx + 1);
+      setAnswer(null);
+    } else {
+      //TODO 퀴즈 완료후 로직 추가
+      alert("모든 퀴즈를 완료했습니다!");
+    }
+    setShowModal(false);
+  };
+
+  const stopQuiz = () => {
+    //TODO 퀴즈 중단시 로직 추가
+  };
+
   return (
     <div>
       <Header
@@ -73,14 +94,16 @@ export default function QuizDetailPage() {
         centerTitle={false}
         showBackButton={false}
       />
-      <div className={"flex flex-col justify-center"}>
-        <div className="flex items-start pb-4">
-          <DotIndicator total={quizData.length} current={idx} />
+      <div className={"flex flex-col justify-center h-[80vh]"}>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-start">
+            <DotIndicator total={quizData.length} current={idx} />
+          </div>
+          <div className="text-2xl text-text-primary leading-8">
+            {quizData[idx].question}
+          </div>
         </div>
-        <div className="text-2xl text-text-primary leading-8">
-          {quizData[idx].question}
-        </div>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-1 justify-between items-center">
           <div
             className={makeSelectCardStyle(true)}
             onClick={() => chooseAnswer(true)}
@@ -103,6 +126,83 @@ export default function QuizDetailPage() {
           />
         </div>
       </div>
+      <Modal
+        title={answer === quizData[idx].answer ? "맞았어요!" : "틀렸어요!"}
+        content={quizData[idx].explanation}
+        onAction={nextQuiz}
+        open={showModal}
+        onClose={stopQuiz}
+        isEnd={quizData.length === idx + 1}
+        isCorrect={answer === quizData[idx].answer}
+      />
     </div>
+  );
+}
+
+function Modal({
+  title,
+  content,
+  open,
+  onAction,
+  onClose,
+  isEnd,
+  isCorrect,
+}: {
+  title: string;
+  content: string;
+  open?: boolean;
+  onAction: () => void;
+  onClose: () => void;
+  isEnd: boolean;
+  isCorrect: boolean;
+}) {
+  const showModal = open ?? true;
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <>
+      {showModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
+          onClick={handleBackdropClick}
+        >
+          <div className="rounded-3xl border border-background bg-white mx-5 px-8 pt-6 pb-5 shadow-sm w-full max-w-80">
+            <h2 className="mb-4 text-xl font-semibold text-hanagreen-normal">
+              {title}
+            </h2>
+
+            <p className="mb-6 text-base text-text-primary">{content}</p>
+
+            <div className="flex w-full gap-4 px-0">
+              {isEnd || isCorrect ? (
+                <></>
+              ) : (
+                <Button
+                  className="rounded-lg"
+                  intent="black"
+                  size="full"
+                  onClick={onClose}
+                >
+                  그만 두기
+                </Button>
+              )}
+              <Button
+                className="rounded-lg"
+                intent="green"
+                size="full"
+                onClick={onAction}
+              >
+                {isEnd ? "완료" : "다음 문제"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
