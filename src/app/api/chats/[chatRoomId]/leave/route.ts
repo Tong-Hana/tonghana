@@ -39,7 +39,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { masterPrisma } from "@/lib/prisma/masterClient";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { getAuthUser } from "@/lib/auth";
 
 export async function DELETE(
@@ -65,7 +66,7 @@ export async function DELETE(
     );
   }
 
-  const chatRoom = await prisma.chatRoom.findUnique({
+  const chatRoom = await replicaPrisma.chatRoom.findUnique({
     where: { roomId },
   });
 
@@ -79,7 +80,7 @@ export async function DELETE(
     );
   }
 
-  const match = await prisma.userMatchLog.findFirst({
+  const match = await replicaPrisma.userMatchLog.findFirst({
     where: {
       OR: [
         { sentId: chatRoom.userId, receiveId: chatRoom.userId2 },
@@ -89,13 +90,13 @@ export async function DELETE(
   });
 
   if (match) {
-    await prisma.userMatchLog.update({
+    await masterPrisma.userMatchLog.update({
       where: { matchId: match.matchId },
       data: { matchStatus: "REJECTED" },
     });
   }
 
-  await prisma.chatRoom.delete({ where: { roomId } });
+  await masterPrisma.chatRoom.delete({ where: { roomId } });
 
   return NextResponse.json({
     message: "채팅방 나가기와 매칭 상태가 변경되었습니다.",

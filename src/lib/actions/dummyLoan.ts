@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker/locale/ko";
-import { prisma } from "@/lib/prisma";
 import { User } from "@prisma/client";
+import { masterPrisma } from "../prisma/masterClient";
+import { replicaPrisma } from "../prisma/replicaClient";
 
 const loanNames = [
   "하나햇살론뱅크",
@@ -24,7 +25,7 @@ const loanInstitutions = [
 ];
 
 export async function dummyLoan(user: User) {
-  await prisma.loan.create({
+  await masterPrisma.loan.create({
     data: {
       userId: user.userId,
       loanName: faker.helpers.arrayElement(loanNames),
@@ -40,7 +41,7 @@ export async function dummyLoan(user: User) {
 }
 // 유저의 대출 더미데이터 생성
 export async function dummyLoanAll() {
-  const users = await prisma.user.findMany();
+  const users = await replicaPrisma.user.findMany();
   for (const user of users) {
     await dummyLoan(user);
   }

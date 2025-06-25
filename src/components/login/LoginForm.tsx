@@ -34,11 +34,31 @@ export default function LoginForm() {
         try {
           const profileStatus = await checkProfileRegistrationStatus();
 
-          if (profileStatus.isRegistered) {
+          if (profileStatus.isAllCompleted) {
             router.push("/home");
-          } else {
-            router.push("/profile-setup");
+            return;
           }
+
+          if (!profileStatus.isProfileCompleted) {
+            router.push("/profile-setup");
+            return;
+          }
+
+          if (!profileStatus.isPairingCompleted) {
+            router.push("/pairing-book");
+            return;
+          }
+
+          if (!profileStatus.isMyFTTICompleted) {
+            router.push("/question");
+            return;
+          }
+
+          if (!profileStatus.isPreferredFTTICompleted) {
+            router.push("/result");
+            return;
+          }
+          router.push("/home");
         } catch {
           toast.error("프로필 상태 확인에 실패했습니다. 다시 시도해주세요.");
         }
@@ -47,8 +67,8 @@ export default function LoginForm() {
       }
       setIsSubmitting(false);
     },
-    (error) => {
-      toast.error(error.message);
+    () => {
+      toast.error("로그인에 실패했습니다. 다시 시도해주세요");
       setIsSubmitting(false);
     },
   );

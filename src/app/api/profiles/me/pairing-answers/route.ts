@@ -86,8 +86,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
+import { masterPrisma } from "@/lib/prisma/masterClient";
 
 export async function POST(req: Request) {
   try {
@@ -121,7 +121,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const answer = await prisma.pairingAnswer.upsert({
+    const answer = await masterPrisma.pairingAnswer.upsert({
       where: { userId: authUser.userId },
       update: {
         carBudget: BigInt(car_budget),

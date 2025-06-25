@@ -1,11 +1,11 @@
 import { en, Faker, ko } from "@faker-js/faker";
-import { prisma } from "@/lib/prisma";
 import {
   Gender,
   GoalPeriod,
   GoalType,
   InvestmentType,
 } from "@/lib/constants/enums";
+import { masterPrisma } from "../prisma/masterClient";
 
 const faker = new Faker({ locale: [ko] });
 const fakerEn = new Faker({ locale: [en] });
@@ -77,7 +77,7 @@ function generateUser() {
 
 async function pushUser() {
   const user = generateUser();
-  await prisma.user.create({
+  await masterPrisma.user.create({
     data: {
       email: user.email,
       birthYear: user.birthYear,

@@ -1,12 +1,13 @@
 import { User } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
 import { InvestmentType } from "@/lib/constants/enums";
 import { investmentTypeToVector } from "@/lib/actions/saveUserVector";
 import { client } from "../weaviate";
+import { replicaPrisma } from "../prisma/replicaClient";
+import { masterPrisma } from "../prisma/masterClient";
 
 type WeaviateCandidate = {
-  userId: string; // Weaviate는 id를 string으로 저장하는 경우가 많음
-  gender: string; // "M" 또는 "F"
+  userId: string;
+  gender: string;
   currentType: InvestmentType;
   preferredType: InvestmentType;
   _additional: {
@@ -59,9 +60,9 @@ export async function getMatchPartner(user: User, findNum = 10) {
   );
   let count = 0;
   if (findNum !== 10) {
-    count = await prisma.userRecoLog.count({
+    count = await replicaPrisma.userRecoLog.count({
       where: {
-        baseUserId: 123,
+        baseUserId: user.userId,
         createdAt: {
           gte: startOfToday,
           lt: startOfTomorrow,
@@ -71,7 +72,7 @@ export async function getMatchPartner(user: User, findNum = 10) {
     });
   }
 
-  const matchLogs = await prisma.userMatchLog.findMany({
+  const matchLogs = await replicaPrisma.userMatchLog.findMany({
     where: {
       OR: [{ sentId: user.userId }, { receiveId: user.userId }],
     },
@@ -104,7 +105,7 @@ export async function getMatchPartner(user: User, findNum = 10) {
     .do();
 
   const candidates: WeaviateCandidate[] = rawCandidates.data.Get.User;
-  const results = candidates
+  const slice = candidates
     .filter((candidate) => {
       const id = parseInt(candidate.userId, 10);
       return !matchedUserIds.has(id);
@@ -127,9 +128,11 @@ export async function getMatchPartner(user: User, findNum = 10) {
     })
     .sort((a, b) => b.mutualScore - a.mutualScore)
     .slice(0, findNum + count);
-  for (let i = count; i < results.length; i++) {
-    const result = results[i];
-    await prisma.userRecoLog.create({
+  const results = [];
+  for (let i = count; i < slice.length; i++) {
+    const result = slice[i];
+    results.push(result.userId);
+    await masterPrisma.userRecoLog.create({
       data: {
         baseUserId: user.userId,
         candidateId: result.userId,
@@ -140,7 +143,7 @@ export async function getMatchPartner(user: User, findNum = 10) {
   return results;
 }
 async function main() {
-  const user = await prisma.user.findFirst({
+  const user = await replicaPrisma.user.findFirst({
     where: { userId: 123 },
   });
   if (!user) {

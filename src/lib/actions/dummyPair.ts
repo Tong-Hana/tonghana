@@ -1,16 +1,17 @@
 import { faker } from "@faker-js/faker/locale/ko";
-import { prisma } from "@/lib/prisma";
 import { IdealIncomeRange } from "../constants/enums";
+import { masterPrisma } from "../prisma/masterClient";
+import { replicaPrisma } from "../prisma/replicaClient";
 
 // 페이링답변 더미데이터 생성함수
 export async function dummyPairAll() {
   let minValue = 10000000;
-  const users = await prisma.user.findMany();
+  const users = await replicaPrisma.user.findMany();
   for (const user of users) {
     if (user.hasCar) {
       minValue = Number(user.carValue);
     }
-    await prisma.pairingAnswer.create({
+    await masterPrisma.pairingAnswer.create({
       data: {
         userId: user.userId,
         carBudget:

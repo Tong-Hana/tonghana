@@ -73,7 +73,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { masterPrisma } from "@/lib/prisma/masterClient";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import bcrypt from "bcryptjs";
 import { dummyUserProduct } from "@/lib/actions/dummyUserProduct";
 import { dummyConsume } from "@/lib/actions/dummyConsume";
@@ -92,7 +93,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await replicaPrisma.user.findUnique({
       where: { email },
     });
 
@@ -105,7 +106,7 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await prisma.user.create({
+    const newUser = await masterPrisma.user.create({
       data: {
         nickname,
         email,

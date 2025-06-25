@@ -11,6 +11,7 @@ import Button from "@/components/common/button/Button";
 import InfoCard from "@/components/common/InfoCard";
 import AddressSelectGroup from "@/components/common/AddressSelectGroup";
 import { useUserStore } from "@/lib/store/userStore";
+
 import {
   savePairingAnswers,
   PairingAnswersData,
@@ -20,7 +21,7 @@ import {
   pairingIncomeUtils,
   PairingIncomeOption,
 } from "@/app/types/profiles";
-
+        
 export default function PairingBookPage() {
   const router = useRouter();
   const [carPrice, setCarPrice] = useState("");
@@ -28,6 +29,7 @@ export default function PairingBookPage() {
   const [shoePrice, setShoePrice] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+
   const [selectedIncome, setSelectedIncome] =
     useState<PairingIncomeOption | null>(null);
   const nickname = useUserStore((state) => state.nickname);
