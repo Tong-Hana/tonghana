@@ -51,3 +51,9 @@ export enum IdealIncomeRange {
   NEAR_800 = "NEAR_800",
   OVER_1000 = "OVER_1000",
 }
+
+export enum MatchStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
+}
