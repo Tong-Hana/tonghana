@@ -10,6 +10,7 @@ import {
   GoalType,
   InvestmentType,
 } from "@/lib/constants/enums";
+import { customFetch } from "@/lib/customFetch";
 
 export interface UserProfileResponse {
   userId: number;
@@ -37,14 +38,10 @@ export interface UserProfileResponse {
 }
 
 export const fetchMyProfile = async (): Promise<UserProfileResponse> => {
-  const res = await fetch("/api/match-cards/user-summary/me");
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message ?? "프로필 조회에 실패했습니다.");
-  }
-
-  const parsedData = (await res.json()).data as UserProfileResponse;
+  const res = await customFetch<{ data: UserProfileResponse }>(
+    "/match-cards/user-summary/me",
+  );
+  const parsedData = res.data;
 
   const percentRatios: CategoryRatios = Object.fromEntries(
     Object.entries(parsedData.categoryRatios).map(([key, value]) => [
@@ -62,14 +59,10 @@ export const fetchMyProfile = async (): Promise<UserProfileResponse> => {
 export const fetchChatPartnerInfo = async (
   userId: number,
 ): Promise<UserProfileResponse> => {
-  const res = await fetch(`/api/match-cards/user-summary/${userId}`);
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message ?? "채팅 상대 정보 조회에 실패했습니다.");
-  }
-
-  const parsedData = (await res.json()).data as UserProfileResponse;
+  const res = await customFetch<{ data: UserProfileResponse }>(
+    `/match-cards/user-summary/${userId}`,
+  );
+  const parsedData = res.data;
 
   const percentRatios: CategoryRatios = Object.fromEntries(
     Object.entries(parsedData.categoryRatios).map(([key, value]) => [
