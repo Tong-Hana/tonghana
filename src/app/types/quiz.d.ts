@@ -4,7 +4,7 @@ export type QuizDetail = {
   answer: boolean;
 };
 
-export type Quiz = {
+export type Subject = {
   subjectType: string;
   description: string;
   title: string;

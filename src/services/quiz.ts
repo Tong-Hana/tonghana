@@ -1,8 +1,8 @@
-import { Quiz, UserQuizLog } from "@/app/types/quiz";
+import { Subject, UserQuizLog } from "@/app/types/quiz";
 import { customFetch } from "@/lib/customFetch";
 
 export type QuizResponse = {
-  subject: Quiz;
+  subject: Subject;
 };
 
 export const fetchQuiz = async (): Promise<QuizResponse> => {
