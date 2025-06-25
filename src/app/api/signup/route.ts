@@ -105,27 +105,30 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await masterPrisma.user.create({
-      data: {
-        nickname,
-        email,
-        password: hashedPassword,
-        birthYear,
-        gender,
-        city,
-      },
+    // 회원가입 시 유저 생성 transaction으로 처리
+    const newUser = await masterPrisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          nickname,
+          email,
+          password: hashedPassword,
+          birthYear,
+          gender,
+          city,
+        },
+      });
+
+      const financialProducts = await replicaPrisma.financialProduct.findMany({
+        select: { productId: true, category: true },
+      });
+      const productPool = [...financialProducts];
+
+      await generateUserFinancialProducts(createdUser, productPool, tx);
+      await generateUserLoan(createdUser, tx);
+      await generateUserConsume(createdUser, tx);
+
+      return createdUser;
     });
-
-    if (newUser) {
-      // 유저의 금융상품 더미데이터 생성
-      await generateUserFinancialProducts(newUser);
-
-      // 유저 대출상품 더미데이터 생성
-      await generateUserLoan(newUser);
-
-      // 유저 지난달 소비비율 더미데이터 생성
-      await generateUserConsume(newUser);
-    }
 
     return NextResponse.json(
       {

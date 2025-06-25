@@ -4,6 +4,7 @@ import { RiskLevel } from "../../src/lib/constants/enums";
 import { InvestmentType } from "../../src/lib/constants/enums";
 import { replicaPrisma } from "../../src/lib/prisma/replicaClient";
 import { masterPrisma } from "../../src/lib/prisma/masterClient";
+import { User } from "@prisma/client";
 
 function getInvestmentType(userWeightedLevel: number): InvestmentType {
   if (userWeightedLevel <= 1.5) return InvestmentType.VERY_AGGRESSIVE;
@@ -74,11 +75,7 @@ export async function updateCurrentType(userId: number) {
 }
 
 //생성된 더미데이터 유저들의 현재 소비 성향 업데이트
-export async function updateUsersCurrentType() {
-  const users = await replicaPrisma.user.findMany({
-    select: { userId: true },
-  });
-
+export async function updateUsersCurrentType(users: User[]) {
   for (const user of users) {
     await updateCurrentType(user.userId);
   }

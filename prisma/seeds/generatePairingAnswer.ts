@@ -4,7 +4,7 @@ import { faker } from "@faker-js/faker/locale/ko";
 import { IdealIncomeRange } from "../../src/lib/constants/enums";
 import { REGIONS } from "../../src/constants/regions";
 import { masterPrisma } from "../../src/lib/prisma/masterClient";
-import { replicaPrisma } from "../../src/lib/prisma/replicaClient";
+import { User } from "@prisma/client";
 
 function getPreferredCity(currentCity: string): string {
   const [state] = currentCity.split(" "); // "서울시 성동구" -> ["서울시", "성동구"]
@@ -32,11 +32,7 @@ async function createPairingAnswer(user) {
   });
 }
 
-export async function generateUserPairingAnswers() {
-  const users = await replicaPrisma.user.findMany({
-    select: { userId: true, city: true },
-  });
-
+export async function generateUserPairingAnswers(users: User[]) {
   for (const user of users) {
     await createPairingAnswer(user);
   }

@@ -10,6 +10,7 @@ import {
 } from "../../src/lib/constants/enums";
 import { REGIONS } from "../../src/constants/regions";
 import { masterPrisma } from "../../src/lib/prisma/masterClient";
+import { User } from "@prisma/client";
 
 const faker = new Faker({ locale: [ko] });
 const fakerEn = new Faker({ locale: [en] });
@@ -79,7 +80,7 @@ async function createUser() {
 
   const profileImage = faker.image.avatar();
 
-  await masterPrisma.user.create({
+  const user = await masterPrisma.user.create({
     data: {
       nickname,
       email,
@@ -100,11 +101,16 @@ async function createUser() {
       profileImage,
     },
   });
+
+  return user;
 }
 
 // 더미유저 생성, 생성갯수 입력
-export async function generateUsers(cnt: number) {
-  for (let i = 0; i < cnt; i++) {
-    await createUser();
+export async function generateUsers(count: number) {
+  const createdUsers: User[] = [];
+  for (let i = 0; i < count; i++) {
+    const user = await createUser();
+    createdUsers.push(user);
   }
+  return createdUsers;
 }

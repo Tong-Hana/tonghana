@@ -1,19 +1,17 @@
 import { faker } from "@faker-js/faker/locale/ko";
-import { User } from "@prisma/client";
+import { User, Prisma } from "@prisma/client";
 import { replicaPrisma } from "../prisma/replicaClient";
 import { masterPrisma } from "../prisma/masterClient";
 
 // 사용자별 금융상품 더미데이터 생성
-export async function generateUserFinancialProducts(user: User) {
+export async function generateUserFinancialProducts(
+  user: User,
+  productPool: { productId: number; category: string }[],
+  tx: Prisma.TransactionClient,
+) {
   const minProductCnt = 1;
   const maxProductCnt = 13;
   const cnt = faker.number.int({ min: minProductCnt, max: maxProductCnt });
-
-  const financialProducts = await replicaPrisma.financialProduct.findMany({
-    select: { productId: true, category: true },
-  });
-
-  const productPool = [...financialProducts];
 
   for (let i = 0; i < cnt; i++) {
     // financialProduct에서 랜덤으로 상품을 선택하고 중복 제거
@@ -28,7 +26,7 @@ export async function generateUserFinancialProducts(user: User) {
       });
     }
 
-    await masterPrisma.userFinancialProduct.create({
+    await tx.userFinancialProduct.create({
       data: {
         userId: user.userId,
         productId,
@@ -39,11 +37,16 @@ export async function generateUserFinancialProducts(user: User) {
   }
 }
 
-// 모든 더미 유저의 금융상품 더미데이터 생성
-export async function generateUserFinancialProductsAll() {
-  const users = await replicaPrisma.user.findMany();
+// 모든 더미 유저의 금융상품 더미데이터 생성 : transaction으로 처리
+export async function generateUserFinancialProductsAll(users: User[]) {
+  const financialProducts = await replicaPrisma.financialProduct.findMany({
+    select: { productId: true, category: true },
+  });
 
-  for (const user of users) {
-    await generateUserFinancialProducts(user);
-  }
+  await masterPrisma.$transaction(async (tx) => {
+    for (const user of users) {
+      const productPool = [...financialProducts];
+      await generateUserFinancialProducts(user, productPool, tx);
+    }
+  });
 }

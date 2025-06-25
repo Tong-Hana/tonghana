@@ -12,7 +12,7 @@ export const replicaPrisma =
         url: process.env.READ_REPLICA_URL,
       },
     },
-    log: ["query", "error"],
+    log: ["warn", "error"],
   });
 
 if (process.env.NODE_ENV !== "production")
