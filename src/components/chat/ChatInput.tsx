@@ -15,6 +15,11 @@ export default function ChatInput({ inputRef, onSend }: Props) {
   const [showPreset, setShowPreset] = useState(false);
   const blurTimer = useRef<NodeJS.Timeout | null>(null);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSend();
+  };
+
   const handleSend = () => {
     if (!text.trim()) return;
 
@@ -26,13 +31,6 @@ export default function ChatInput({ inputRef, onSend }: Props) {
   const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
     setText(event.target.value);
     setShowPreset(event.target.value.trim().length <= 0);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleSend();
-    }
   };
 
   const handleSelectPreset = (text: string) => {
@@ -65,7 +63,10 @@ export default function ChatInput({ inputRef, onSend }: Props) {
       >
         <ChatPreset onSelectPreset={handleSelectPreset} />
       </div>
-      <div className="flex w-full px-5 py-3 gap-2 frame-container bg-background items-center">
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full px-5 py-3 gap-2 frame-container bg-background items-center"
+      >
         <input
           className="h-9 flex-grow rounded-lg bg-white px-3 text-sm text-text-primary border border-hanagreen-normal focus:border-2 focus:outline-none"
           ref={inputRef}
@@ -73,12 +74,11 @@ export default function ChatInput({ inputRef, onSend }: Props) {
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleChangeText}
-          onKeyDown={handleKeyDown}
         />
-        <button type="button" onClick={handleSend}>
+        <button type="submit" onClick={handleSend}>
           <PaperAirplane className="w-6 h-6 fill-hanagreen-normal" />
         </button>
-      </div>
+      </form>
     </div>
   );
 }
