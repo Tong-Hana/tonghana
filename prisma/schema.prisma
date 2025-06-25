@@ -20,11 +20,11 @@ model ConsumeHistory {
 }
 
 model UserFinancialProduct {
+  userProductId    Int              @id @default(autoincrement()) @map("user_product_id")
   userId           Int              @map("user_id")
   currentValue     BigInt           @map("current_value")
   productEndDate   DateTime?        @map("product_end_date")
   productId        Int              @map("product_id")
-  userProductId    Int              @id @default(autoincrement()) @map("user_product_id")
   financialProduct FinancialProduct @relation(fields: [productId], references: [productId])
   user             User             @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
