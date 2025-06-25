@@ -7,14 +7,11 @@ type Props = {
 
 export default function ChatProfileImage({ imageUrl, size }: Props) {
   return (
-    <div className="relative rounded-full overflow-hidden">
-      <Image
-        src={imageUrl}
-        alt="profile"
-        className="object-cover"
-        width={size}
-        height={size}
-      />
+    <div
+      className="relative rounded-full overflow-hidden"
+      style={{ width: size, height: size }}
+    >
+      <Image src={imageUrl} alt="profile" className="object-cover" fill />
     </div>
   );
 }

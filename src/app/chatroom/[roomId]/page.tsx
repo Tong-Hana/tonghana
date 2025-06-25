@@ -81,10 +81,11 @@ export default function ChatRoomPage() {
         const isMine = message.userId === myProfile.userId;
         return {
           message: message.message,
-          sender: isMine ? "me" : "other",
           direction: isMine ? "outgoing" : "incoming",
           position: "single",
           createdAt: message.regdate,
+          sender: isMine ? "me" : "other",
+          senderId: message.userId,
           senderNickname: isMine ? undefined : chatPartner?.nickname,
           senderProfileImg: isMine ? undefined : chatPartner?.profileImage,
         };
