@@ -26,10 +26,11 @@ export type ChatMessage = {
 
 export type ChatMessageDisplay = {
   message: string;
-  sender: string;
+  sender: "me" | "other";
   direction: "incoming" | "outgoing";
   position: "single";
   createdAt: Date;
+  senderId?: number;
   senderNickname?: string;
   senderProfileImg?: string;
 };

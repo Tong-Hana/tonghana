@@ -66,10 +66,10 @@ export default function ChatPortfolioBottomSheet({
             </div>
             {/* 포트폴리오 내용 */}
             <div className="px-5">
-              <div className="pb-1 mb-2 flex border-b border-b-hanagreen-light font-semibold text-text-primary">
-                <div className="w-48">자산유형</div>
-                <p className="flex-1 text-end">내 자산</p>
-                <p className="flex-1 text-end">{partnerNickname}</p>
+              <div className="pb-1 mb-2 flex items-center border-b border-b-hanagreen-light font-semibold text-text-primary">
+                <div className="w-44">자산유형</div>
+                <p className="flex-1 text-end">나</p>
+                <p className="flex-1 text-end">상대방</p>
               </div>
               {myPortfolioData &&
                 partnerPortfolioData &&
@@ -77,7 +77,7 @@ export default function ChatPortfolioBottomSheet({
                   const typedCategory = category as keyof CategoryRatios;
                   return (
                     <div key={idx} className="flex text-text-primary">
-                      <div className="flex w-48 justify-start items-center gap-2">
+                      <div className="flex w-44 justify-start items-center gap-2">
                         <span
                           className="w-2 h-2 rounded-full"
                           style={{

@@ -38,7 +38,7 @@ export function formatSmartDate(date: Date): string {
 
 export function formatTime(
   date: Date,
-  format: "HH:mm:ss" | "HH:mm" | "hh:mm a" = "HH:mm",
+  format: "HH:mm:ss" | "HH:mm" | "a hh:mm" = "HH:mm",
 ) {
   const pad = (n: number) => n.toString().padStart(2, "0");
 
@@ -53,8 +53,8 @@ export function formatTime(
       return `${pad(hours24)}:${pad(minutes)}:${pad(seconds)}`;
     case "HH:mm":
       return `${pad(hours24)}:${pad(minutes)}`;
-    case "hh:mm a":
-      return `${pad(hours12)}:${pad(minutes)} ${ampm}`;
+    case "a hh:mm":
+      return `${ampm} ${pad(hours12)}:${pad(minutes)}`;
     default:
       throw new Error("Unsupported format");
   }

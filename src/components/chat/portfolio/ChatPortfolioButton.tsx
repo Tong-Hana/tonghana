@@ -8,7 +8,7 @@ export default function ChatPortfolioButton({ onOpen }: Props) {
   return (
     <>
       <button
-        className="absolute left-4 -top-1.5 w-fit bg-hanagreen-light hover:bg-hanagreen-light-hover rounded-full p-2 shadow-xl"
+        className="w-fit bg-hanagreen-light hover:bg-hanagreen-light-hover rounded-full p-2 shadow-xl"
         type="button"
         onClick={onOpen}
       >

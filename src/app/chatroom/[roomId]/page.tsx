@@ -18,6 +18,7 @@ import LeaveChatRoomButton from "@/components/chat/LeaveChatRoomButton";
 import ChatWarningModal from "@/components/chat/ChatWarningModal";
 import ChatPortfolioButton from "@/components/chat/portfolio/ChatPortfolioButton";
 import ChatPortfolioBottomSheet from "@/components/chat/portfolio/ChatPortfolioBottomSheet";
+import ChatAssetShareModal from "@/components/chat/ChatAssetShareModal";
 
 export default function ChatRoomPage() {
   const params = useParams();
@@ -69,6 +70,7 @@ export default function ChatRoomPage() {
     }
   };
   const [showBottomSheet, setShowBottomSheet] = useState(false);
+  const [showAssetShareModal, setShowAssetShareModal] = useState(false);
   const [messages, setMessages] = useState<ChatMessageDisplay[]>([]);
 
   useEffect(() => {
@@ -79,10 +81,11 @@ export default function ChatRoomPage() {
         const isMine = message.userId === myProfile.userId;
         return {
           message: message.message,
-          sender: isMine ? "me" : "other",
           direction: isMine ? "outgoing" : "incoming",
           position: "single",
           createdAt: message.regdate,
+          sender: isMine ? "me" : "other",
+          senderId: message.userId,
           senderNickname: isMine ? undefined : chatPartner?.nickname,
           senderProfileImg: isMine ? undefined : chatPartner?.profileImage,
         };
@@ -146,7 +149,17 @@ export default function ChatRoomPage() {
 
   return (
     <div className="h-[100dvh] flex flex-col scrollbar-hide">
+      {myProfile && roomInfo && showAssetShareModal && (
+        <ChatAssetShareModal
+          showModal={showAssetShareModal}
+          onClose={() => setShowAssetShareModal(false)}
+          myId={myProfile?.userId}
+          roomId={roomId}
+          status={roomInfo?.agreeStatus}
+        />
+      )}
       <ChatWarningModal />
+
       {/* 상단 고정 헤더 */}
       <Header title={chatPartner?.nickname ?? ""} scrollHide={false}>
         <LeaveChatRoomButton roomId={roomId} />
@@ -165,18 +178,23 @@ export default function ChatRoomPage() {
 
       {/* 하단 고정 입력창 */}
       <div
-        className="fixed w-full bottom-0 left-0 flex flex-col gap-3 bg-transparent"
+        className="fixed frame-container bottom-0 flex flex-col gap-3 bg-transparent"
         style={{ zIndex: 5 }}
       >
-        <div className="flex justify-center">
-          {myProfile && chatPartner && (
-            <ChatPortfolioButton onOpen={() => setShowBottomSheet(true)} />
-          )}
-          <AssetShareButton
-            status={roomInfo?.agreeStatus ?? AssetShareStatus.REJECTED}
-            myId={myProfile?.userId}
-            roomId={roomId}
-          />
+        <div className="flex w-full items-center">
+          <div className="ml-5 flex items-center ">
+            {myProfile && chatPartner && (
+              <ChatPortfolioButton onOpen={() => setShowBottomSheet(true)} />
+            )}
+          </div>
+          <div className="absolute left-1/2 -translate-x-1/2">
+            <AssetShareButton
+              status={roomInfo?.agreeStatus ?? AssetShareStatus.REJECTED}
+              myId={myProfile?.userId}
+              roomId={roomId}
+              onOpenAssetShareModal={() => setShowAssetShareModal(true)}
+            />
+          </div>
         </div>
         <ChatInput inputRef={inputRef} onSend={handleSendMessage} />
       </div>
