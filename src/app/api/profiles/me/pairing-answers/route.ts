@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /app/profiles/me/pairing-answers:
+ * /api/profiles/me/pairing-answers:
  *   post:
  *     tags:
  *       - Profiles
@@ -36,7 +36,7 @@
  *                 example: "서울시 강남구"
  *               idealIncomeRange:
  *                 type: string
- *                 enum: [NEAR_300, NEAR_500, NEAR_800, OVER_1000]
+ *                 enum: [NEAR_400, NEAR_600, NEAR_800, OVER_1000]
  *                 example: "NEAR_800"
  *     responses:
  *       201:
