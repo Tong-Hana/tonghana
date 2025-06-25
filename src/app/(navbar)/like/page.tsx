@@ -41,6 +41,7 @@ export default function LikePage() {
           <LikeCard
             key={matchData.matchId}
             userId={matchData.sent.userId}
+            matchId={matchData.matchId}
             imageUrl={matchData.sent.profileImage}
             name={matchData.sent.nickname}
             age={matchData.sent.age}

@@ -1,10 +1,15 @@
+"use client";
+
 import { HeartIcon, Map, XMark } from "@/assets/assets";
 import Image from "next/image";
 import Tag from "../common/tag/Tag";
 import Link from "next/link";
+import { useLikeAccept, useLikeReject } from "@/hooks/useLike";
+import toast from "react-hot-toast";
 
 type Props = {
   userId: number;
+  matchId: number;
   imageUrl: string;
   name: string;
   age: number;
@@ -15,6 +20,7 @@ type Props = {
 
 export default function LikeCard({
   userId,
+  matchId,
   imageUrl,
   name,
   age,
@@ -22,6 +28,40 @@ export default function LikeCard({
   goal,
   investmentType,
 }: Props) {
+  const acceptMutation = useLikeAccept(
+    matchId,
+    async () => {
+      toast.success(`${name}과 통했어요! 채팅방을 확인하세요`);
+    },
+    (error) => {
+      toast.error(error.message);
+    },
+  );
+
+  const handleAcceptLike = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // 페이지 이동 방지
+    e.stopPropagation(); // 부모 이벤트 전파 방지
+
+    acceptMutation.mutate(matchId);
+  };
+
+  const rejectMutation = useLikeReject(
+    matchId,
+    async () => {
+      toast.success(`${name}의 좋아요가 거절되었습니다.`);
+    },
+    (error) => {
+      toast.error(error.message);
+    },
+  );
+
+  const handleRejectLike = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // 페이지 이동 방지
+    e.stopPropagation(); // 부모 이벤트 전파 방지
+
+    rejectMutation.mutate(matchId);
+  };
+
   return (
     <Link href={`/card/${userId}`}>
       <div className="flex gap-3">
@@ -32,8 +72,8 @@ export default function LikeCard({
           <div className="flex flex-col flex-1 min-w-0 pl-3 text-xs text-text-primary">
             <div className="flex w-full justify-between items-center">
               <p className="">{name}</p>
-              <button type="button">
-                <XMark className="w-4 h-4 text-hanasilver" />
+              <button type="button" onClick={handleRejectLike}>
+                <XMark className="mr-0.5 w-4 h-4 text-hanasilver hover:text-hanablack" />
               </button>
             </div>
             <div className="flex text-[10px] font-light items-center">
@@ -48,8 +88,8 @@ export default function LikeCard({
                 text={investmentType}
                 size={"xs"}
               />
-              <button type="button">
-                <HeartIcon className="w-5 h-5 fill-hanasilver stroke-hanasilver" />
+              <button type="button" onClick={handleAcceptLike}>
+                <HeartIcon className="w-5 h-5 fill-hanasilver stroke-hanasilver hover:fill-hanared-normal hover:stroke-hanared-normal" />
               </button>
             </div>
           </div>

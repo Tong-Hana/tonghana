@@ -4,6 +4,7 @@ import {
   InvestmentType,
   MatchStatus,
 } from "@/lib/constants/enums";
+import { customFetch } from "@/lib/customFetch";
 
 export interface MatchLikeResponse {
   matchId: number;
@@ -39,4 +40,30 @@ export const fetchReceivedLikes = async (): Promise<MatchLikeResponse[]> => {
       age: new Date(Date.now()).getFullYear() - data.sent.birthYear + 1,
     },
   }));
+};
+
+export type LikeResponse = {
+  message: string;
+};
+
+export const acceptLike = async (matchId: number): Promise<LikeResponse> => {
+  const res = await customFetch<LikeResponse>("/likes/accept", {
+    method: "PATCH",
+    body: JSON.stringify({
+      matchId: matchId,
+    }),
+  });
+
+  return res;
+};
+
+export const rejectLike = async (matchId: number): Promise<LikeResponse> => {
+  const res = await customFetch<LikeResponse>("/likes/reject", {
+    method: "PATCH",
+    body: JSON.stringify({
+      matchId: matchId,
+    }),
+  });
+
+  return res;
 };
