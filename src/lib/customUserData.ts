@@ -66,7 +66,7 @@ export function customUser(data: UserProfile | CardUser | undefined) {
     portfolioRatios: (data.categoryRatios ||
       emptyCategoryRatios) as CategoryRatios,
     debtPercent: `${data.financialProductRatio?.loanRatio || 0}%`,
-    investorType: data.currentType || "정보 없음",
-    portfolioType: data.preferredType || "정보 없음",
+    investorType: data.preferredType || "정보 없음",
+    portfolioType: data.currentType || "정보 없음",
   };
 }
