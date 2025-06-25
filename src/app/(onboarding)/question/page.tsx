@@ -1,31 +1,46 @@
 "use client";
 
-import { useState } from "react";
 import { QUESTIONS } from "@/constants/questions";
 import Header from "@/components/common/Header";
 import InfoCard from "@/components/common/InfoCard";
 import QuestionCard from "@/components/question/QuestionCard";
 import AnswerButtonGroup from "@/components/question/AnswerButtonGroup";
 import Button from "@/components/common/button/Button";
+import { useFttiMutation } from "@/hooks/useFttiMutation";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { useFttiStore } from "@/lib/store/fttiStore";
 
 export default function QuestionPage() {
-  const [selectedAnswers, setSelectedAnswers] = useState<
-    (number | number[] | null)[]
-  >(Array(QUESTIONS.length).fill(null));
+  const router = useRouter();
+  const { selectedAnswers, setAnswer, isComplete, clearAnswers } =
+    useFttiStore();
+
+  const fttiMutation = useFttiMutation({
+    onSuccess: (data) => {
+      clearAnswers();
+      router.push(`/result?type=${data.resultType}`);
+    },
+    onError: () => {
+      toast.error("제출에 실패했습니다. 다시 시도해주세요.");
+    },
+  });
 
   const handleSelect = (
     questionIndex: number,
     answerIndex: number | number[],
   ) => {
-    const updated = [...selectedAnswers];
-    updated[questionIndex] = answerIndex;
-    setSelectedAnswers(updated);
+    setAnswer(questionIndex, answerIndex);
   };
 
-  const isComplete = selectedAnswers.every((ans) => {
-    if (Array.isArray(ans)) return ans.length > 0;
-    return ans !== null;
-  });
+  const handleSubmit = () => {
+    if (!isComplete()) return;
+    const answers = selectedAnswers.map((ans) => (ans === null ? 0 : ans)) as (
+      | number
+      | number[]
+    )[];
+    fttiMutation.mutate({ answers });
+  };
 
   return (
     <div className="px-4 py-6 space-y-6 bg-hanagreen-normal min-h-screen">
@@ -56,12 +71,11 @@ export default function QuestionPage() {
 
       <div className="pt-6">
         <Button
-          intent={isComplete ? "black" : "default"}
+          intent={isComplete() ? "black" : "default"}
           size="full"
-          label="제출"
-          onClick={() => {
-            if (!isComplete) return;
-          }}
+          label={fttiMutation.isPending ? "제출 중..." : "제출"}
+          onClick={handleSubmit}
+          disabled={!isComplete() || fttiMutation.isPending}
         />
       </div>
     </div>

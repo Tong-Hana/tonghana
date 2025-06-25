@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 import Header from "@/components/common/Header";
 import QuestionCard from "@/components/question/QuestionCard";
 import Tag from "@/components/common/tag/Tag";
@@ -8,21 +10,29 @@ import Input from "@/components/common/input/Input";
 import Button from "@/components/common/button/Button";
 import InfoCard from "@/components/common/InfoCard";
 import AddressSelectGroup from "@/components/common/AddressSelectGroup";
+import { useUserStore } from "@/lib/store/userStore";
 
-const incomeOptions = [
-  "400만 원대",
-  "600만 원대",
-  "800만 원대",
-  "1000만 원대 이상",
-];
+import {
+  savePairingAnswers,
+  PairingAnswersData,
+} from "@/services/pairingAnswers";
+import {
+  PairingIncomeOptions,
+  pairingIncomeUtils,
+  PairingIncomeOption,
+} from "@/app/types/profiles";
 
 export default function PairingBookPage() {
+  const router = useRouter();
   const [carPrice, setCarPrice] = useState("");
   const [datePrice, setDatePrice] = useState("");
   const [shoePrice, setShoePrice] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedIncome, setSelectedIncome] = useState<string | null>(null);
+
+  const [selectedIncome, setSelectedIncome] =
+    useState<PairingIncomeOption | null>(null);
+  const nickname = useUserStore((state) => state.nickname);
 
   const isValid = [
     carPrice.trim(),
@@ -33,11 +43,42 @@ export default function PairingBookPage() {
     selectedIncome,
   ].every(Boolean);
 
+  const mutation = useMutation({
+    mutationFn: (data: PairingAnswersData) => savePairingAnswers(data),
+    onSuccess: () => {
+      router.push("/question");
+    },
+    onError: () => {},
+  });
+
   const handleSubmit = () => {
-    if (!isValid) {
+    if (!isValid || !selectedIncome) {
       return;
     }
-    //저장 로직
+
+    const carBudget = (parseInt(carPrice.trim()) * 10000000).toString();
+
+    const dateBudgetNum = parseInt(datePrice.trim());
+    const shoesBudgetNum = parseInt(shoePrice.trim());
+
+    if (isNaN(dateBudgetNum) || isNaN(shoesBudgetNum)) {
+      return;
+    }
+
+    const dateBudget = dateBudgetNum * 10000;
+    const shoesBudget = shoesBudgetNum * 10000;
+    const preferredCity = `${selectedCity} ${selectedDistrict}`.trim();
+    const idealIncomeRange = pairingIncomeUtils.optionToEnum(selectedIncome);
+
+    const data: PairingAnswersData = {
+      car_budget: carBudget,
+      dateBudget,
+      shoesBudget,
+      preferredCity,
+      idealIncomeRange,
+    };
+
+    mutation.mutate(data);
   };
 
   return (
@@ -47,7 +88,7 @@ export default function PairingBookPage() {
       <InfoCard
         content={
           <>
-            페어링북 문항에 승희님의{" "}
+            페어링북 문항에 {nickname || "회원"}님의{" "}
             <span className="text-hanagreen-normal">경제 가치관</span>을
             담아보세요!
           </>
@@ -111,7 +152,7 @@ export default function PairingBookPage() {
 
       <QuestionCard index={3} question="내가 생각하는 이상적인 부부 월수입은?">
         <div className="flex flex-wrap gap-2">
-          {incomeOptions.map((option) => (
+          {PairingIncomeOptions.map((option) => (
             <Tag
               key={option}
               text={option}
@@ -123,12 +164,13 @@ export default function PairingBookPage() {
         </div>
       </QuestionCard>
 
-      <div className="pt-6">
+      <div className="pt-6 pb-12">
         <Button
           intent={isValid ? "black" : "default"}
           size="full"
-          label="완료"
+          label={mutation.isPending ? "저장 중..." : "완료"}
           onClick={handleSubmit}
+          disabled={!isValid || mutation.isPending}
         />
       </div>
     </div>
