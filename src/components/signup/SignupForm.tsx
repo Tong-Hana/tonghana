@@ -165,7 +165,7 @@ export default function SignupForm() {
         onChangeDistrict={handleChangeDistrict}
       />
       <TermsAgreementGroup value={checkedTerms} onChange={handleTermsChange} />
-      <div className="fixed bg-background px-5 py-4 bottom-0 flex w-full gap-3">
+      <div className="fixed flex frame-container bg-background px-5 py-4 bottom-0 gap-3">
         <Button
           className="rounded-lg flex-[1_1_0]"
           type="button"
