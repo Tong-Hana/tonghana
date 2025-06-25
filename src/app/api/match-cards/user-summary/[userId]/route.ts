@@ -15,7 +15,7 @@
  *       위 조건 중 하나라도 충족하면 다음 항목이 포함됩니다:
  *       - carValue: 자동차 자산 금액
  *       - houseValue: 부동산 자산 금액
- *       - totalAsset: 총 자산 (금융상품 + 자동차 + 부동산)
+ *       - totalAsset: 총 자산 (금융상품)
 
  *       비율 관련 정보:
  *       - consumeHistory: 지난달 소비내역 항목별 비율 (소수점 2자리, 합계 ≒ 1)
@@ -168,6 +168,7 @@ import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { getAuthUser } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
+// GET /api/match-cards/user-summary/[userId]
 export async function GET(
   _req: NextRequest,
   context: { params: Promise<{ userId: string }> },
@@ -175,7 +176,7 @@ export async function GET(
   const authUser = await getAuthUser();
   const { userId } = await context.params;
 
-  // 'me'일 경우 본인 정보로 판단
+  // 본인인지 여부 판단 ('me'는 본인으로 간주)
   const isMe = userId === "me";
   const targetUserId = isMe ? authUser?.userId : parseInt(userId, 10);
   const authUserId = authUser?.userId;
@@ -188,9 +189,8 @@ export async function GET(
   }
 
   try {
-    // 유저 정보 + 채팅방 정보 동시 조회
+    // 1. 유저 정보 + (상대방일 경우) 채팅방 동의 여부 동시 조회
     const [userData, chatRoom] = await Promise.all([
-      // 유저 프로필 및 소비 성향 정보 조회
       replicaPrisma.user.findUnique({
         where: { userId: targetUserId },
         select: {
@@ -231,8 +231,7 @@ export async function GET(
           },
         },
       }),
-
-      // 상대방 정보일 경우, 둘 간의 채팅방이 존재하는지 확인 (자산 공개 여부 판단용)
+      // 상대방일 경우, 해당 유저와의 채팅방에서 자산 공개 동의 여부 조회
       !isMe && authUserId
         ? replicaPrisma.chatRoom.findFirst({
             where: {
@@ -256,10 +255,10 @@ export async function GET(
       );
     }
 
-    // 자산 정보를 보여줄지 여부: 본인이거나 둘 다 동의한 채팅방이 있을 경우
+    // 자산 정보 노출 여부: 본인이거나, 채팅방에서 양측 모두 동의한 경우
     const showAssetValues = isMe || (chatRoom?.isAgree && chatRoom?.isAgree2);
 
-    // 금융상품 및 대출 정보 조회
+    // 2. 금융상품 및 대출 정보 조회
     const [products, loans] = await Promise.all([
       replicaPrisma.userFinancialProduct.findMany({
         where: { userId: targetUserId },
@@ -283,36 +282,32 @@ export async function GET(
       }),
     ]);
 
-    // 전체 대출 총액 계산
+    // 총 대출 금액 계산
     const loanTotal = loans.reduce(
       (acc, loan) => acc + Number(loan.loanBalance ?? 0),
       0,
     );
 
-    // 금융자산 합계 및 카테고리별 금액 합계
+    // 금융 카테고리별 자산 합산 + 전체 금융자산 합계
     const categorySums: Record<string, number> = {};
     let financeTotal = 0;
-
     for (const p of products) {
       const { category } = p.financialProduct;
       const value = Number(p.currentValue ?? 0);
-      if (category === "LOAN") continue; // 대출 상품은 금융자산에서 제외
-
+      if (category === "LOAN") continue; // 대출은 금융자산에서 제외
       financeTotal += value;
       categorySums[category] = (categorySums[category] ?? 0) + value;
     }
 
-    // 금융자산 + 대출 총합 (0 방지용 fallback 1)
+    // 금융자산 + 대출 총합 (기준 비율 계산용, 0 방지)
     const totalValue = financeTotal + loanTotal || 1;
 
-    // 카테고리별 자산 비율 계산
-    // categorySums → categoryRatios 변환 (소수점 2자리 + 마지막 항목 보정)
+    // 카테고리별 비율 계산 → 마지막 항목은 보정해서 합이 1.0이 되도록 조정
     const entries = Object.entries(categorySums).map(([key, value]) => {
       const ratio = parseFloat((value / financeTotal).toFixed(2));
       return { key, ratio };
     });
 
-    // 합산 후 마지막 항목에 보정
     let sum = entries.reduce((acc, { ratio }) => acc + ratio, 0);
     const diff = parseFloat((1 - sum).toFixed(2));
     if (entries.length > 0) {
@@ -321,32 +316,32 @@ export async function GET(
       );
     }
 
-    // 객체로 변환
+    // 객체로 변환: { category: ratio }
     const categoryRatios = Object.fromEntries(
       entries.map(({ key, ratio }) => [key, ratio]),
     );
 
-    // 총자산 = 자동차 + 부동산 + 금융자산 (단, showAssetValues 조건 충족 시에만 계산)
-    const assetTotal = showAssetValues
+    // 총자산 계산 (자동차/부동산 제외, 금융자산만)
+    const assetTotal = showAssetValues ? financeTotal : null;
+
+    // 대출 비율 계산용 총합: 자동차 + 부동산 + 금융자산 + 대출
+    const assetTotalWithLoanAndPhysical = showAssetValues
       ? Number(userData.carValue ?? 0) +
         Number(userData.houseValue ?? 0) +
-        financeTotal
-      : null;
+        financeTotal +
+        loanTotal
+      : 1; // 비공개일 경우 0 방지
 
-    // 소비 히스토리 비율 계산
+    // 소비 히스토리: Decimal → number 변환 후 비율화
     const ch = userData.consumeHistory;
-
-    // 각 항목 Decimal → number로 변환
     const savings = ch?.savingsRate?.toNumber?.() ?? 0;
     const investment = ch?.investmentRate?.toNumber?.() ?? 0;
     const leisure = ch?.leisureRate?.toNumber?.() ?? 0;
     const living = ch?.livingExpenseRate?.toNumber?.() ?? 0;
     const other = ch?.otherRate?.toNumber?.() ?? 0;
 
-    // 총합 계산
     const consumeTotal = savings + investment + leisure + living + other;
 
-    // 총합이 0일 경우 각 비율은 0 처리, 아니면 소수점 2자리 비율 계산
     const consumeRatios =
       consumeTotal > 0
         ? {
@@ -364,21 +359,23 @@ export async function GET(
             otherRate: 0,
           };
 
-    // 최종 결과 객체 조립
+    // 최종 응답 객체 조립
     const result = {
       ...userData,
       carValue: showAssetValues ? Number(userData.carValue ?? 0) : null,
       houseValue: showAssetValues ? Number(userData.houseValue ?? 0) : null,
-      totalAsset: showAssetValues ? assetTotal : null,
+      totalAsset: assetTotal,
       financialProductRatio: {
         financeRatio: parseFloat((financeTotal / totalValue).toFixed(2)),
-        loanRatio: parseFloat((loanTotal / totalValue).toFixed(2)),
+        loanRatio: parseFloat(
+          (loanTotal / assetTotalWithLoanAndPhysical).toFixed(2),
+        ),
       },
       categoryRatios,
       consumeHistory: consumeRatios,
     };
 
-    // BigInt 에러 방지용 JSON 변환
+    // BigInt 변환 에러 방지: bigint → number
     const serialized = JSON.parse(
       JSON.stringify(result, (_, value) =>
         typeof value === "bigint" ? Number(value) : value,
