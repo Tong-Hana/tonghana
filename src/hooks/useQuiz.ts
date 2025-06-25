@@ -1,4 +1,4 @@
-import { fetchQuiz, QuizResponse } from "@/services/quiz";
+import { fetchQuiz, fetchQuizLog, QuizResponse } from "@/services/quiz";
 import { queryOptions } from "@tanstack/react-query";
 
 export const quizQueryOptions = () => {
@@ -9,5 +9,12 @@ export const quizQueryOptions = () => {
   return queryOptions<QuizResponse>({
     queryKey: ["quiz", today],
     queryFn: fetchQuiz,
+  });
+};
+
+export const quizLogQueryOptions = () => {
+  return queryOptions({
+    queryKey: ["quiz-log"],
+    queryFn: fetchQuizLog,
   });
 };

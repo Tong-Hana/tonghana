@@ -1,4 +1,5 @@
-import { Quiz } from "@/app/types/quiz";
+import { Quiz, UserQuizLog } from "@/app/types/quiz";
+import { customFetch } from "@/lib/customFetch";
 
 export type QuizResponse = {
   subject: Quiz;
@@ -10,4 +11,11 @@ export const fetchQuiz = async (): Promise<QuizResponse> => {
     cache: "force-cache",
   });
   return res.json();
+};
+
+export const fetchQuizLog = async (): Promise<UserQuizLog> => {
+  return await customFetch<UserQuizLog>("/quiz-log", {
+    method: "GET",
+    cache: "force-cache",
+  });
 };
