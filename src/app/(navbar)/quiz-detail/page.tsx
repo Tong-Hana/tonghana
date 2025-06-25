@@ -6,31 +6,13 @@ import { useState } from "react";
 import DotIndicator from "@/components/intro/DotIndicator";
 import { SelectO, SelectX } from "@/assets/assets";
 import QuizAnswerModal from "@/components/quiz/QuizAnswerModal";
-import { QuizDetail } from "@/app/types/quiz";
-
-// 더미데이터
-const quizData: QuizDetail[] = [
-  {
-    question:
-      "하나의 정기예금은 계약기간과 가입금액 모두 자유롭게 설정할 수 있다.",
-    explanation: "하나의 정기예금은 계약기간 및 가입금액이 자유로워요",
-    answer: true,
-  },
-  {
-    question: "하나의 정기예금은 최대 10년까지 가입기간을 정할 수 있다.",
-    explanation:
-      "하나의 정기예금은 1개월 이상 5년 이내 일단위로 가입기간을 정할 수 있어요",
-    answer: false,
-  },
-  {
-    question: "하나의 정기예금은 가입금액이 1백만원 이상이어야 한다.",
-    explanation:
-      "하나의 정기예금 가입금액은 최소 1백만원 부터 금액을 자유롭게 정할 수 있어요",
-    answer: true,
-  },
-];
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { quizDetailQueryOptions, useQuizLog } from "@/hooks/useQuiz";
+import toast from "react-hot-toast";
 
 export default function QuizDetailPage() {
+  const { data } = useSuspenseQuery(quizDetailQueryOptions());
+  const quizData = data.quiz;
   const [idx, setIdx] = useState(0);
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -77,19 +59,29 @@ export default function QuizDetailPage() {
     }
   };
 
+  const submitUserQuizLogMutation = useQuizLog(
+    () => {
+      toast.success("퀴즈가 종료되었습니다.");
+    },
+    () => {
+      toast.error("퀴즈 제출에 실패했습니다. 다시 시도해주세요.");
+    },
+  );
+
   const nextQuiz = () => {
     if (idx + 1 < quizData.length) {
       setIdx(idx + 1);
       setAnswer(null);
     } else {
-      //TODO 퀴즈 완료후 로직 추가
-      alert(`${fullAnswer ? "정답" : "오답"} 모든 퀴즈를 완료했습니다!`);
+      submitUserQuizLogMutation.mutate(fullAnswer ?? false);
+      window.location.href = "/quiz";
     }
     setShowModal(false);
   };
 
   const stopQuiz = () => {
-    //TODO 퀴즈 중단시 로직 추가
+    submitUserQuizLogMutation.mutate(false);
+    window.location.href = "/quiz";
   };
 
   return (

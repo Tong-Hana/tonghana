@@ -62,14 +62,12 @@
  *           schema:
  *             type: object
  *             properties:
- *               answers:
- *                 type: array
- *                 items:
- *                   type: boolean
- *                 example: [true, false, true]
+ *               answer:
+ *                 type: boolean
+ *                 example: true
  *                 description: 오늘의 퀴즈에 대한 사용자의 답변
  *             required:
- *               - answers
+ *               - answer
  *     responses:
  *       201:
  *         description: 퀴즈 로그 생성 성공
@@ -120,7 +118,7 @@ import { isSameDay } from "date-fns";
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { masterPrisma } from "@/lib/prisma/masterClient";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const user = await getAuthUser();
   if (!user) {
     return NextResponse.json(
@@ -219,28 +217,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 요청에서 answers가 있는지 확인
-    const { answers } = await req.json();
-    if (
-      !answers ||
-      !Array.isArray(answers) ||
-      answers.length !== quizzes.length
-    ) {
+    // 요청에서 answer가 있는지 확인
+    const { answer } = await req.json();
+    if (answer === undefined || answer === null) {
+      console.log(answer);
       return NextResponse.json(
         { message: "퀴즈 답변이 필요합니다." },
         { status: 400 },
       );
     }
 
-    const isPassedToday = quizzes.every(
-      (quiz, index) => quiz.answer === answers[index],
-    );
-
     const newQuizLog = await masterPrisma.userQuizLog.create({
       data: {
         userId: user.userId,
         subjectId: todaySubjectId,
-        isPassed: isPassedToday,
+        isPassed: Boolean(answer),
       },
     });
 
