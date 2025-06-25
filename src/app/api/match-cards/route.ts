@@ -139,8 +139,11 @@
  *                       format: uri
  *                       example: https://www.kebhana.com/cont/mall/mall08/mall0801/mall080102/1486817_115157.jsp
  */
+
 import { getMatchPartner } from "@/lib/actions/getMatchPartner";
 import { getAuthUser } from "@/lib/auth";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
+import { NextRequest, NextResponse } from "next/server";
 
 type SubjectResponse = {
   subjectId: number;
@@ -154,9 +157,6 @@ type SubjectResponse = {
   subjectUrl: string | null;
 };
 
-import { replicaPrisma } from "@/lib/prisma/replicaClient";
-import { NextRequest, NextResponse } from "next/server";
-
 export async function GET(_req: NextRequest) {
   const user = await getAuthUser();
   if (!user) {
@@ -165,64 +165,75 @@ export async function GET(_req: NextRequest) {
       { status: 401 },
     );
   }
+
   const baseUser = await replicaPrisma.user.findUniqueOrThrow({
     where: { userId: user.userId },
   });
 
   const userIds = await getMatchPartner(baseUser);
 
+  // 랜덤 광고 조회
   const [randomSubject] = await replicaPrisma.$queryRaw<SubjectResponse[]>`
-  SELECT 
-    subject_id as subjectId,
-    subject_type as subjectType,
-    title,
-    description,
-    features,
-    period,
-    amount,
-    interest_rate as interestRate,
-    subject_url as subjectUrl
-  FROM Subject
-  WHERE subject_type != '금융상식'
-  ORDER BY RAND()
-  LIMIT 1
-`;
+    SELECT 
+      subject_id as subjectId,
+      subject_type as subjectType,
+      title,
+      description,
+      features,
+      period,
+      amount,
+      interest_rate as interestRate,
+      subject_url as subjectUrl
+    FROM Subject
+    WHERE subject_type != '금융상식'
+    ORDER BY RAND()
+    LIMIT 1
+  `;
 
   try {
-    const [users] = await Promise.all([
-      replicaPrisma.user.findMany({
-        where: { userId: { in: userIds }, isDeleted: false },
-        include: {
-          consumeHistory: true,
-          userFinancialProduct: {
-            include: {
-              financialProduct: { select: { category: true } },
+    const users = await replicaPrisma.user.findMany({
+      where: {
+        userId: { in: userIds },
+        isDeleted: false,
+      },
+      include: {
+        consumeHistory: true,
+        userFinancialProduct: {
+          include: {
+            financialProduct: {
+              select: { category: true },
             },
           },
-          loan: true,
         },
-      }),
-    ]);
+        loan: true,
+      },
+    });
 
     const data = users.map((user) => {
-      // 금융 상품, 대출 금액 계산
+      // 금융상품 총액 (LOAN 제외)
       const financeTotal = user.userFinancialProduct
         .filter((p) => p.financialProduct.category !== "LOAN")
         .reduce((acc, p) => acc + Number(p.currentValue ?? 0), 0);
 
+      // 대출 총액
       const loanTotal = user.loan.reduce(
         (acc, l) => acc + Number(l.loanBalance ?? 0),
         0,
       );
-      const totalValue = financeTotal + loanTotal || 1; // 0 방지
 
-      // financialProductRatio
+      // 실물자산 포함한 총합 계산
+      const carValue = Number(user.carValue ?? 0);
+      const houseValue = Number(user.houseValue ?? 0);
+      const totalAssetBase =
+        carValue + houseValue + financeTotal + loanTotal || 1;
+
+      // 대출/금융자산 비율 계산
       const financialProductRatio = {
-        financeRatio: parseFloat((financeTotal / totalValue).toFixed(2)),
-        loanRatio: parseFloat((loanTotal / totalValue).toFixed(2)),
+        financeRatio: parseFloat((financeTotal / totalAssetBase).toFixed(2)),
+        loanRatio: parseFloat((loanTotal / totalAssetBase).toFixed(2)),
       };
 
-      // categoryRatios
+      // 카테고리별 자산 비율 계산
       const categorySums: Record<string, number> = {};
       for (const p of user.userFinancialProduct) {
         const category = p.financialProduct.category;
@@ -236,6 +247,7 @@ export async function GET(_req: NextRequest) {
         return { key, ratio };
       });
 
+      // 마지막 카테고리 보정
       let sum = entries.reduce((acc, { ratio }) => acc + ratio, 0);
       const diff = parseFloat((1 - sum).toFixed(2));
       if (entries.length > 0) {
@@ -244,6 +256,7 @@ export async function GET(_req: NextRequest) {
         );
       }
 
+      // 전체 카테고리 기본값 + 비율 합성
       const categoryRatios = {
         SAVINGS: 0,
         DOMESTIC_STOCKS: 0,
@@ -267,6 +280,8 @@ export async function GET(_req: NextRequest) {
         profileImage: user.profileImage,
         hasCar: user.hasCar,
         hasHouse: user.hasHouse,
+        carValue: carValue,
+        houseValue: houseValue,
         goalAmount: Number(user.goalAmount ?? 0),
         goalPeriod: user.goalPeriod,
         goalType: user.goalType,
