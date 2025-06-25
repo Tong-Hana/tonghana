@@ -134,3 +134,33 @@ export const goalUtils = {
     return goalUtils.periodOptionToValue(selectedPeriod);
   },
 };
+
+export const PairingIncomeOptions = [
+  "400만 원대",
+  "600만 원대",
+  "800만 원대",
+  "1000만 원대 이상",
+] as const;
+
+export type PairingIncomeOption = (typeof PairingIncomeOptions)[number];
+
+export const pairingIncomeUtils = {
+  optionToEnum: (option: PairingIncomeOption): string => {
+    const mapping: Record<PairingIncomeOption, string> = {
+      "400만 원대": "NEAR_400",
+      "600만 원대": "NEAR_600",
+      "800만 원대": "NEAR_800",
+      "1000만 원대 이상": "OVER_1000",
+    };
+    return mapping[option];
+  },
+  enumToOption: (enumValue: string): PairingIncomeOption | null => {
+    const reverseMapping: Record<string, PairingIncomeOption> = {
+      NEAR_400: "400만 원대",
+      NEAR_600: "600만 원대",
+      NEAR_800: "800만 원대",
+      OVER_1000: "1000만 원대 이상",
+    };
+    return reverseMapping[enumValue] || null;
+  },
+};
