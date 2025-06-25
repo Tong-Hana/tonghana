@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker/locale/ko";
-import { prisma } from "@/lib/prisma";
 import { User } from "@prisma/client";
+import { masterPrisma } from "../prisma/masterClient";
+import { replicaPrisma } from "../prisma/replicaClient";
 
 export async function dummyConsume(user: User) {
   const total = 100;
@@ -12,7 +13,7 @@ export async function dummyConsume(user: User) {
   const [savings, investment, leisure, fixed, etc] = [a, b, c, d, e].map(
     (v) => v,
   );
-  await prisma.consumeHistory.create({
+  await masterPrisma.consumeHistory.create({
     data: {
       userId: user.userId,
       savingsRate: savings,
@@ -26,7 +27,7 @@ export async function dummyConsume(user: User) {
 
 // 유저의 소비 더미데이터 생성
 export async function dummyConsumeAll() {
-  const users = await prisma.user.findMany();
+  const users = await replicaPrisma.user.findMany();
   for (const user of users) {
     await dummyConsume(user);
   }

@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
 import { ProductCategory, RiskLevel } from "../constants/enums";
+import { masterPrisma } from "../prisma/masterClient";
 
 interface FinancialProduct {
   productName: string;
@@ -166,7 +166,7 @@ export async function dummyFinancialProductAll() {
     const j = cntMap[category];
     for (let i = 0; i < j; i++) {
       const productData = generateProduct(category);
-      await prisma.financialProduct.create({
+      await masterPrisma.financialProduct.create({
         data: {
           productName: productData.productName,
           institutionName: productData.institutionName,

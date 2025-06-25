@@ -52,8 +52,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
+import { masterPrisma } from "@/lib/prisma/masterClient";
 
 export async function POST(req: Request) {
   try {
@@ -117,7 +117,7 @@ export async function POST(req: Request) {
     else currentType = "VERY_AGGRESSIVE";
 
     // 6. DB 저장
-    await prisma.user.update({
+    await masterPrisma.user.update({
       where: { userId: user.userId },
       data: {
         currentType,

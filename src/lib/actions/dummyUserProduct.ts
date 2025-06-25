@@ -1,6 +1,7 @@
-import { prisma } from "@/lib/prisma";
 import { faker } from "@faker-js/faker/locale/ko";
 import { User } from "@prisma/client";
+import { replicaPrisma } from "../prisma/replicaClient";
+import { masterPrisma } from "../prisma/masterClient";
 
 export async function dummyUserProduct(
   user: User,
@@ -11,7 +12,7 @@ export async function dummyUserProduct(
   const maxProductCnt = 13;
   const cnt = faker.number.int({ min: minProductCnt, max: maxProductCnt });
   if (minId === 0 || maxId === 0) {
-    const result = await prisma.financialProduct.aggregate({
+    const result = await replicaPrisma.financialProduct.aggregate({
       _min: {
         productId: true,
       },
@@ -24,7 +25,7 @@ export async function dummyUserProduct(
   }
   for (let i = 0; i < cnt; i++) {
     const productNumber = faker.number.int({ min: minId, max: maxId });
-    const product = await prisma.financialProduct.findUnique({
+    const product = await replicaPrisma.financialProduct.findUnique({
       where: { productId: productNumber },
     });
     let productEndDate: Date | null = null;
@@ -37,7 +38,7 @@ export async function dummyUserProduct(
       console.warn(`Product with ID ${productNumber} not found.`);
       continue;
     }
-    await prisma.userFinancialProduct.create({
+    await masterPrisma.userFinancialProduct.create({
       data: {
         userId: user.userId,
         productId: product.productId,
@@ -53,8 +54,8 @@ export async function dummyUserProduct(
 
 // 유저가 소유한 금융상품 더미데이터 생성
 export async function dummyUserProductAll() {
-  const users = await prisma.user.findMany();
-  const result = await prisma.financialProduct.aggregate({
+  const users = await replicaPrisma.user.findMany();
+  const result = await replicaPrisma.financialProduct.aggregate({
     _min: {
       productId: true,
     },

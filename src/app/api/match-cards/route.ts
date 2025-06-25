@@ -154,7 +154,7 @@ type SubjectResponse = {
   subjectUrl: string | null;
 };
 
-import { prisma } from "@/lib/prisma";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(_req: NextRequest) {
@@ -165,13 +165,13 @@ export async function GET(_req: NextRequest) {
       { status: 401 },
     );
   }
-  const baseUser = await prisma.user.findUniqueOrThrow({
+  const baseUser = await replicaPrisma.user.findUniqueOrThrow({
     where: { userId: user.userId },
   });
 
   const userIds = await getMatchPartner(baseUser, 15);
 
-  const [randomSubject] = await prisma.$queryRaw<SubjectResponse[]>`
+  const [randomSubject] = await replicaPrisma.$queryRaw<SubjectResponse[]>`
   SELECT 
     subject_id as subjectId,
     subject_type as subjectType,
@@ -190,7 +190,7 @@ export async function GET(_req: NextRequest) {
 
   try {
     const [users] = await Promise.all([
-      prisma.user.findMany({
+      replicaPrisma.user.findMany({
         where: { userId: { in: userIds }, isDeleted: false },
         include: {
           consumeHistory: true,

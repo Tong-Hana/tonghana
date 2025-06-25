@@ -1,4 +1,4 @@
-import { prisma } from "../src/lib/prisma";
+import { masterPrisma } from "../src/lib/prisma/masterClient";
 import {
   createDepositSeed,
   createSavingSeed,
@@ -25,7 +25,7 @@ export async function main() {
   } catch (error) {
     console.error("Error seeding database:", error);
   } finally {
-    await prisma.$disconnect();
+    await masterPrisma.$disconnect();
   }
 }
 

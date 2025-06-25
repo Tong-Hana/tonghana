@@ -59,7 +59,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { masterPrisma } from "@/lib/prisma/masterClient";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { getAuthUser } from "@/lib/auth";
 
 export async function PATCH(
@@ -85,7 +86,7 @@ export async function PATCH(
     );
   }
 
-  const chatRoom = await prisma.chatRoom.findUnique({
+  const chatRoom = await replicaPrisma.chatRoom.findUnique({
     where: { roomId: chatRoomIdNum },
   });
 
@@ -106,7 +107,7 @@ export async function PATCH(
   const updateData =
     chatRoom.userId === user.userId ? { isAgree: false } : { isAgree2: false };
 
-  const updatedRoom = await prisma.chatRoom.update({
+  const updatedRoom = await masterPrisma.chatRoom.update({
     where: { roomId: chatRoomIdNum },
     data: updateData,
     select: {
