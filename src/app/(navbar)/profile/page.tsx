@@ -11,53 +11,20 @@ import { useState } from "react";
 import Header from "@/components/common/Header";
 import { userProfileOptions } from "@/hooks/useUserProfileQuery";
 import Image from "next/image";
-import {
-  PairingAnswer,
-  ConsumeHistory,
-  UserProfile,
-  IdealIncomeRangeLabelMap,
-} from "@/app/types/profiles";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLogout } from "@/hooks/useLogout";
 import { useWithdraw } from "@/hooks/useWithdraw";
 import { customUser } from "@/lib/customUserData";
-
-const emptyConsumeHistory = {
-  savingsRate: 0,
-  investmentRate: 0,
-  leisureRate: 0,
-  livingExpenseRate: 0,
-  otherRate: 0,
-};
-
-function getConsumeHistory(data: UserProfile | undefined): ConsumeHistory {
-  return data?.consumeHistory || emptyConsumeHistory;
-}
-
-function getPairingAnswers(pairingAnswerData: PairingAnswer | undefined) {
-  if (!pairingAnswerData) return [];
-  return [
-    {
-      id: 1,
-      answer: `${(pairingAnswerData.carBudget / 10000).toLocaleString()}만원, ${(pairingAnswerData.dateBudget / 10000).toLocaleString()}만원, ${(pairingAnswerData.shoesBudget / 10000).toLocaleString()}만원`,
-    },
-    {
-      id: 2,
-      answer: `${pairingAnswerData.preferredCity || ""}`,
-    },
-    {
-      id: 3,
-      answer: `${IdealIncomeRangeLabelMap[pairingAnswerData.idealIncomeRange] || ""}`,
-    },
-  ];
-}
+import { customConsumeHistory } from "@/lib/customConsumeHistory";
+import { customPairingAnswers } from "@/lib/customParingAnswer";
 
 export default function MyPage() {
   const { data } = useSuspenseQuery(userProfileOptions("me"));
 
   const user = customUser(data?.data);
-  const consumeHistoryData = getConsumeHistory(data?.data);
-  const answer = getPairingAnswers(data?.data?.pairingAnswer);
+  const consumeHistoryData = customConsumeHistory(data?.data);
+  const answer = customPairingAnswers(data?.data?.pairingAnswer);
+
   const router = useRouter();
 
   const [showCard, setShowCard] = useState(false);

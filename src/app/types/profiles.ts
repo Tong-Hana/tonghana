@@ -2,7 +2,7 @@ import { GoalType, GoalPeriod, ProductCategory } from "@/lib/constants/enums";
 export { GoalType, GoalPeriod };
 
 export interface PairingAnswer {
-  carBudget: number;
+  carBudget: string;
   dateBudget: number;
   shoesBudget: number;
   preferredCity: string;
