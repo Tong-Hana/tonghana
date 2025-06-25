@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /app/profiles/me/pairing-answers:
+ * /api/profiles/me/pairing-answers:
  *   post:
  *     tags:
  *       - Profiles
