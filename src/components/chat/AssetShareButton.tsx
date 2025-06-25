@@ -1,62 +1,27 @@
 "use client";
 
 import { AssetShareStatus } from "@/app/types/client-chat";
-import {
-  useAgreeToShareAsset,
-  useRejectToShareAsset,
-} from "@/hooks/chat/useAssetShare";
-import toast from "react-hot-toast";
+import { CheckCircle } from "@/assets/assets";
+import { useAgreeToShareAsset } from "@/hooks/chat/useAssetShare";
 
 type Props = {
   status: AssetShareStatus;
   myId?: number;
   roomId: number;
+  onOpenAssetShareModal: () => void;
 };
 
-export default function AssetShareButtonGroup({ status, myId, roomId }: Props) {
-  const agreeToShareAssetMutation = useAgreeToShareAsset(
-    () => {
-      if (status === AssetShareStatus.PENDING) {
-        toast.success(
-          "자산 공유가 요청되었습니다.\n상대방이 동의할 경우 서로의 프로필에서 자산을 확인할 수 있습니다.",
-          { duration: 3000 },
-        );
-        return;
-      }
-
-      if (status === AssetShareStatus.PARTNER_AGREED) {
-        toast.success(
-          "자산 공유에 동의하셨습니다.\n서로의 프로필에서 자산을 확인할 수 있습니다.",
-          { duration: 3000 },
-        );
-        return;
-      }
-    },
-    (error) => {
-      toast.error(error.message ?? "자산 공유에 실패했습니다.");
-    },
-  );
+export default function AssetShareButtonGroup({
+  status,
+  myId,
+  roomId,
+  onOpenAssetShareModal,
+}: Props) {
+  const agreeToShareAssetMutation = useAgreeToShareAsset(status);
 
   const handleAgreeToShareAsset = async () => {
     if (!myId) return;
     agreeToShareAssetMutation.mutate({
-      myId,
-      roomId,
-    });
-  };
-
-  const rejectToShareAssetMutation = useRejectToShareAsset(
-    () => {
-      toast.success("자산 공유에 거절하셨습니다");
-    },
-    (error) => {
-      toast.error(error.message ?? "자산 공유 거절에 실패했습니다.");
-    },
-  );
-
-  const handleRejectToShareAsset = async () => {
-    if (!myId) return;
-    rejectToShareAssetMutation.mutate({
       myId,
       roomId,
     });
@@ -78,20 +43,16 @@ export default function AssetShareButtonGroup({ status, myId, roomId }: Props) {
   // 내가 동의했고 상대가 아직 동의 안 했음
   if (status === AssetShareStatus.PARTNER_AGREED) {
     return (
-      <div className="flex gap-2 self-center">
+      <div className="flex self-center">
         <button
           type="button"
-          onClick={handleRejectToShareAsset}
-          className="px-5 py-2 border border-hanared-normal text-sm rounded-2xl text-hanared-normal bg-white hover:bg-hanared-light-hover  w-fit self-center"
-        >
-          ❌ 거절하기
-        </button>
-        <button
-          type="button"
-          onClick={handleAgreeToShareAsset}
+          onClick={onOpenAssetShareModal}
           className="px-5 py-2 border border-hanagreen-normal text-sm rounded-2xl text-hanagreen-normal bg-white hover:bg-hanagreen-light-hover w-fit self-center"
         >
-          🤝🏻 수락하기
+          <div className="flex gap-1 items-center">
+            <CheckCircle className="h-5 w-5" />
+            자산 공유 요청 확인
+          </div>
         </button>
       </div>
     );
