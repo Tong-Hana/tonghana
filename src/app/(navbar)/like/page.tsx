@@ -8,6 +8,7 @@ import {
 } from "@/app/types/profiles";
 import LikeCard from "@/components/like/LikeCard";
 import { useReceivedLikes } from "@/hooks/useReceivedLikes";
+import { formatAmount } from "@/lib/utils/formatAmount";
 
 export default function LikePage() {
   const { data, isLoading, isError } = useReceivedLikes();
@@ -29,13 +30,17 @@ export default function LikePage() {
   return (
     <div className="flex flex-col mb-5 w-full h-full mt-5 gap-5">
       {data?.map((matchData) => {
-        const goal =
-          (goalUtils.periodValueToOption(
+        const goalType =
+          goalUtils.enumToTag(matchData.sent.goalType as GoalType) || "";
+        const goalPeriod =
+          goalUtils.periodValueToOption(
             matchData.sent.goalPeriod as GoalPeriod,
-          ) || "") +
-          " " +
-          (goalUtils.enumToTag(matchData.sent.goalType as GoalType) || "") +
-          "!";
+          ) || "";
+        const goalAmount = matchData.sent.goalAmount
+          ? formatAmount(matchData.sent.goalAmount)
+          : "";
+
+        const goal = `${goalType} ${goalAmount} 모으기! (${goalPeriod})`;
 
         return (
           <LikeCard
