@@ -11,7 +11,7 @@ export default async function HomeLayout({
 }) {
   const queryClient = getQueryClient();
 
-  void queryClient.prefetchQuery(cardListOptions());
+  await queryClient.prefetchQuery(cardListOptions());
 
   return (
     <div>
