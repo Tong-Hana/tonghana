@@ -21,13 +21,22 @@ export async function customFetch<T = unknown>(
     headers["Content-Type"] = "application/json";
   }
 
+  // 서버 사이드 렌더링(SSR) 시 쿠키를 직접 헤더에 추가
+  if (typeof window === "undefined") {
+    const { cookies } = await import("next/headers");
+    const cookieHeader = cookies().toString();
+    if (cookieHeader) {
+      headers.Cookie = cookieHeader;
+    }
+  }
+
   const res = await fetch(url, {
+    ...init,
     credentials: "include",
     headers: {
       ...headers,
       ...(init?.headers || {}),
     },
-    ...init,
   });
 
   if (!res.ok) {

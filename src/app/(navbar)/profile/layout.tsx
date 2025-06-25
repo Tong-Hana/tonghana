@@ -1,6 +1,7 @@
 import { userProfileOptions } from "@/hooks/useUserProfileQuery";
 import { getQueryClient } from "@/lib/getQueryClient";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Suspense } from "react";
 
 export default async function ProfileLayout({
   children,
@@ -14,7 +15,7 @@ export default async function ProfileLayout({
   return (
     <div className="-mx-5">
       <HydrationBoundary state={dehydrate(queryClient)}>
-        {children}
+        <Suspense fallback={<div>Loading profile...</div>}>{children}</Suspense>
       </HydrationBoundary>
     </div>
   );

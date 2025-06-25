@@ -1,4 +1,9 @@
 import Header from "@/components/common/Header";
+import { userProfileOptions } from "@/hooks/useUserProfileQuery";
+import { getQueryClient } from "@/lib/getQueryClient";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Suspense } from "react";
+import { customUser } from "@/lib/customUserData";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,35 +17,27 @@ export default async function CardDetailLayout({
   const resolvedParams = await params;
   const userId = Number(resolvedParams.id);
 
-  // const user = await fetchUserData(userId)
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(userProfileOptions(String(userId)));
 
-  const user = {
-    id: userId,
-    name: "김하나",
-    age: 30,
-    job: "회사원",
-    location: "경기도 성남시",
-    description: "성남에 살고 서울에서 일해요 😊",
-    imageUrl: "/jennie.jpg",
-    target: "5년 안에 내집마련!",
-    totalAsset: "5억",
-    carCost: "5천만원",
-    houseCost: "3억",
-    portfolioValues: [300, 200, 165, 100, 0, 0, 0, 100],
-    debtPercent: "200%",
-    investorType: "적극투자",
-    portfolioType: "안정형",
-    showDetail: false,
-  };
+  const userData = queryClient.getQueryData(
+    userProfileOptions(String(userId)).queryKey,
+  );
+  const user = userData?.data ? customUser(userData.data) : null;
 
-  const headerTitle = user ? `${user.name}` : "카드 상세";
+  let headerTitle = "카드 상세";
+  headerTitle = user ? `${user.name}` : "카드 상세";
 
   return (
     <div>
       <Header title={headerTitle} centerTitle={true} showBackButton={true} />
-      <div className="pb-[1rem]" />
-      {children}
-      <div className="pb-[5rem]" />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<div>Loading profile...</div>}>
+          <div className="pb-[1rem]" />
+          {children}
+          <div className="pb-[5rem]" />
+        </Suspense>
+      </HydrationBoundary>
     </div>
   );
 }

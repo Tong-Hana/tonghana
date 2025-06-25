@@ -169,7 +169,7 @@ export async function GET(_req: NextRequest) {
     where: { userId: user.userId },
   });
 
-  const userIds = await getMatchPartner(baseUser);
+  const userIds = await getMatchPartner(baseUser, 15);
 
   const [randomSubject] = await replicaPrisma.$queryRaw<SubjectResponse[]>`
   SELECT 

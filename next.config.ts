@@ -21,6 +21,19 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "tonghanabucket.s3.ap-northeast-2.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.jsdelivr.net",
+        port: "",
         pathname: "/**",
       },
     ],
@@ -53,28 +66,6 @@ const nextConfig: NextConfig = {
     );
     fileLoaderRule.exclude = /\.svg$/i;
     return config;
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "tonghanabucket.s3.ap-northeast-2.amazonaws.com",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.jsdelivr.net",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "avatars.githubusercontent.com",
-        port: "",
-        pathname: "/**",
-      },
-    ],
   },
 };
 

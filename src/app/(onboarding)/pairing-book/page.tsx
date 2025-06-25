@@ -21,7 +21,7 @@ import {
   pairingIncomeUtils,
   PairingIncomeOption,
 } from "@/app/types/profiles";
-        
+
 export default function PairingBookPage() {
   const router = useRouter();
   const [carPrice, setCarPrice] = useState("");
