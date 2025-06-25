@@ -29,7 +29,9 @@ export default function ChatAssetShareModal({
     }
   };
 
-  const agreeToShareAssetMutation = useAgreeToShareAsset(status);
+  const agreeToShareAssetMutation = useAgreeToShareAsset(status, () => {
+    onClose();
+  });
 
   const handleAgreeToShareAsset = async () => {
     if (!myId) return;
@@ -39,7 +41,9 @@ export default function ChatAssetShareModal({
     });
   };
 
-  const rejectToShareAssetMutation = useRejectToShareAsset();
+  const rejectToShareAssetMutation = useRejectToShareAsset(() => {
+    onClose();
+  });
 
   const handleRejectToShareAsset = async () => {
     if (!myId) return;
