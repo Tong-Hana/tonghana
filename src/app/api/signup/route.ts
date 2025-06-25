@@ -76,10 +76,9 @@ import { NextResponse } from "next/server";
 import { masterPrisma } from "@/lib/prisma/masterClient";
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import bcrypt from "bcryptjs";
-import { dummyUserProduct } from "@/lib/actions/dummyUserProduct";
-import { dummyConsume } from "@/lib/actions/dummyConsume";
-import { dummyLoan } from "@/lib/actions/dummyLoan";
-import { calculateCurrentType } from "@/lib/actions/calculateCurrentType";
+import { generateUserFinancialProducts } from "@/lib/actions/generateUserFinancialProducts";
+import { generateUserLoan } from "@/lib/actions/generateUserLoan";
+import { generateUserConsume } from "@/lib/actions/generateUserConsume";
 
 export async function POST(req: Request) {
   try {
@@ -118,13 +117,14 @@ export async function POST(req: Request) {
     });
 
     if (newUser) {
-      await dummyUserProduct(newUser);
-      dummyConsume(newUser);
-      const bool = Math.random() < 0.5;
-      if (bool) {
-        dummyLoan(newUser);
-      }
-      calculateCurrentType(newUser.userId);
+      // 유저의 금융상품 더미데이터 생성
+      await generateUserFinancialProducts(newUser);
+
+      // 유저 대출상품 더미데이터 생성
+      await generateUserLoan(newUser);
+
+      // 유저 지난달 소비비율 더미데이터 생성
+      await generateUserConsume(newUser);
     }
 
     return NextResponse.json(
