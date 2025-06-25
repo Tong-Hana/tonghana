@@ -13,7 +13,7 @@ interface ButtonProps
 }
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center transition-opacity duration-200 active:opacity-80 font-bold rounded-sm",
+  "inline-flex items-center justify-center transition-opacity duration-200 active:opacity-80 font-bold rounded-xl",
   {
     variants: {
       intent: {
