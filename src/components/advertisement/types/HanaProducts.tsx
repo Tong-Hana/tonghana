@@ -1,8 +1,8 @@
 export interface HanaAdCardProps {
   name: string;
-  interestRate: number;
-  maxInterestRate: number;
-  maxAmount: number;
+  interestRate: string;
+  period: string;
+  subjectUrl: string;
 }
 
 export interface HanaProductListItemProps extends HanaAdCardProps {
