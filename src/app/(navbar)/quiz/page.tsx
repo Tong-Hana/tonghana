@@ -1,24 +1,15 @@
+"use client";
+
 import InfoCard from "@/components/common/InfoCard";
 import QuizButton from "@/components/quiz/QuizButton";
 import ClientProductLinkButton from "@/components/quiz/ClientProductLinkButton";
 import HanaLogo from "../../../../public/hana_logo.svg";
-import { Quiz } from "@/app/types/quiz";
-
-const dummyQuiz: Quiz = {
-  subjectType: "대출",
-  description:
-    "자유롭게 자금관리가 가능한 하나원큐(스마트폰 뱅킹) 전용 정기예금",
-  title: "하나원큐 정기예금",
-  feature: "하나원큐(스마트폰 뱅킹) 전용 상품",
-  period: "1년",
-  amount: "1,000,000원",
-  interestRate: "3.00%",
-  subjectUrl: "https://www.hanabank.com/",
-};
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { quizQueryOptions } from "@/hooks/useQuiz";
 
 export default function QuizPage() {
-  //TODO: Quiz 불러오기
-  const quizData = dummyQuiz;
+  const { data } = useSuspenseQuery(quizQueryOptions());
+  const quizData = data.subject;
   const productCardStyle =
     "flex flex-col gap-5 p-5  rounded-3xl shadow-card-shadow";
   const cardTitleStyle = "text-lg font-semibold text-text-primary leading-7";
@@ -60,7 +51,7 @@ export default function QuizPage() {
         <div className={productCardStyle + " bg-hanagreen-light"}>
           <div className={cardTitleStyle}>상세정보</div>
           <div className={cardTextStyle}>
-            <span className={cardSpanStyle}>특징.</span> {quizData.feature}
+            <span className={cardSpanStyle}>특징.</span> {quizData.features}
             <br />
             <span className={cardSpanStyle}>기간.</span> {quizData.period}
             <br />

@@ -1,10 +1,7 @@
 "use client";
 
 import Button from "@/components/common/button/Button";
-
-type UserQuizLog = {
-  isPassed: boolean | null;
-};
+import { UserQuizLog } from "@/app/types/quiz";
 
 export default function QuizButton() {
   //TODO: userQuizLog 불러오기
