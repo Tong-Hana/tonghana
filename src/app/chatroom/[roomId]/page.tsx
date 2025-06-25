@@ -165,18 +165,22 @@ export default function ChatRoomPage() {
 
       {/* 하단 고정 입력창 */}
       <div
-        className="fixed w-full bottom-0 left-0 flex flex-col gap-3 bg-transparent"
+        className="fixed frame-container bottom-0 flex flex-col gap-3 bg-transparent"
         style={{ zIndex: 5 }}
       >
-        <div className="flex justify-center">
-          {myProfile && chatPartner && (
-            <ChatPortfolioButton onOpen={() => setShowBottomSheet(true)} />
-          )}
-          <AssetShareButton
-            status={roomInfo?.agreeStatus ?? AssetShareStatus.REJECTED}
-            myId={myProfile?.userId}
-            roomId={roomId}
-          />
+        <div className="flex w-full items-center">
+          <div className="ml-5 flex items-center ">
+            {myProfile && chatPartner && (
+              <ChatPortfolioButton onOpen={() => setShowBottomSheet(true)} />
+            )}
+          </div>
+          <div className="absolute left-1/2 -translate-x-1/2">
+            <AssetShareButton
+              status={roomInfo?.agreeStatus ?? AssetShareStatus.REJECTED}
+              myId={myProfile?.userId}
+              roomId={roomId}
+            />
+          </div>
         </div>
         <ChatInput inputRef={inputRef} onSend={handleSendMessage} />
       </div>
