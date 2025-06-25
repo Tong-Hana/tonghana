@@ -38,10 +38,7 @@ export default function LikeCard({
     },
   );
 
-  const handleAcceptLike = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // 페이지 이동 방지
-    e.stopPropagation(); // 부모 이벤트 전파 방지
-
+  const handleAcceptLike = () => {
     acceptMutation.mutate(matchId);
   };
 
@@ -55,46 +52,43 @@ export default function LikeCard({
     },
   );
 
-  const handleRejectLike = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // 페이지 이동 방지
-    e.stopPropagation(); // 부모 이벤트 전파 방지
-
+  const handleRejectLike = () => {
     rejectMutation.mutate(matchId);
   };
 
   return (
-    <Link href={`/card/${userId}`}>
-      <div className="flex gap-3">
-        <div className="flex px-5 py-4 bg-white shadow-card-shadow rounded-3xl w-full items-center">
+    <div className="flex gap-3">
+      <div className="flex px-5 py-4 bg-white shadow-card-shadow rounded-3xl w-full items-center">
+        <Link href={`/card/${userId}`}>
           <div className="w-[80px] h-[80px] relative rounded-2xl overflow-hidden">
             <Image src={imageUrl} alt="profile" fill className="object-cover" />
           </div>
-          <div className="flex flex-col flex-1 min-w-0 pl-3 text-xs text-text-primary">
-            <div className="flex w-full justify-between items-center">
-              <p className="">{name}</p>
-              <button type="button" onClick={handleRejectLike}>
-                <XMark className="mr-0.5 w-4 h-4 text-hanasilver hover:text-hanablack" />
-              </button>
-            </div>
-            <div className="flex text-[10px] font-light items-center">
-              <p className="mr-2">{age}세</p>
-              <Map className="mr-[2px] w-3 h-3 fill-hanasilver" />
-              <p>{address}</p>
-            </div>
-            <p className="mt-1 truncate w-full block text-[10px]">{goal}</p>
-            <div className="flex mt-1 w-full justify-between items-center">
-              <Tag
-                className=" text-[8px] py-0.5 px-2"
-                text={investmentType}
-                size={"xs"}
-              />
-              <button type="button" onClick={handleAcceptLike}>
-                <HeartIcon className="w-5 h-5 fill-hanasilver stroke-hanasilver hover:fill-hanared-normal hover:stroke-hanared-normal" />
-              </button>
-            </div>
+        </Link>
+        <div className="flex flex-col flex-1 min-w-0 pl-3 text-xs text-text-primary">
+          <div className="flex w-full justify-between items-center">
+            <p className="">{name}</p>
+            <button type="button" onClick={handleRejectLike}>
+              <XMark className="mr-0.5 w-4 h-4 text-hanasilver hover:text-hanablack" />
+            </button>
+          </div>
+          <div className="flex text-[10px] font-light items-center">
+            <p className="mr-2">{age}세</p>
+            <Map className="mr-[2px] w-3 h-3 fill-hanasilver" />
+            <p>{address}</p>
+          </div>
+          <p className="mt-1 truncate w-full block text-[10px]">{goal}</p>
+          <div className="flex mt-1 w-full justify-between items-center">
+            <Tag
+              className=" text-[8px] py-0.5 px-2"
+              text={investmentType}
+              size={"xs"}
+            />
+            <button type="button" onClick={handleAcceptLike}>
+              <HeartIcon className="w-5 h-5 fill-hanasilver stroke-hanasilver hover:fill-hanared-normal hover:stroke-hanared-normal" />
+            </button>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
