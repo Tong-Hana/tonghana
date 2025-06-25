@@ -69,7 +69,7 @@
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getTodaySubjectId } from "@/lib/getTodaySubjectId";
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 
