@@ -29,8 +29,14 @@ export default async function CardDetailLayout({
   headerTitle = user ? `${user.name}` : "카드 상세";
 
   return (
-    <div>
-      <Header title={headerTitle} centerTitle={true} showBackButton={true} />
+    <div className="bg-hanagreen-normal -mx-5 px-5">
+      <Header
+        className="bg-hanagreen-normal"
+        title={headerTitle}
+        centerTitle={true}
+        color="white"
+        showBackButton={true}
+      />
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<div>Loading profile...</div>}>
           <div className="pb-[1rem]" />
