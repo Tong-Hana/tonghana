@@ -10,8 +10,6 @@ import { useFttiMutation } from "@/hooks/useFttiMutation";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useFttiStore } from "@/lib/store/fttiStore";
-import { useQueryClient } from "@tanstack/react-query";
-
 interface FttiSurveyProps {
   title?: string;
   infoMessage?: React.ReactNode;
@@ -26,7 +24,6 @@ export default function FttiSurvey({
   isRetake = false,
 }: FttiSurveyProps) {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const { selectedAnswers, setAnswer, isComplete, clearAnswers } =
     useFttiStore();
 
@@ -35,22 +32,11 @@ export default function FttiSurvey({
       clearAnswers();
 
       if (isRetake) {
-        toast.success("FTTI 설문이 완료되었습니다!");
-
-        // 프로필 관련 캐시 무효화
-        await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
-        await queryClient.refetchQueries({ queryKey: ["userProfile"] });
-
-        // 마이페이지로 돌아가기
-        setTimeout(() => {
-          router.push("/profile");
-        }, 1000);
+        router.push(`/result?type=${data.resultType}&retake=true`);
       } else {
-        // 온보딩의 경우 결과 페이지로 이동
         router.push(`/result?type=${data.resultType}`);
       }
 
-      // 커스텀 성공 콜백이 있으면 실행
       if (onSuccess) {
         onSuccess();
       }
@@ -70,16 +56,14 @@ export default function FttiSurvey({
   const handleSubmit = () => {
     if (!isComplete()) return;
 
-    // 0부터 시작하는 인덱스를 1부터 시작하는 선택지 번호로 변환
     const answers = selectedAnswers.map((ans) => {
-      if (ans === null) return 1; // null인 경우 첫 번째 선택지로 기본값
+      if (ans === null) return 1;
       if (Array.isArray(ans)) {
-        return ans.map((idx) => idx + 1); // 배열의 각 요소에 +1
+        return ans.map((idx) => idx + 1);
       }
-      return ans + 1; // 단일 값에 +1
+      return ans + 1;
     }) as (number | number[])[];
 
-    console.log("변환된 답변:", answers);
     fttiMutation.mutate({ answers });
   };
 
