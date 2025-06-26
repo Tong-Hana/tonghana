@@ -59,14 +59,18 @@ jobs:
             fi
 
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+            echo "READ_REPLICA_URL=${{ secrets.READ_REPLICA_URL }}" > .env
+            echo "WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}" > .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
             echo "AMPLIFY_BUCKET=${{ secrets.AMPLIFY_BUCKET }}" >> .env
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+            echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env
 
             # 설치 및 빌드
             npm install --legacy-peer-deps
+            npm install --save-dev openapi-types
             npm install graphql
 
             # ✅ Prisma client만 생성 (DB에는 영향 없음)
