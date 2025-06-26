@@ -10,10 +10,9 @@ export type QuizDetailResponse = {
 };
 
 export const fetchQuiz = async (): Promise<QuizResponse> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/subject`, {
+  return await customFetch<QuizResponse>("/subject", {
     method: "GET",
   });
-  return res.json();
 };
 
 export const fetchQuizLog = async (): Promise<UserQuizLog> => {
@@ -23,10 +22,9 @@ export const fetchQuizLog = async (): Promise<UserQuizLog> => {
 };
 
 export const fetchQuizDetail = async (): Promise<QuizDetailResponse> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/subject/quiz`, {
+  return await customFetch<QuizDetailResponse>("/subject/quiz", {
     method: "GET",
   });
-  return res.json();
 };
 
 export const submitQuizLog = async (answer: boolean): Promise<UserQuizLog> => {

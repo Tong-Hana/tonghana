@@ -11,6 +11,8 @@ import { quizDetailQueryOptions, usePatchQuizLog } from "@/hooks/useQuiz";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default function QuizDetailPage() {
   const { data } = useSuspenseQuery(quizDetailQueryOptions());
   const quizData = data.quiz;
@@ -85,6 +87,7 @@ export default function QuizDetailPage() {
     submitUserQuizLogMutation.mutate(false);
     router.push("/quiz");
   };
+
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
