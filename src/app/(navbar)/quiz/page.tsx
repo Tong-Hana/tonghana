@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import InfoCard from "@/components/common/InfoCard";
 import QuizButton from "@/components/quiz/QuizButton";
 import ClientProductLinkButton from "@/components/quiz/ClientProductLinkButton";
