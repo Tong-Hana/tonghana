@@ -56,4 +56,9 @@ jobs:
 
             npm install --legacy-peer-deps
             npm run build
+
+            # Express API 서버
             pm2 restart tonghana || pm2 start npm --name "tonghana" -- start
+
+            # 채팅 서버 (tsx로 실행)
+            pm2 restart chat || pm2 start "npx tsx chat-server.ts" --name "chat"
