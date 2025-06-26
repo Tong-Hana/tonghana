@@ -102,6 +102,9 @@ export async function POST(req: Request) {
       }
     });
 
+    totalScore = totalScore / 39;
+    totalScore = totalScore * 100;
+
     // 5. 투자 성향 분류
     let currentType:
       | "CONSERVATIVE"
