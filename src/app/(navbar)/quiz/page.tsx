@@ -19,7 +19,7 @@ export default function QuizPage() {
     quizData.subjectType === "대출" ? "대출 한도." : "가입 금액.";
   const needDetail = quizData.subjectType !== "금융상식";
   return (
-    <div className="flex flex-col relative w-full p-5 overflow-y-scroll gap-8 scrollbar-hide">
+    <div className="flex flex-col relative w-full p-5 pb-14 overflow-y-scroll gap-8 scrollbar-hide">
       <div className="font-light text-xl leading-7 tracking-normal text-text-primary">
         퀴즈를 풀고 매칭 상대를 더 만나 보세요!
       </div>
