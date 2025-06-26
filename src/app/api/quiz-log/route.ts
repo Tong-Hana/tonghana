@@ -188,6 +188,7 @@ export async function POST(req: NextRequest) {
 
     const existingLog = await replicaPrisma.userQuizLog.findFirst({
       where: { subjectId: todaySubjectId, userId: user.userId },
+      orderBy: { createdAt: "desc" },
       select: {
         createdAt: true,
       },
@@ -276,7 +277,9 @@ export async function PATCH(req: NextRequest) {
 
     const existingLog = await replicaPrisma.userQuizLog.findFirst({
       where: { subjectId: todaySubjectId, userId: user.userId },
+      orderBy: { createdAt: "desc" },
       select: {
+        createdAt: true,
         quizLogId: true,
       },
     });
