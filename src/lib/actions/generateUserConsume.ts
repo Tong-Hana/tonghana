@@ -37,9 +37,9 @@ export async function generateUserConsume(
 
 // 모든 더미 유저의 지난달 소비 더미데이터 생성 : transaction으로 처리
 export async function generateUserConsumeAll(users: User[]) {
-  await masterPrisma.$transaction(async (tx) => {
-    for (const user of users) {
+  for (const user of users) {
+    await masterPrisma.$transaction(async (tx) => {
       await generateUserConsume(user, tx);
-    }
-  });
+    });
+  }
 }
