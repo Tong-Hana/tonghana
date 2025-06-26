@@ -109,6 +109,63 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *   patch:
+ *     tags:
+ *       - Quiz
+ *     summary: 오늘의 퀴즈 결과 수정
+ *     description: >
+ *       인증된 사용자가 오늘 제출한 퀴즈 결과를 수정합니다.
+ *       이미 제출한 로그가 없으면 404 에러를 반환합니다.
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               answer:
+ *                 type: boolean
+ *                 example: false
+ *                 description: 수정할 퀴즈 답변 (정답 여부)
+ *             required:
+ *               - answer
+ *     responses:
+ *       201:
+ *         description: 퀴즈 로그 수정 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isPassed:
+ *                   type: boolean
+ *                   description: 수정된 퀴즈 통과 여부
+ *       400:
+ *         description: 잘못된 요청 (answer 누락 등)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: 인증되지 않은 사용자
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: 오늘 퀴즈 로그가 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 
 import { NextRequest, NextResponse } from "next/server";
