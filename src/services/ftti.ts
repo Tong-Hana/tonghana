@@ -13,8 +13,14 @@ export interface FttiResult {
 export const postFttiAnswers = async (
   payload: FttiAnswersPayload,
 ): Promise<FttiResult> => {
-  return customFetch("/profiles/me/ftti", {
+  console.log("🚀 FTTI 요청 전송:", payload);
+
+  const response = await customFetch<FttiResult>("/profiles/me/ftti", {
     method: "POST",
     body: JSON.stringify(payload),
   });
+
+  console.log("✅ FTTI 응답 받음:", response);
+
+  return response;
 };

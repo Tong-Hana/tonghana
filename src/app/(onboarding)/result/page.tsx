@@ -7,6 +7,7 @@ import FTTITypeCard from "@/components/ftti/FTTITypeCard";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import { usePartnerFttiMutation } from "@/hooks/usePartnerFttiMutation";
+import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const FTTI_TYPES = [
@@ -50,15 +51,27 @@ const FTTI_TYPES = [
 export default function FTTIResultPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const type = searchParams.get("type") || "AGGRESSIVE";
+  const isRetake = searchParams.get("retake") === "true";
   const selected = FTTI_TYPES.find((t) => t.key === type) || FTTI_TYPES[3];
   const [selectedPartnerType, setSelectedPartnerType] = useState<string | null>(
     null,
   );
 
   const partnerFttiMutation = usePartnerFttiMutation({
-    onSuccess: () => {
-      router.push("/home");
+    onSuccess: async () => {
+      if (isRetake) {
+        await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+        await queryClient.refetchQueries({ queryKey: ["userProfile"] });
+
+        setTimeout(() => {
+          router.push("/profile");
+        }, 1000);
+      } else {
+        router.push("/home");
+      }
     },
     onError: () => {
       toast.error("저장에 실패했습니다. 다시 시도해주세요.");
@@ -81,7 +94,7 @@ export default function FTTIResultPage() {
 
   return (
     <div>
-      <Header title="FTTI 설문 결과" />
+      <Header title={isRetake ? "FTTI 재설문 결과" : "FTTI 설문 결과"} />
       <div className="min-h-screen bg-background px-4 py-6 space-y-10">
         <section className="bg-white rounded-3xl p-6 flex flex-col items-center text-center space-y-3">
           <Image
@@ -91,7 +104,7 @@ export default function FTTIResultPage() {
             height={100}
           />
           <p className="mt-8 text-text-primary text-xl font-semibold">
-            당신의 투자 성향은
+            {isRetake ? "변경된 " : "당신의 "}투자 성향은
             <span className="text-hanagreen-normal"> {selected.title}</span>
             이에요!
           </p>
@@ -102,7 +115,9 @@ export default function FTTIResultPage() {
             상대 FTTI 유형 선택
           </p>
           <p className="text-xl font-normal text-text-primary">
-            통하고 싶은 FTTI 유형을 선택해 주세요
+            {isRetake
+              ? "변경된 성향에 맞는 FTTI 유형을 선택해 주세요"
+              : "통하고 싶은 FTTI 유형을 선택해 주세요"}
           </p>
         </div>
 
