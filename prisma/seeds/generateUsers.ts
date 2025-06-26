@@ -26,15 +26,16 @@ export function getRandomCity(): string {
 
 // const cities = ["서울시 성동구", "서울시 강남구", "서울시 종로구"];
 async function createUser() {
-  const nickname = faker.person.firstName();
   const email = fakerEn.internet.email({
     firstName: fakerEn.person.firstName(),
   });
   const hashedPassword = await bcrypt.hash("1234", 10);
   const birthYear = faker.number.int({ min: 1980, max: 2005 });
   const city = getRandomCity();
-  const description = `안녕하세요. ${nickname} 입니다.`;
   const gender = faker.helpers.arrayElement<Gender>([Gender.F, Gender.M]);
+  const sexType = gender === Gender.M ? "male" : "female";
+  const nickname = faker.person.firstName(sexType);
+  const description = `안녕하세요. ${nickname} 입니다.`;
   const job = faker.helpers.arrayElement([
     "학생",
     "개발자",
@@ -78,7 +79,7 @@ async function createUser() {
     InvestmentType.VERY_AGGRESSIVE,
   ]);
 
-  const profileImage = faker.image.avatar();
+  const profileImage = faker.image.personPortrait({ sex: sexType });
 
   const user = await masterPrisma.user.create({
     data: {
