@@ -39,7 +39,7 @@ export default function ChatPortfolioBottomSheet({
       )}
       <div
         className={cn(
-          "fixed h-fit inset-0 z-50 transition-transform duration-300",
+          "fixed frame-container h-fit inset-0 z-50 transition-transform duration-300",
           open ? "-translate-y-full" : "translate-y-0",
         )}
         style={{ top: "100vh", maxHeight: "90vh" }}
