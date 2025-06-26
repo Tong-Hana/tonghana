@@ -58,9 +58,9 @@ jobs:
               sudo npm install -g pm2
             fi
 
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
-            echo "READ_REPLICA_URL=${{ secrets.READ_REPLICA_URL }}" > .env
-            echo "WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}" > .env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            echo "READ_REPLICA_URL=${{ secrets.READ_REPLICA_URL }}" >> .env
+            echo "WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
             echo "AMPLIFY_BUCKET=${{ secrets.AMPLIFY_BUCKET }}" >> .env
@@ -73,11 +73,11 @@ jobs:
             npm install --save-dev openapi-types
             npm install graphql
 
-            # ✅ Prisma client만 생성 (DB에는 영향 없음)
+            # Prisma client만 생성 (DB에는 영향 없음)
             npx prisma generate
 
             # 빌드 후 PM2로 실행
             npm run build
 
             pm2 restart tonghana || pm2 start npm --name "tonghana" -- start
-            pm2 restart chat || pm2 start "npx tsx chat-server.ts" --name "chat"
+            export $(cat .env | xargs) && pm2 restart chat || export $(cat .env | xargs) && pm2 start "npx tsx chat-server.ts" --name "chat"
