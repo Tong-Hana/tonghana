@@ -145,6 +145,7 @@ export default function QuizDetailPage() {
         onClose={stopQuiz}
         isEnd={quizData.length === idx + 1}
         isCorrect={answer === quizData[idx].answer}
+        fullAnswer={!!fullAnswer}
       />
     </div>
   );

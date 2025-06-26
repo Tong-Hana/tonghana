@@ -8,20 +8,39 @@ export default function QuizAnswerModal({
   onClose,
   isEnd,
   isCorrect,
+  fullAnswer,
 }: {
   title: string;
   content: string;
-  open?: boolean;
+  open: boolean;
   onAction: () => void;
   onClose: () => void;
   isEnd: boolean;
   isCorrect: boolean;
+  fullAnswer: boolean;
 }) {
   const showModal = open ?? true;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
+    }
+  };
+  const quizResult = () => {
+    if (!isEnd) {
+      return <></>;
+    } else if (fullAnswer) {
+      return (
+        <div className="text-xl pb-4 text-hanared-normal leading-7 whitespace-pre-wrap">
+          {"3문제를 모두 맞춰서\n매칭상대 5명이 추가됐어요 🎉"}
+        </div>
+      );
+    } else {
+      return (
+        <div className="text-xl pb-4 text-label7 leading-7 whitespace-pre-wrap">
+          {"아쉽지만 3문제를 다 맞추지 못했어요\n내일 또 도전해 주세요 🥲"}
+        </div>
+      );
     }
   };
 
@@ -38,6 +57,7 @@ export default function QuizAnswerModal({
             </h2>
 
             <p className="mb-6 text-base text-text-primary">{content}</p>
+            {quizResult()}
 
             <div className="flex w-full gap-4 px-0">
               {isEnd || isCorrect ? (
