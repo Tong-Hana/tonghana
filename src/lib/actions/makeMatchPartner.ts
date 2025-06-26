@@ -37,13 +37,12 @@ const calcMutualSimilarity = (
   const sim1 = cosineSimilarity(aCurrVec, bPrefVec); // 나의 현재 ↔ 너의 이상
   const sim2 = cosineSimilarity(bCurrVec, aPrefVec); // 너의 현재 ↔ 나의 이상
 
-  return sim1 * 0.3 + sim2 * 0.7; // 가중치 조정
+  return sim1 * 0.4 + sim2 * 0.6; // 가중치 조정
 };
 
 // 사용자의 매칭 상대를 찾는 함수
 // 매칭 로그에 존재하지 않는 상대 중에서 현재 또는 선호하는 투자성향이 일치하는 사용자를 매칭시킵니다.
-// 기본값은 10명이며, 추가 매칭일 경우 원하는 값을 입력합니다.
-export async function getMatchPartner(user: User, findNum = 10) {
+export async function makeMatchPartner(user: User, findNum: number) {
   const oppositeGender = user.gender === "M" ? "F" : "M";
 
   // 오늘 생성된 추천 기록 확인
@@ -58,19 +57,15 @@ export async function getMatchPartner(user: User, findNum = 10) {
     now.getMonth(),
     now.getDate() + 1,
   );
-  let count = 0;
-  if (findNum !== 10) {
-    count = await replicaPrisma.userRecoLog.count({
-      where: {
-        baseUserId: user.userId,
-        createdAt: {
-          gte: startOfToday,
-          lt: startOfTomorrow,
-        },
-        likeStatus: true,
+  const count = await replicaPrisma.userRecoLog.count({
+    where: {
+      baseUserId: user.userId,
+      createdAt: {
+        gte: startOfToday,
+        lt: startOfTomorrow,
       },
-    });
-  }
+    },
+  });
 
   const matchLogs = await replicaPrisma.userMatchLog.findMany({
     where: {
@@ -128,10 +123,9 @@ export async function getMatchPartner(user: User, findNum = 10) {
     })
     .sort((a, b) => b.mutualScore - a.mutualScore)
     .slice(0, findNum + count);
-  const results = [];
   for (let i = count; i < slice.length; i++) {
     const result = slice[i];
-    results.push(result.userId);
+    console.log(result);
     await masterPrisma.userRecoLog.create({
       data: {
         baseUserId: user.userId,
@@ -140,18 +134,18 @@ export async function getMatchPartner(user: User, findNum = 10) {
       },
     });
   }
-  return results;
+  return;
 }
-async function main() {
-  const user = await replicaPrisma.user.findFirst({
-    where: { userId: 123 },
-  });
-  if (!user) {
-    console.error("User not found");
-    return;
-  }
-
-  const partners = await getMatchPartner(user, 5);
-  console.log("Matched Partners:", partners);
-}
-main();
+// async function main() {
+//   const user = await replicaPrisma.user.findFirst({
+//     where: { userId: 101 },
+//   });
+//   if (!user) {
+//     console.error("User not found");
+//     return;
+//   }
+//
+//   const partners = await makeMatchPartner(user, 5);
+//   console.log("Matched Partners:", partners);
+// }
+// main();

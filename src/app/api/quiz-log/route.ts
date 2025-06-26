@@ -174,6 +174,7 @@ import { getTodaySubjectId } from "@/lib/getTodaySubjectId";
 import { isSameDay } from "date-fns";
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { masterPrisma } from "@/lib/prisma/masterClient";
+import { makeMatchPartner } from "@/lib/actions/makeMatchPartner";
 
 export async function GET() {
   const user = await getAuthUser();
@@ -356,6 +357,18 @@ export async function PATCH(req: NextRequest) {
         isPassed: Boolean(answer),
       },
     });
+    const baseUser = await replicaPrisma.user.findUnique({
+      where: { userId: user.userId },
+    });
+    if (!baseUser) {
+      return NextResponse.json(
+        { message: "사용자를 찾을 수 없습니다." },
+        { status: 404 },
+      );
+    }
+    if (answer) {
+      await makeMatchPartner(baseUser, 15);
+    }
 
     return NextResponse.json(
       { isPassed: newQuizLog.isPassed },

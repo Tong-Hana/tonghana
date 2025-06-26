@@ -55,6 +55,7 @@ import { NextResponse } from "next/server";
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { makeMatchPartner } from "@/lib/actions/makeMatchPartner";
 
 export async function POST(req: Request) {
   try {
@@ -96,7 +97,7 @@ export async function POST(req: Request) {
       process.env.JWT_SECRET!,
       { expiresIn: "1d" },
     );
-
+    makeMatchPartner(user, 10);
     const response = NextResponse.json({
       message: "로그인에 성공하였습니다.",
       accessToken: token,

@@ -140,7 +140,6 @@
  *                       example: https://www.kebhana.com/cont/mall/mall08/mall0801/mall080102/1486817_115157.jsp
  */
 
-import { getMatchPartner } from "@/lib/actions/getMatchPartner";
 import { getAuthUser } from "@/lib/auth";
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { NextRequest, NextResponse } from "next/server";
@@ -170,7 +169,19 @@ export async function GET(_req: NextRequest) {
     where: { userId: user.userId },
   });
 
-  const userIds = await getMatchPartner(baseUser, 15);
+  const rawUserIds = await replicaPrisma.userRecoLog.findMany({
+    where: {
+      baseUserId: baseUser.userId,
+      createdAt: {
+        gte: new Date(new Date().setHours(0, 0, 0, 0)), // 오늘 날짜의 시작
+        lt: new Date(new Date().setHours(23, 59, 59, 999)), // 오늘 날짜의 끝
+      },
+    },
+    select: {
+      candidateId: true,
+    },
+  });
+  const userIds = rawUserIds.map((log) => log.candidateId);
 
   // 랜덤 광고 조회
   const [randomSubject] = await replicaPrisma.$queryRaw<SubjectResponse[]>`
