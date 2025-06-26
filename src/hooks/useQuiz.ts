@@ -13,6 +13,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { UserQuizLog } from "@/app/types/quiz";
+import { useUserStore } from "@/lib/store/userStore";
 
 function getTodayDate() {
   const year = new Date().getFullYear();
@@ -63,9 +64,18 @@ export const usePatchQuizLog = (
   onSuccess?: (data: UserQuizLog) => void,
   onError?: (error: Error) => void,
 ) => {
+  const { setIsQuizResolved } = useUserStore();
+
   return useMutation({
     mutationFn: (isPassed: boolean) => patchQuizLog(isPassed),
-    onSuccess,
+    onSuccess: (data: UserQuizLog) => {
+      if (data.isPassed) {
+        setIsQuizResolved(data.isPassed);
+      }
+      if (onSuccess) {
+        onSuccess(data);
+      }
+    },
     onError,
   });
 };
