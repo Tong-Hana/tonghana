@@ -119,6 +119,27 @@ export async function PATCH(
     },
   });
 
+  try {
+    const response = await fetch(
+      "http://localhost:3001/api/notify-asset-change",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          roomId: updatedRoom.roomId,
+          userId: updatedRoom.userId,
+          userId2: updatedRoom.userId2,
+          isAgree: updatedRoom.isAgree,
+          isAgree2: updatedRoom.isAgree2,
+        }),
+      },
+    );
+
+    const resJson = await response.json();
+  } catch (e) {
+    console.error("채팅 서버 요청 실패:", e);
+  }
+
   return NextResponse.json(
     {
       data: updatedRoom,
