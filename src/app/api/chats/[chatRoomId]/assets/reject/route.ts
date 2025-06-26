@@ -121,7 +121,7 @@ export async function PATCH(
 
   try {
     const response = await fetch(
-      "http://localhost:3001/api/notify-asset-change",
+      "http://3.35.57.215:3001/api/notify-asset-change",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

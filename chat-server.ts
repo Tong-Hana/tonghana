@@ -86,5 +86,5 @@ io.on("connection", (socket) => {
 
 const PORT = 3001;
 server.listen(PORT, () => {
-  console.log(`🚀 채팅 서버 실행 중: http://localhost:${PORT}`);
+  console.log(`🚀 채팅 서버 실행 중: http://3.35.57.215:${PORT}`);
 });

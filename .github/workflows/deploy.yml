@@ -20,7 +20,9 @@ jobs:
 
       - name: Create .env file
         run: |
+          echo "WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}" >> .env
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "READ_REPLICA_URL=${{ secrets.READ_REPLICA_URL }}" >> .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
           echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
           echo "AMPLIFY_BUCKET=${{ secrets.AMPLIFY_BUCKET }}" >> .env
