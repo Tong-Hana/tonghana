@@ -9,9 +9,11 @@ import {
   LikeButton,
 } from "@/components/common/button/ReactionButton";
 import { ProfileCardProps } from "@/components/profile/types/profileCardTypes";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { InvestmentTypeLabelMap } from "@/app/types/profiles";
+import { useCardLike } from "@/hooks/useCardLike";
+import { useCardRemove } from "@/hooks/useCardRemove";
+import toast from "react-hot-toast";
 
 export default function ProfileCard({
   id,
@@ -32,8 +34,31 @@ export default function ProfileCard({
   showDetail = false,
   modalView = false,
 }: ProfileCardProps) {
-  const [isLiked, setIsLiked] = useState(false);
   const router = useRouter();
+
+  const likeMutation = useCardLike(
+    id,
+    () => {
+      toast.success(`${name}에게 좋아요를 보냈습니다!`);
+    },
+    (error) => {
+      toast.error(error.message || "좋아요 전송에 실패했습니다.");
+    },
+  );
+
+  const removeMutation = useCardRemove(id, (error) => {
+    toast.error(error.message || "카드 넘기기에 실패했습니다.");
+  });
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    likeMutation.mutate(id);
+  };
+
+  const handleDislike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    removeMutation.mutate(id);
+  };
 
   return (
     <div
@@ -131,13 +156,18 @@ export default function ProfileCard({
       </div>
       {/* 좋아요, 싫어요 버튼 */}
       <div className="flex justify-between">
-        <DislikeButton circle size="md" modalView={modalView} />
+        <DislikeButton
+          circle
+          size="md"
+          modalView={modalView}
+          onClick={handleDislike}
+        />
         <LikeButton
           circle
           size="md"
-          isActive={isLiked}
+          isActive={false}
           modalView={modalView}
-          onClick={() => setIsLiked((prev) => !prev)}
+          onClick={handleLike}
         />
       </div>
     </div>
