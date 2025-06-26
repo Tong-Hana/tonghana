@@ -47,6 +47,17 @@ jobs:
           script: |
             cd ~/tonghana
 
+            # Node.js & npm 설치 (Ubuntu 기준)
+            if ! command -v npm &> /dev/null; then
+              curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            fi
+
+            # pm2 설치 (글로벌)
+            if ! command -v pm2 &> /dev/null; then
+              sudo npm install -g pm2
+            fi
+
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
