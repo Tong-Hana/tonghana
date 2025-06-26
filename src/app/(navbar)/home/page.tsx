@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { cardListOptions } from "@/hooks/useCardList";
 import { CardUser } from "@/app/types/cardList";
@@ -8,11 +8,11 @@ import HanaAdCard from "@/components/advertisement/HanaAdCard";
 import ProfileCard from "@/components/profile/ProfileCard";
 import { customUser } from "@/lib/customUserData";
 import Button from "@/components/common/button/Button";
-import { useUserStore } from "@/lib/store/userStore";
+import { quizLogQueryOptions } from "@/hooks/useQuiz";
 
 export default function HomePage() {
   const { data } = useSuspenseQuery(cardListOptions());
-  const { isQuizResolved, setIsQuizResolved } = useUserStore();
+  const { data: quizLog } = useQuery(quizLogQueryOptions());
   const router = useRouter();
 
   const allUsers = data.data.map((user: CardUser) => customUser(user));
@@ -21,12 +21,12 @@ export default function HomePage() {
   // 좋아요/카드삭제 구현, 카드 상세페이지
   const initialUsers = allUsers.slice(0, 10);
   const additionalUsers = allUsers.slice(10, 15);
-  const usersToRender = isQuizResolved
+  const usersToRender = quizLog?.isPassed
     ? [...additionalUsers, ...initialUsers]
     : initialUsers;
 
   const handleQuizButtonClick = () => {
-    setIsQuizResolved(true);
+    // setIsQuizResolved(true);
     router.push("/quiz");
   };
 
@@ -66,7 +66,7 @@ export default function HomePage() {
       </div>
       <div className="w-full flex justify-center">
         <Button
-          disabled={isQuizResolved}
+          disabled={quizLog?.isPassed ?? false}
           size="full"
           label="퀴즈 풀고 5명 더 보기"
           onClick={handleQuizButtonClick}
