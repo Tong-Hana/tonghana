@@ -66,7 +66,9 @@ export default function QuizButton() {
         }
         size="full"
         onClick={() => {
-          submitQuiz();
+          if (data?.isPassed === null) {
+            submitQuiz();
+          }
         }}
       />
     </>
