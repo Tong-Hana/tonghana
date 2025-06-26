@@ -17,6 +17,13 @@ export interface SocketChatMessage {
   message: string;
   regdate: string;
 }
+export interface SocketAssetShareStatus {
+  roomId: number;
+  userId: number;
+  userId2: number;
+  isAgree: boolean;
+  isAgree2: boolean;
+}
 
 export interface ServerToClientEvents {
   receiveMessage: (message: SocketChatMessage) => void;
