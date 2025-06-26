@@ -42,9 +42,9 @@ export async function generateUserLoan(
 
 // 모든 더미 유저의 대출 더미데이터 생성
 export async function generateUserLoanAll(users: User[]) {
-  await masterPrisma.$transaction(async (tx) => {
-    for (const user of users) {
+  for (const user of users) {
+    await masterPrisma.$transaction(async (tx) => {
       await generateUserLoan(user, tx);
-    }
-  });
+    });
+  }
 }

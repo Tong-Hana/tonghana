@@ -29,7 +29,7 @@ export async function main() {
     }
 
     // 더미 유저 생성
-    const userCount = 10;
+    const userCount = 100;
     const createdUsers = await generateUsers(userCount);
     console.log(`더미 유저 ${userCount}명 생성 성공!`);
 
