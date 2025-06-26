@@ -11,57 +11,87 @@ import AssetToggleRow from "@/components/profile/AssetToggleRow";
 import Button from "@/components/common/button/Button";
 import Select from "@/components/common/Select";
 import { SelectChangeEvent } from "@mui/material";
-
-const GOAL_TAGS = ["내 집 마련", "목돈 마련", "노후 자금", "결혼 자금"];
-
-const GOAL_PERIOD_OPTIONS = ["1년 이내", "3년 이내", "5년 이내", "5년 이상"];
-
-const GOAL_PERIOD_VALUES = [
-  "WITHIN_1_YEAR",
-  "WITHIN_3_YEARS",
-  "WITHIN_5_YEARS",
-  "MORE_THAN_5_YEARS",
-];
+import { useSubmitProfile } from "@/hooks/useSubmitProfile";
+import {
+  GOAL_TAGS,
+  GOAL_PERIOD_OPTIONS,
+  goalUtils,
+  type GoalTag,
+  type GoalPeriodOption,
+} from "@/lib/constants/profile";
+import { useUserStore } from "@/lib/store/userStore";
 
 export default function ProfileSetUpPage() {
-  const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
+  const [img, setImg] = useState<File | null>(null);
   const [introduction, setIntroduction] = useState("");
   const [job, setJob] = useState("");
+  const [selectedGoal, setSelectedGoal] = useState<GoalTag | null>(null);
   const [goalAmount, setGoalAmount] = useState("");
-  const [goalPeriod, setGoalPeriod] = useState("");
+  const [goalPeriod, setGoalPeriod] = useState<GoalPeriodOption | null>(null);
+  const [hasCar, setHasCar] = useState(false);
+  const [carValue, setCarValue] = useState("");
+  const [hasHouse, setHasHouse] = useState(false);
+  const [houseValue, setHouseValue] = useState("");
+
+  const { mutate: submitProfile } = useSubmitProfile();
+  const nickname = useUserStore((state) => state.nickname);
 
   const isFormComplete =
     introduction.trim() !== "" &&
     job.trim() !== "" &&
     selectedGoal !== null &&
     goalAmount.trim() !== "" &&
-    goalPeriod.trim() !== "";
+    goalPeriod !== null;
 
   const handleGoalPeriodChange = (event: SelectChangeEvent) => {
-    const selectedIndex = GOAL_PERIOD_OPTIONS.indexOf(event.target.value);
-    setGoalPeriod(GOAL_PERIOD_VALUES[selectedIndex]);
+    const selectedPeriod = event.target.value as GoalPeriodOption;
+    setGoalPeriod(selectedPeriod);
   };
 
-  const getDisplayValue = () => {
-    const index = GOAL_PERIOD_VALUES.indexOf(goalPeriod);
-    return index !== -1 ? GOAL_PERIOD_OPTIONS[index] : "";
+  const handleSubmit = () => {
+    if (!isFormComplete || !selectedGoal || !goalPeriod) return;
+
+    const goalType = goalUtils.getEnumFromSelectedTag(selectedGoal);
+    const goalPeriodValue = goalUtils.getValueFromSelectedPeriod(goalPeriod);
+
+    if (!goalType || !goalPeriodValue) return;
+
+    const convertedCarValue =
+      hasCar && carValue ? (parseInt(carValue) * 10000000).toString() : "";
+
+    const convertedHouseValue =
+      hasHouse && houseValue
+        ? (parseInt(houseValue) * 100000000).toString()
+        : "";
+
+    submitProfile({
+      img,
+      description: introduction,
+      job,
+      goalType,
+      goalAmount,
+      goalPeriod: goalPeriodValue,
+      hasCar,
+      carValue: convertedCarValue,
+      hasHouse,
+      houseValue: convertedHouseValue,
+    });
   };
 
   return (
     <div className="frame-container w-full min-h-screen bg-hanagreen-normal">
       <Header title="프로필" color="white" className="bg-hanagreen-normal" />
-
       <div className="relative mt-24 px-5">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
           <div className="w-28 h-28 rounded-full bg-background flex items-center justify-center">
-            <ImageUploader onChange={() => {}} />
+            <ImageUploader onChange={(file) => setImg(file)} />
           </div>
         </div>
 
         <div className="bg-background w-full min-h-[calc(100vh-64px)] pt-24 pb-10 px-4 shadow-md rounded-t-3xl">
           <div className="flex flex-col space-y-[1.875rem]">
             <div className="text-3xl font-semibold text-text-primary">
-              승희님, 안녕하세요
+              {nickname || "회원"}님, 안녕하세요
             </div>
 
             <InfoCard
@@ -115,7 +145,7 @@ export default function ProfileSetUpPage() {
                   </p>
                   <Input
                     required
-                    placeholder="예: 1억"
+                    placeholder="예: 10000000"
                     className="w-full"
                     value={goalAmount}
                     onChange={(e) => setGoalAmount(e.target.value)}
@@ -128,9 +158,9 @@ export default function ProfileSetUpPage() {
                   </p>
                   <Select
                     id="goalPeriod"
-                    value={getDisplayValue()}
+                    value={goalPeriod || ""}
                     onChange={handleGoalPeriodChange}
-                    options={GOAL_PERIOD_OPTIONS}
+                    options={GOAL_PERIOD_OPTIONS as unknown as string[]}
                     className="w-full"
                   />
                 </div>
@@ -144,12 +174,28 @@ export default function ProfileSetUpPage() {
 
               <div>
                 <p className="text-sm text-text-primary mb-2">• 자차</p>
-                <AssetToggleRow unit="천만원" />
+                <AssetToggleRow
+                  unit="천만원"
+                  isOwned={hasCar}
+                  value={carValue}
+                  onToggle={(checked: boolean) => setHasCar(checked)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setCarValue(e.target.value)
+                  }
+                />
               </div>
 
               <div>
                 <p className="text-sm text-text-primary mb-2">• 부동산</p>
-                <AssetToggleRow unit="억원" />
+                <AssetToggleRow
+                  unit="억원"
+                  isOwned={hasHouse}
+                  value={houseValue}
+                  onToggle={(checked: boolean) => setHasHouse(checked)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setHouseValue(e.target.value)
+                  }
+                />
               </div>
             </div>
 
@@ -157,9 +203,7 @@ export default function ProfileSetUpPage() {
               intent={isFormComplete ? "red" : "default"}
               size="full"
               label="완료"
-              onClick={() => {
-                if (!isFormComplete) return;
-              }}
+              onClick={handleSubmit}
             />
           </div>
         </div>

@@ -73,12 +73,12 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { masterPrisma } from "@/lib/prisma/masterClient";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import bcrypt from "bcryptjs";
-import { dummyUserProduct } from "@/lib/actions/dummyUserProduct";
-import { dummyConsume } from "@/lib/actions/dummyConsume";
-import { dummyLoan } from "@/lib/actions/dummyLoan";
-import { calculateCurrentType } from "@/lib/actions/calculateCurrentType";
+import { generateUserFinancialProducts } from "@/lib/actions/generateUserFinancialProducts";
+import { generateUserLoan } from "@/lib/actions/generateUserLoan";
+import { generateUserConsume } from "@/lib/actions/generateUserConsume";
 
 export async function POST(req: Request) {
   try {
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await replicaPrisma.user.findUnique({
       where: { email },
     });
 
@@ -105,26 +105,30 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await prisma.user.create({
-      data: {
-        nickname,
-        email,
-        password: hashedPassword,
-        birthYear,
-        gender,
-        city,
-      },
-    });
+    // 회원가입 시 유저 생성 transaction으로 처리
+    const newUser = await masterPrisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          nickname,
+          email,
+          password: hashedPassword,
+          birthYear,
+          gender,
+          city,
+        },
+      });
 
-    if (newUser) {
-      await dummyUserProduct(newUser);
-      dummyConsume(newUser);
-      const bool = Math.random() < 0.5;
-      if (bool) {
-        dummyLoan(newUser);
-      }
-      calculateCurrentType(newUser.userId);
-    }
+      const financialProducts = await replicaPrisma.financialProduct.findMany({
+        select: { productId: true, category: true },
+      });
+      const productPool = [...financialProducts];
+
+      await generateUserFinancialProducts(createdUser, productPool, tx);
+      await generateUserLoan(createdUser, tx);
+      await generateUserConsume(createdUser, tx);
+
+      return createdUser;
+    });
 
     return NextResponse.json(
       {

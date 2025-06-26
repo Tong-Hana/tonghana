@@ -1,18 +1,42 @@
 import { Server } from "socket.io";
 import { createServer } from "http";
 import express from "express";
-import { PrismaClient } from "@prisma/client";
+import { masterPrisma } from "./src/lib/prisma/masterClient";
 import { filterForbiddenWords } from "./src/lib/filterForbiddenWords";
 
 // TODO: log 지우기
 const app = express();
+app.use(express.json());
+
 const server = createServer(app);
 const io = new Server(server, {
   cors: { origin: "*" },
   path: "/socket.io",
 });
 
-const prisma = new PrismaClient();
+app.post("/api/notify-asset-change", async (req, res) => {
+  console.log("🔔 자산공개 변경 요청 수신:", req.body);
+  const { roomId } = req.body;
+
+  if (!roomId) {
+    return res.status(400).json({ message: "roomId가 누락됨" });
+  }
+
+  const room = await masterPrisma.chatRoom.findUnique({
+    where: { roomId: Number(roomId) },
+    select: {
+      roomId: true,
+      userId: true,
+      userId2: true,
+      isAgree: true,
+      isAgree2: true,
+    },
+  });
+
+  io.to(String(roomId)).emit("assetStatusChanged", room);
+
+  return res.status(200).json({ message: "자산 공개 상태 broadcast 완료" });
+});
 
 io.on("connection", (socket) => {
   console.log("✅ 클라이언트 연결:", socket.id);
@@ -28,7 +52,7 @@ io.on("connection", (socket) => {
     const filteredMessage = filterForbiddenWords(rawMessage);
 
     try {
-      const saved = await prisma.chatMessage.create({
+      const saved = await masterPrisma.chatMessage.create({
         data: {
           roomId: Number(roomId),
           userId: Number(userId),
@@ -37,7 +61,7 @@ io.on("connection", (socket) => {
         },
       });
 
-      await prisma.chatRoom.update({
+      await masterPrisma.chatRoom.update({
         where: { roomId: Number(roomId) },
         data: {
           lastMessage: filteredMessage,

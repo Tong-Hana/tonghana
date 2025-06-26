@@ -1,6 +1,6 @@
 import weaviate from "weaviate-ts-client";
-import { prisma } from "@/lib/prisma";
 import { saveUserVector } from "@/lib/actions/saveUserVector";
+import { replicaPrisma } from "./prisma/replicaClient";
 
 export const client = weaviate.client({
   scheme: "http",
@@ -50,7 +50,7 @@ const createUserSchema = async () => {
 
 // 기존의 유저들을 Weaviate에 업로드
 async function main() {
-  const users = await prisma.user.findMany({});
+  const users = await replicaPrisma.user.findMany({});
   for (const user of users) {
     await saveUserVector(user);
   }

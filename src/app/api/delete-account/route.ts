@@ -24,7 +24,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { masterPrisma } from "@/lib/prisma/masterClient";
 import { getAuthUser } from "@/lib/auth";
 
 export async function PATCH(req: NextRequest) {
@@ -34,7 +34,7 @@ export async function PATCH(req: NextRequest) {
   }
 
   try {
-    await prisma.user.update({
+    await masterPrisma.user.update({
       where: { userId: user.userId },
       data: {
         isDeleted: true,

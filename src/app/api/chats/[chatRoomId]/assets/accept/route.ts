@@ -59,7 +59,8 @@
  */
 
 import { NextResponse, NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { masterPrisma } from "@/lib/prisma/masterClient";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { getAuthUser } from "@/lib/auth";
 
 export async function PATCH(
@@ -84,7 +85,7 @@ export async function PATCH(
     );
   }
 
-  const chatRoom = await prisma.chatRoom.findUnique({
+  const chatRoom = await replicaPrisma.chatRoom.findUnique({
     where: { roomId: chatRoomIdNum },
   });
 
@@ -105,7 +106,7 @@ export async function PATCH(
   const updateData =
     chatRoom.userId === user.userId ? { isAgree: true } : { isAgree2: true };
 
-  const updatedRoom = await prisma.chatRoom.update({
+  const updatedRoom = await masterPrisma.chatRoom.update({
     where: { roomId: chatRoomIdNum },
     data: updateData,
     select: {
@@ -116,6 +117,27 @@ export async function PATCH(
       isAgree2: true,
     },
   });
+
+  try {
+    const response = await fetch(
+      "http://localhost:3001/api/notify-asset-change",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          roomId: updatedRoom.roomId,
+          userId: updatedRoom.userId,
+          userId2: updatedRoom.userId2,
+          isAgree: updatedRoom.isAgree,
+          isAgree2: updatedRoom.isAgree2,
+        }),
+      },
+    );
+
+    const resJson = await response.json();
+  } catch (e) {
+    console.error("❌ 채팅 서버 요청 실패:", e);
+  }
 
   return NextResponse.json(
     {

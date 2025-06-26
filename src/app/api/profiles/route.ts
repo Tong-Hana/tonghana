@@ -111,10 +111,10 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { uploadImageToS3 } from "@/lib/s3/uploadImage";
 import { GoalType, GoalPeriod } from "@prisma/client";
+import { masterPrisma } from "@/lib/prisma/masterClient";
 
 export async function PATCH(req: NextRequest) {
   const user = await getAuthUser();
@@ -203,7 +203,7 @@ export async function PATCH(req: NextRequest) {
       : null;
 
   try {
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await masterPrisma.user.update({
       where: { userId: user.userId },
       data: {
         profileImage,

@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /app/profiles/me/pairing-answers:
+ * /api/profiles/me/pairing-answers:
  *   post:
  *     tags:
  *       - Profiles
@@ -36,7 +36,7 @@
  *                 example: "서울시 강남구"
  *               idealIncomeRange:
  *                 type: string
- *                 enum: [NEAR_300, NEAR_500, NEAR_800, OVER_1000]
+ *                 enum: [NEAR_400, NEAR_600, NEAR_800, OVER_1000]
  *                 example: "NEAR_800"
  *     responses:
  *       201:
@@ -86,8 +86,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
+import { masterPrisma } from "@/lib/prisma/masterClient";
 
 export async function POST(req: Request) {
   try {
@@ -112,7 +112,7 @@ export async function POST(req: Request) {
       !car_budget ||
       !dateBudget ||
       !shoesBudget ||
-      preferredCity ||
+      !preferredCity ||
       !idealIncomeRange
     ) {
       return NextResponse.json(
@@ -121,7 +121,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const answer = await prisma.pairingAnswer.upsert({
+    const answer = await masterPrisma.pairingAnswer.upsert({
       where: { userId: authUser.userId },
       update: {
         carBudget: BigInt(car_budget),
@@ -143,10 +143,6 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         message: "페어링북 응답이 저장되었습니다.",
-        data: {
-          ...answer,
-          car_budget: answer.carBudget.toString(), // JSON.stringify()는 BigInt를 처리할 수 없으므로 BigInt → .toString()
-        },
       },
       { status: 201 },
     );

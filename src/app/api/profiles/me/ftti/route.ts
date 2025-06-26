@@ -52,8 +52,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
+import { masterPrisma } from "@/lib/prisma/masterClient";
 
 export async function POST(req: Request) {
   try {
@@ -102,6 +102,9 @@ export async function POST(req: Request) {
       }
     });
 
+    totalScore = totalScore / 39;
+    totalScore = totalScore * 100;
+
     // 5. 투자 성향 분류
     let currentType:
       | "CONSERVATIVE"
@@ -110,14 +113,16 @@ export async function POST(req: Request) {
       | "AGGRESSIVE"
       | "VERY_AGGRESSIVE";
 
-    if (totalScore < 43) currentType = "CONSERVATIVE";
+    if ((answers[0] === 6 && answers[5] === 3) || answers[6] === 5)
+      currentType = "CONSERVATIVE";
+    else if (totalScore < 43) currentType = "CONSERVATIVE";
     else if (totalScore < 55) currentType = "MODERATE";
     else if (totalScore < 68) currentType = "NEUTRAL";
     else if (totalScore < 81) currentType = "AGGRESSIVE";
     else currentType = "VERY_AGGRESSIVE";
 
     // 6. DB 저장
-    await prisma.user.update({
+    await masterPrisma.user.update({
       where: { userId: user.userId },
       data: {
         currentType,

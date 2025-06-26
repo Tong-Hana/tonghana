@@ -8,12 +8,15 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { validateEmail } from "@/lib/validators";
 import { useLogin } from "@/hooks/useLogin";
+import { useUserStore } from "@/lib/store/userStore";
+import { checkProfileRegistrationStatus } from "@/services/myProfile";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const setNickname = useUserStore((state) => state.setNickname);
 
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -24,12 +27,48 @@ export default function LoginForm() {
   };
 
   const loginMutation = useLogin(
-    () => {
-      router.push("/home");
+    async (data) => {
+      if (data.user) {
+        setNickname(data.user.nickname);
+
+        try {
+          const profileStatus = await checkProfileRegistrationStatus();
+
+          if (profileStatus.isAllCompleted) {
+            router.push("/home");
+            return;
+          }
+
+          if (!profileStatus.isProfileCompleted) {
+            router.push("/profile-setup");
+            return;
+          }
+
+          if (!profileStatus.isPairingCompleted) {
+            router.push("/pairing-book");
+            return;
+          }
+
+          if (!profileStatus.isMyFTTICompleted) {
+            router.push("/question");
+            return;
+          }
+
+          if (!profileStatus.isPreferredFTTICompleted) {
+            router.push("/result");
+            return;
+          }
+          router.push("/home");
+        } catch {
+          toast.error("프로필 상태 확인에 실패했습니다. 다시 시도해주세요.");
+        }
+      } else {
+        toast.error("로그인 정보를 확인할 수 없습니다. 다시 시도해주세요.");
+      }
       setIsSubmitting(false);
     },
-    (error) => {
-      toast.error(error.message);
+    () => {
+      toast.error("로그인에 실패했습니다. 다시 시도해주세요");
       setIsSubmitting(false);
     },
   );

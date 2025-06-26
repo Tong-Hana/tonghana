@@ -27,13 +27,13 @@ export enum InvestmentType {
 
 export enum ProductCategory {
   SAVINGS = "SAVINGS",
-  CASH = "CASH",
   DOMESTIC_STOCKS = "DOMESTIC_STOCKS",
   DEVELOPED_STOCKS = "DEVELOPED_STOCKS",
   EMERGING_STOCKS = "EMERGING_STOCKS",
   DOMESTIC_BONDS = "DOMESTIC_BONDS",
   FOREIGN_BONDS = "FOREIGN_BONDS",
   ALTERNATIVE = "ALTERNATIVE",
+  CASH = "CASH",
 }
 
 export enum RiskLevel {
@@ -50,4 +50,10 @@ export enum IdealIncomeRange {
   NEAR_600 = "NEAR_600",
   NEAR_800 = "NEAR_800",
   OVER_1000 = "OVER_1000",
+}
+
+export enum MatchStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
 }

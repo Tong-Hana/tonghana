@@ -17,11 +17,13 @@ export default function DatePicker({ date, onChange }: Props) {
           label="생년월일"
           value={date}
           onChange={onChange}
+          openTo="year"
+          views={["year", "month", "day"]}
           slotProps={{
             textField: {
               variant: "standard",
               fullWidth: true,
-              readOnly: true,
+              readOnly: false,
               sx: {
                 "& .MuiPickersInputBase-root": {
                   borderRadius: "0.5rem",

@@ -52,9 +52,10 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { makeMatchPartner } from "@/lib/actions/makeMatchPartner";
 
 export async function POST(req: Request) {
   try {
@@ -68,11 +69,18 @@ export async function POST(req: Request) {
       );
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await replicaPrisma.user.findUnique({ where: { email } });
     if (!user) {
       return NextResponse.json(
         { code: "NON_EXIST_USER", message: "존재하지 않는 사용자입니다." },
         { status: 404 },
+      );
+    }
+
+    if (user.isDeleted) {
+      return NextResponse.json(
+        { code: "DELETED_USER", message: "탈퇴한 사용자입니다." },
+        { status: 403 },
       );
     }
 
@@ -89,10 +97,14 @@ export async function POST(req: Request) {
       process.env.JWT_SECRET!,
       { expiresIn: "1d" },
     );
-
+    makeMatchPartner(user, 10);
     const response = NextResponse.json({
       message: "로그인에 성공하였습니다.",
       accessToken: token,
+      user: {
+        userId: user.userId,
+        nickname: user.nickname,
+      },
     });
 
     response.cookies.set({
