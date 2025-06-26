@@ -4,9 +4,3 @@ export interface HanaAdCardProps {
   period: string;
   subjectUrl: string;
 }
-
-export interface HanaProductListItemProps extends HanaAdCardProps {
-  order: number;
-  logoUrl?: string;
-  onClick?: () => void;
-}
