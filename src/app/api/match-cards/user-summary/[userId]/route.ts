@@ -325,12 +325,11 @@ export async function GET(
     const assetTotal = showAssetValues ? financeTotal : null;
 
     // 대출 비율 계산용 총합: 자동차 + 부동산 + 금융자산 + 대출
-    const assetTotalWithLoanAndPhysical = showAssetValues
-      ? Number(userData.carValue ?? 0) +
+    const assetTotalWithLoanAndPhysical =
+      Number(userData.carValue ?? 0) +
         Number(userData.houseValue ?? 0) +
         financeTotal +
-        loanTotal
-      : 1; // 비공개일 경우 0 방지
+        loanTotal || 1; // 0 방지 fallback
 
     // 소비 히스토리: Decimal → number 변환 후 비율화
     const ch = userData.consumeHistory;
@@ -366,7 +365,6 @@ export async function GET(
       houseValue: showAssetValues ? Number(userData.houseValue ?? 0) : null,
       totalAsset: assetTotal,
       financialProductRatio: {
-        financeRatio: parseFloat((financeTotal / totalValue).toFixed(2)),
         loanRatio: parseFloat(
           (loanTotal / assetTotalWithLoanAndPhysical).toFixed(2),
         ),
