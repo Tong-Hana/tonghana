@@ -65,7 +65,10 @@ export default function QuizPage() {
       ) : (
         <></>
       )}
-      <div className="fixed bottom-12 left-0 right-0 w-full px-5 py-3">
+      <div
+        className="fixed bottom-12 left-0 right-0 w-full px-5 py-3"
+        style={{ zIndex: 60 }}
+      >
         <QuizButton />
       </div>
     </div>

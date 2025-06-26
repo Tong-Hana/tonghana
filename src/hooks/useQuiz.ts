@@ -63,9 +63,17 @@ export const usePatchQuizLog = (
   onSuccess?: (data: UserQuizLog) => void,
   onError?: (error: Error) => void,
 ) => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (isPassed: boolean) => patchQuizLog(isPassed),
-    onSuccess,
+    onSuccess: (data: UserQuizLog) => {
+      queryClient.setQueryData(["quiz-log"], data);
+
+      if (onSuccess) {
+        onSuccess(data);
+      }
+    },
     onError,
   });
 };
