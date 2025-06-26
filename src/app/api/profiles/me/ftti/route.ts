@@ -113,7 +113,9 @@ export async function POST(req: Request) {
       | "AGGRESSIVE"
       | "VERY_AGGRESSIVE";
 
-    if (totalScore < 43) currentType = "CONSERVATIVE";
+    if ((answers[0] === 6 && answers[5] === 3) || answers[6] === 5)
+      currentType = "CONSERVATIVE";
+    else if (totalScore < 43) currentType = "CONSERVATIVE";
     else if (totalScore < 55) currentType = "MODERATE";
     else if (totalScore < 68) currentType = "NEUTRAL";
     else if (totalScore < 81) currentType = "AGGRESSIVE";
