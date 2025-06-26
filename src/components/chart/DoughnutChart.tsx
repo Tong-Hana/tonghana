@@ -76,7 +76,7 @@ export default function DoughnutChart({
         <Doughnut data={data} options={options} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] text-center text-[#c2a244] font-semibold whitespace-nowrap leading-snug">
           <p>부채</p>
-          <p>{parseFloat(debtLabel.split("%")[0]) * 100}%</p>
+          <p>{Math.round(parseFloat(debtLabel.split("%")[0]) * 100)}%</p>
         </div>
       </div>
 
