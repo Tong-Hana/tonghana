@@ -62,14 +62,12 @@
  *           schema:
  *             type: object
  *             properties:
- *               answers:
- *                 type: array
- *                 items:
- *                   type: boolean
- *                 example: [true, false, true]
+ *               answer:
+ *                 type: boolean
+ *                 example: true
  *                 description: 오늘의 퀴즈에 대한 사용자의 답변
  *             required:
- *               - answers
+ *               - answer
  *     responses:
  *       201:
  *         description: 퀴즈 로그 생성 성공
@@ -111,6 +109,63 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *   patch:
+ *     tags:
+ *       - Quiz
+ *     summary: 오늘의 퀴즈 결과 수정
+ *     description: >
+ *       인증된 사용자가 오늘 제출한 퀴즈 결과를 수정합니다.
+ *       이미 제출한 로그가 없으면 404 에러를 반환합니다.
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               answer:
+ *                 type: boolean
+ *                 example: false
+ *                 description: 수정할 퀴즈 답변 (정답 여부)
+ *             required:
+ *               - answer
+ *     responses:
+ *       201:
+ *         description: 퀴즈 로그 수정 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isPassed:
+ *                   type: boolean
+ *                   description: 수정된 퀴즈 통과 여부
+ *       400:
+ *         description: 잘못된 요청 (answer 누락 등)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: 인증되지 않은 사용자
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: 오늘 퀴즈 로그가 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -120,7 +175,7 @@ import { isSameDay } from "date-fns";
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { masterPrisma } from "@/lib/prisma/masterClient";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const user = await getAuthUser();
   if (!user) {
     return NextResponse.json(
@@ -190,6 +245,7 @@ export async function POST(req: NextRequest) {
 
     const existingLog = await replicaPrisma.userQuizLog.findFirst({
       where: { subjectId: todaySubjectId, userId: user.userId },
+      orderBy: { createdAt: "desc" },
       select: {
         createdAt: true,
       },
@@ -219,28 +275,85 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 요청에서 answers가 있는지 확인
-    const { answers } = await req.json();
-    if (
-      !answers ||
-      !Array.isArray(answers) ||
-      answers.length !== quizzes.length
-    ) {
+    // 요청에서 answer가 있는지 확인
+    const { answer } = await req.json();
+    if (answer === undefined || answer === null) {
       return NextResponse.json(
         { message: "퀴즈 답변이 필요합니다." },
         { status: 400 },
       );
     }
 
-    const isPassedToday = quizzes.every(
-      (quiz, index) => quiz.answer === answers[index],
-    );
-
     const newQuizLog = await masterPrisma.userQuizLog.create({
       data: {
         userId: user.userId,
         subjectId: todaySubjectId,
-        isPassed: isPassedToday,
+        isPassed: Boolean(answer),
+      },
+    });
+
+    return NextResponse.json(
+      { isPassed: newQuizLog.isPassed },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error("퀴즈 로그를 생성하지 못했습니다: ", error);
+    return NextResponse.json(
+      { message: "서버 오류가 발생했습니다." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  const user = await getAuthUser();
+  if (!user) {
+    return NextResponse.json(
+      { message: "인증되지 않은 사용자입니다." },
+      { status: 401 },
+    );
+  }
+
+  // 요청에서 answer가 있는지 확인
+  const { answer } = await req.json();
+  if (answer === undefined || answer === null) {
+    return NextResponse.json(
+      { message: "퀴즈 답변이 필요합니다." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const todaySubjectId = await getTodaySubjectId();
+    if (!todaySubjectId) {
+      return NextResponse.json(
+        { message: "오늘의 주제가 없습니다." },
+        { status: 404 },
+      );
+    }
+
+    const existingLog = await replicaPrisma.userQuizLog.findFirst({
+      where: { subjectId: todaySubjectId, userId: user.userId },
+      orderBy: { createdAt: "desc" },
+      select: {
+        createdAt: true,
+        quizLogId: true,
+      },
+    });
+
+    if (existingLog === null) {
+      return NextResponse.json(
+        { message: "오늘 퀴즈를 풀지 않았습니다." },
+        { status: 404 },
+      );
+    }
+
+    const newQuizLog = await masterPrisma.userQuizLog.update({
+      where: {
+        quizLogId: existingLog.quizLogId,
+      },
+      data: {
+        isPassed: Boolean(answer),
       },
     });
 

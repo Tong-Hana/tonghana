@@ -34,8 +34,8 @@ const navItems = [
     },
   },
   {
-    label: "recommend",
-    path: "/recommend",
+    label: "quiz",
+    path: "/quiz",
     icon: {
       active: (
         <FilledQuizIcon

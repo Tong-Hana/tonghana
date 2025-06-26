@@ -40,7 +40,9 @@ export default function DialogButton({
               {title}
             </h2>
 
-            <p className="mb-6 text-base text-text-primary">{content}</p>
+            <p className="mb-6 text-base text-text-primary whitespace-pre-wrap">
+              {content}
+            </p>
 
             <div className="flex w-full gap-4 px-0">
               <Button

@@ -69,20 +69,11 @@
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/auth";
+import { NextResponse } from "next/server";
 import { getTodaySubjectId } from "@/lib/getTodaySubjectId";
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 
-export async function GET(req: NextRequest) {
-  const user = await getAuthUser();
-  if (!user) {
-    return NextResponse.json(
-      { message: "인증되지 않은 사용자입니다." },
-      { status: 401 },
-    );
-  }
-
+export async function GET() {
   try {
     const todaySubjectId = await getTodaySubjectId();
     if (!todaySubjectId) {
