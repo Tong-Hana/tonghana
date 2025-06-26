@@ -43,10 +43,10 @@ export async function generateUserFinancialProductsAll(users: User[]) {
     select: { productId: true, category: true },
   });
 
-  await masterPrisma.$transaction(async (tx) => {
-    for (const user of users) {
-      const productPool = [...financialProducts];
+  for (const user of users) {
+    const productPool = [...financialProducts];
+    await masterPrisma.$transaction(async (tx) => {
       await generateUserFinancialProducts(user, productPool, tx);
-    }
-  });
+    });
+  }
 }

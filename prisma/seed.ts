@@ -13,6 +13,9 @@ import { generateUserConsumeAll } from "../src/lib/actions/generateUserConsume";
 import { generateUserPairingAnswers } from "./seeds/generatePairingAnswer";
 import { updateUsersCurrentType } from "./seeds/updateUsersCurrentType";
 
+const userArg = process.argv[2];
+const userCount = userArg ? parseInt(userArg, 10) : 1; // 기본값 1명
+
 if (process.env.NODE_ENV === "production") {
   throw new Error("운영 환경에서 seed 스크립트를 실행할 수 없습니다!");
 }
@@ -29,7 +32,6 @@ export async function main() {
     }
 
     // 더미 유저 생성
-    const userCount = 10;
     const createdUsers = await generateUsers(userCount);
     console.log(`더미 유저 ${userCount}명 생성 성공!`);
 
