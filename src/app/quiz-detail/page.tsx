@@ -2,13 +2,14 @@
 
 import Button from "@/components/common/button/Button";
 import Header from "@/components/common/Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DotIndicator from "@/components/intro/DotIndicator";
 import { SelectO, SelectX } from "@/assets/assets";
 import QuizAnswerModal from "@/components/quiz/QuizAnswerModal";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { quizDetailQueryOptions, useQuizLog } from "@/hooks/useQuiz";
+import { quizDetailQueryOptions, usePatchQuizLog } from "@/hooks/useQuiz";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function QuizDetailPage() {
   const { data } = useSuspenseQuery(quizDetailQueryOptions());
@@ -17,6 +18,8 @@ export default function QuizDetailPage() {
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [fullAnswer, setFullAnswer] = useState<boolean | null>(null);
+  const router = useRouter();
+
   const selectCardStyle =
     "shadow-card-shadow rounded-3xl p-12 w-[45%] aspect-square flex justify-center items-center";
 
@@ -48,7 +51,6 @@ export default function QuizDetailPage() {
       return;
     } else {
       setShowModal(true);
-
       if (fullAnswer === null) {
         setFullAnswer(answer === quizData[idx].answer);
       } else {
@@ -59,7 +61,7 @@ export default function QuizDetailPage() {
     }
   };
 
-  const submitUserQuizLogMutation = useQuizLog(
+  const submitUserQuizLogMutation = usePatchQuizLog(
     () => {
       toast.success("퀴즈가 종료되었습니다.");
     },
@@ -74,15 +76,27 @@ export default function QuizDetailPage() {
       setAnswer(null);
     } else {
       submitUserQuizLogMutation.mutate(fullAnswer ?? false);
-      window.location.href = "/quiz";
+      router.push("/quiz");
     }
     setShowModal(false);
   };
 
   const stopQuiz = () => {
     submitUserQuizLogMutation.mutate(false);
-    window.location.href = "/quiz";
+    router.push("/quiz");
   };
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <div>
@@ -114,7 +128,7 @@ export default function QuizDetailPage() {
             <SelectX className="w-full h-full overflow-visible" />
           </div>
         </div>
-        <div className="fixed bottom-12 left-0 right-0 w-full px-5 py-3">
+        <div className="fixed bottom-0 left-0 right-0 w-full px-5 py-3">
           <Button
             intent={"green"}
             size={"full"}

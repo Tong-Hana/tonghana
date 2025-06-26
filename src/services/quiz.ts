@@ -37,3 +37,12 @@ export const submitQuizLog = async (answer: boolean): Promise<UserQuizLog> => {
     }),
   });
 };
+
+export const patchQuizLog = async (answer: boolean): Promise<UserQuizLog> => {
+  return await customFetch<UserQuizLog>("/quiz-log", {
+    method: "PATCH",
+    body: JSON.stringify({
+      answer: answer,
+    }),
+  });
+};

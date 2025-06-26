@@ -2,11 +2,16 @@ import {
   fetchQuiz,
   fetchQuizDetail,
   fetchQuizLog,
+  patchQuizLog,
   QuizDetailResponse,
   QuizResponse,
   submitQuizLog,
 } from "@/services/quiz";
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { UserQuizLog } from "@/app/types/quiz";
 
 function getTodayDate() {
@@ -41,8 +46,25 @@ export const useQuizLog = (
   onSuccess?: (data: UserQuizLog) => void,
   onError?: (error: Error) => void,
 ) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: boolean) => submitQuizLog(data),
+    onSuccess: (data: UserQuizLog) => {
+      queryClient.setQueryData(["quiz-log"], data);
+      if (onSuccess) {
+        onSuccess(data);
+      }
+    },
+    onError,
+  });
+};
+
+export const usePatchQuizLog = (
+  onSuccess?: (data: UserQuizLog) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useMutation({
+    mutationFn: (isPassed: boolean) => patchQuizLog(isPassed),
     onSuccess,
     onError,
   });

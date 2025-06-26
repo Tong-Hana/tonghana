@@ -220,7 +220,6 @@ export async function POST(req: NextRequest) {
     // 요청에서 answer가 있는지 확인
     const { answer } = await req.json();
     if (answer === undefined || answer === null) {
-      console.log(answer);
       return NextResponse.json(
         { message: "퀴즈 답변이 필요합니다." },
         { status: 400 },
@@ -231,6 +230,69 @@ export async function POST(req: NextRequest) {
       data: {
         userId: user.userId,
         subjectId: todaySubjectId,
+        isPassed: Boolean(answer),
+      },
+    });
+
+    return NextResponse.json(
+      { isPassed: newQuizLog.isPassed },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error("퀴즈 로그를 생성하지 못했습니다: ", error);
+    return NextResponse.json(
+      { message: "서버 오류가 발생했습니다." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  const user = await getAuthUser();
+  if (!user) {
+    return NextResponse.json(
+      { message: "인증되지 않은 사용자입니다." },
+      { status: 401 },
+    );
+  }
+
+  // 요청에서 answer가 있는지 확인
+  const { answer } = await req.json();
+  if (answer === undefined || answer === null) {
+    return NextResponse.json(
+      { message: "퀴즈 답변이 필요합니다." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const todaySubjectId = await getTodaySubjectId();
+    if (!todaySubjectId) {
+      return NextResponse.json(
+        { message: "오늘의 주제가 없습니다." },
+        { status: 404 },
+      );
+    }
+
+    const existingLog = await replicaPrisma.userQuizLog.findFirst({
+      where: { subjectId: todaySubjectId, userId: user.userId },
+      select: {
+        quizLogId: true,
+      },
+    });
+
+    if (existingLog === null) {
+      return NextResponse.json(
+        { message: "오늘 퀴즈를 풀지 않았습니다." },
+        { status: 404 },
+      );
+    }
+
+    const newQuizLog = await masterPrisma.userQuizLog.update({
+      where: {
+        quizLogId: existingLog.quizLogId,
+      },
+      data: {
         isPassed: Boolean(answer),
       },
     });
