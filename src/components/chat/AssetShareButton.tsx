@@ -17,7 +17,7 @@ export default function AssetShareButtonGroup({
   roomId,
   onOpenAssetShareModal,
 }: Props) {
-  const agreeToShareAssetMutation = useAgreeToShareAsset(status);
+  const agreeToShareAssetMutation = useAgreeToShareAsset();
 
   const handleAgreeToShareAsset = async () => {
     if (!myId) return;

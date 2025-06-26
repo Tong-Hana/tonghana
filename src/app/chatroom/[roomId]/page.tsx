@@ -10,7 +10,7 @@ import { useMyProfile } from "@/hooks/useMyProfile";
 import { useChatMessages } from "@/hooks/chat/useChatMessages";
 import { AssetShareStatus, ChatMessageDisplay } from "@/app/types/client-chat";
 import ChatMessageList from "@/components/chat/ChatMessageList";
-import { SocketChatMessage } from "@/app/types/chat";
+import { SocketAssetShareStatus, SocketChatMessage } from "@/app/types/chat";
 import { useChatPartnerInfo } from "@/hooks/chat/useChatPartnerInfo";
 import { useChatRoomInfo } from "@/hooks/chat/useChatRoomInfo";
 import { useSocket } from "@/hooks/chat/useSocket";
@@ -19,6 +19,9 @@ import ChatWarningModal from "@/components/chat/ChatWarningModal";
 import ChatPortfolioButton from "@/components/chat/portfolio/ChatPortfolioButton";
 import ChatPortfolioBottomSheet from "@/components/chat/portfolio/ChatPortfolioBottomSheet";
 import ChatAssetShareModal from "@/components/chat/ChatAssetShareModal";
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { parseToChatRoomInfo } from "@/utils/chat";
 
 export default function ChatRoomPage() {
   const params = useParams();
@@ -51,6 +54,7 @@ export default function ChatRoomPage() {
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
   const socket = useSocket();
 
   const isLoading =
@@ -107,7 +111,7 @@ export default function ChatRoomPage() {
     if (!myProfile || !chatPartner) return;
 
     // 메세지 핸들러
-    const handler = (msg: SocketChatMessage) => {
+    const messageHandler = (msg: SocketChatMessage) => {
       const isMine = msg.userId === myProfile.userId;
 
       setMessages((prev) => [
@@ -123,15 +127,41 @@ export default function ChatRoomPage() {
         },
       ]);
     };
+    // 메세지 리스너 등록
+    socket.on("receiveMessage", messageHandler);
 
-    // 메세지 리스너
-    socket.on("receiveMessage", handler);
+    // 자산 공유 상태 핸들러
+    const assetShareStatusHandler = (status: SocketAssetShareStatus) => {
+      const parsedStatus = parseToChatRoomInfo(myProfile.userId, status);
 
-    // 메세지 리스너 해제
-    return () => {
-      socket.off("receiveMessage", handler);
+      queryClient.setQueryData(
+        ["chatRoom", myProfile.userId, roomId],
+        parsedStatus,
+      );
+
+      if (parsedStatus.agreeStatus === AssetShareStatus.PARTNER_AGREED) {
+        toast.success(
+          "상대가 자산 공유를 요청했어요.\n하단 버튼을 통해 공유 여부를 선택해주세요",
+          { duration: 3000 },
+        );
+      }
+
+      if (parsedStatus.agreeStatus === AssetShareStatus.BOTH_AGREED) {
+        toast.success(
+          "서로의 동의로 자산 공유가 완료되었습니다.\n상대의 프로필에서 총 자산을 확인하세요.",
+          { duration: 3000 },
+        );
+      }
     };
-  }, [myProfile, chatPartner, socket]);
+    // 자산 공유 상태 리스너 등록
+    socket.on("assetStatusChanged", assetShareStatusHandler);
+
+    // 리스너 해제
+    return () => {
+      socket.off("receiveMessage", messageHandler);
+      socket.off("assetStatusChanged", assetShareStatusHandler);
+    };
+  }, [myProfile, chatPartner, roomId, socket, queryClient]);
 
   const handleSendMessage = (message: string) => {
     if (!myProfile) return;
@@ -155,7 +185,6 @@ export default function ChatRoomPage() {
           onClose={() => setShowAssetShareModal(false)}
           myId={myProfile?.userId}
           roomId={roomId}
-          status={roomInfo?.agreeStatus}
         />
       )}
       <ChatWarningModal />

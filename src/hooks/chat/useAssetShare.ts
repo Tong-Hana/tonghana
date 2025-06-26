@@ -8,7 +8,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export const useAgreeToShareAsset = (
-  status: AssetShareStatus,
   onSuccess?: (data: ChatRoomInfoResponse) => void,
   onError?: (error: Error) => void,
 ) => {
@@ -20,7 +19,7 @@ export const useAgreeToShareAsset = (
     onSuccess: (data) => {
       queryClient.setQueryData(["chatRoom", data.myId, data.roomId], data);
 
-      if (status === AssetShareStatus.PENDING) {
+      if (data.agreeStatus === AssetShareStatus.ME_AGREED) {
         toast.success(
           "자산 공유가 요청되었습니다.\n상대방이 동의할 경우 서로의 프로필에서 자산을 확인할 수 있습니다.",
           { duration: 3000 },
@@ -28,13 +27,6 @@ export const useAgreeToShareAsset = (
         return;
       }
 
-      if (status === AssetShareStatus.PARTNER_AGREED) {
-        toast.success(
-          "자산 공유에 동의하셨습니다.\n서로의 프로필에서 자산을 확인할 수 있습니다.",
-          { duration: 3000 },
-        );
-        return;
-      }
       onSuccess?.(data);
     },
     onError: (error) => {

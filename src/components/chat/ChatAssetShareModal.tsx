@@ -6,14 +6,12 @@ import {
   useAgreeToShareAsset,
   useRejectToShareAsset,
 } from "@/hooks/chat/useAssetShare";
-import { AssetShareStatus } from "@/app/types/client-chat";
 
 type Props = {
   showModal: boolean;
   onClose: () => void;
   myId: number;
   roomId: number;
-  status: AssetShareStatus;
 };
 
 export default function ChatAssetShareModal({
@@ -21,7 +19,6 @@ export default function ChatAssetShareModal({
   onClose,
   myId,
   roomId,
-  status,
 }: Props) {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -29,7 +26,7 @@ export default function ChatAssetShareModal({
     }
   };
 
-  const agreeToShareAssetMutation = useAgreeToShareAsset(status, () => {
+  const agreeToShareAssetMutation = useAgreeToShareAsset(() => {
     onClose();
   });
 
