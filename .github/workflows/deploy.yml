@@ -65,11 +65,12 @@ jobs:
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
 
+            # 설치 및 빌드
             npm install --legacy-peer-deps
             npm run build
 
-            # Express API 서버
+            # API 서버 시작 또는 재시작
             pm2 restart tonghana || pm2 start npm --name "tonghana" -- start
 
-            # 채팅 서버 (tsx로 실행)
+            # 채팅 서버 실행
             pm2 restart chat || pm2 start "npx tsx chat-server.ts" --name "chat"
