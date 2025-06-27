@@ -198,33 +198,30 @@ export default function ProfileEditForm() {
             (parseInt(housePrice) * 100000000).toString(),
           );
 
+        // 페어링 답변을 JSON 문자열로 변환
+        const pairingAnswerData: Record<string, string | number> = {};
         if (carPrice)
-          formData.append(
-            "pairingCarBudget",
-            (parseInt(carPrice) * 10000000).toString(),
-          );
+          pairingAnswerData.carBudget = parseInt(carPrice) * 10000000;
         if (datePrice)
-          formData.append(
-            "pairingDateBudget",
-            (parseInt(datePrice) * 10000).toString(),
-          );
+          pairingAnswerData.dateBudget = parseInt(datePrice) * 10000;
         if (shoePrice)
-          formData.append(
-            "pairingShoesBudget",
-            (parseInt(shoePrice) * 10000).toString(),
-          );
+          pairingAnswerData.shoesBudget = parseInt(shoePrice) * 10000;
         if (preferredCity) {
           const fullPreferredCity = preferredDistrict
             ? `${preferredCity} ${preferredDistrict}`
             : preferredCity;
-          formData.append("pairingPreferredCity", fullPreferredCity);
+          pairingAnswerData.preferredCity = fullPreferredCity;
         }
         if (selectedIncome) {
           const incomeRange = pairingIncomeUtils.optionToEnum(
             selectedIncome as PairingIncomeOption,
           );
-          if (incomeRange)
-            formData.append("pairingIdealIncomeRange", incomeRange);
+          if (incomeRange) pairingAnswerData.idealIncomeRange = incomeRange;
+        }
+
+        // 페어링 답변이 있는 경우에만 추가
+        if (Object.keys(pairingAnswerData).length > 0) {
+          formData.append("pairingAnswer", JSON.stringify(pairingAnswerData));
         }
 
         const response = await fetch("/api/profiles/me", {

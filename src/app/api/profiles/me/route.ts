@@ -239,42 +239,88 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const formData = await req.formData();
-  const file = formData.get("img");
+  const contentType = req.headers.get("content-type");
   let profileImage: string | null = null;
+  let requestData: {
+    nickname?: string;
+    job?: string;
+    goalAmount?: string;
+    goalPeriod?: string;
+    goalType?: string;
+    description?: string;
+    hasCar?: string;
+    carValue?: string;
+    hasHouse?: string;
+    houseValue?: string;
+    city?: string;
+    pairingAnswer?: string;
+  } = {};
 
-  if (file && file instanceof File) {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+  try {
+    if (contentType?.includes("multipart/form-data")) {
+      const formData = await req.formData();
+      const file = formData.get("img");
 
-      profileImage = await uploadImageToS3({
-        name: file.name,
-        buffer,
-        type: file.type,
-      });
-    } catch (err) {
-      console.error("❌ S3 업로드 실패:", err);
-      return NextResponse.json(
-        { code: "IMAGE_UPLOAD_FAILED", message: "이미지 업로드 실패" },
-        { status: 500 },
-      );
+      if (file && file instanceof File) {
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+
+          profileImage = await uploadImageToS3({
+            name: file.name,
+            buffer,
+            type: file.type,
+          });
+        } catch (err) {
+          console.error("❌ S3 업로드 실패:", err);
+          return NextResponse.json(
+            { code: "IMAGE_UPLOAD_FAILED", message: "이미지 업로드 실패" },
+            { status: 500 },
+          );
+        }
+      }
+
+      // FormData에서 값 추출
+      requestData = {
+        nickname: formData.get("nickname")?.toString(),
+        job: formData.get("job")?.toString(),
+        goalAmount: formData.get("goalAmount")?.toString(),
+        goalPeriod: formData.get("goalPeriod")?.toString(),
+        goalType: formData.get("goalType")?.toString(),
+        description: formData.get("description")?.toString(),
+        hasCar: formData.get("hasCar")?.toString(),
+        carValue: formData.get("carValue")?.toString(),
+        hasHouse: formData.get("hasHouse")?.toString(),
+        houseValue: formData.get("houseValue")?.toString(),
+        city: formData.get("city")?.toString(),
+        pairingAnswer: formData.get("pairingAnswer")?.toString(),
+      };
+    } else {
+      // JSON 처리 (이미지 없는 경우)
+      requestData = await req.json();
     }
+  } catch (error) {
+    console.error("❌ 요청 파싱 실패:", error);
+    return NextResponse.json(
+      { code: "INVALID_REQUEST", message: "잘못된 요청 형식" },
+      { status: 400 },
+    );
   }
 
-  // 텍스트 값 추출
-  const nickname = formData.get("nickname");
-  const job = formData.get("job");
-  const goalAmount = formData.get("goalAmount");
-  const goalPeriod = formData.get("goalPeriod");
-  const goalType = formData.get("goalType");
-  const description = formData.get("description");
-  const hasCar = formData.get("hasCar");
-  const carValue = formData.get("carValue");
-  const hasHouse = formData.get("hasHouse");
-  const houseValue = formData.get("houseValue");
-  const city = formData.get("city");
-  const pairingAnswerRaw = formData.get("pairingAnswer");
+  const {
+    nickname,
+    job,
+    goalAmount,
+    goalPeriod,
+    goalType,
+    description,
+    hasCar,
+    carValue,
+    hasHouse,
+    houseValue,
+    city,
+    pairingAnswer: pairingAnswerRaw,
+  } = requestData;
 
   // enum 검증
   const validGoalTypes = ["HOUSE", "LUMPSUM", "RETIREMENT", "MARRIAGE"];
