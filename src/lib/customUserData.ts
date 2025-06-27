@@ -30,6 +30,8 @@ export function customUser(data: UserProfile | CardUser | undefined) {
       imageUrl: "/jennie.jpg",
       target: "목표 없음",
       totalAsset: "0원",
+      hasCar: false,
+      hasHouse: false,
       carCost: "0원",
       houseCost: "0원",
       portfolioRatios: emptyCategoryRatios as CategoryRatios,
@@ -55,6 +57,8 @@ export function customUser(data: UserProfile | CardUser | undefined) {
       "totalAsset" in data && data.totalAsset
         ? `${(data.totalAsset / 10000).toLocaleString()}만원`
         : "0원",
+    hasCar: data.hasCar,
+    hasHouse: data.hasHouse,
     carCost:
       "carValue" in data && data.carValue
         ? `${(data.carValue / 10000).toLocaleString()}만원`
