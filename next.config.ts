@@ -58,7 +58,12 @@ const nextConfig: NextConfig = {
             loader: "@svgr/webpack",
             options: {
               typescript: true,
+              icon: true,
+              dimensions: false,
               ext: "tsx",
+              svgoConfig: {
+                plugins: [{ name: "removeViewBox", active: false }],
+              },
             },
           },
         ],

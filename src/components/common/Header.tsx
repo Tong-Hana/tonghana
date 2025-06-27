@@ -1,9 +1,9 @@
 "use client";
 
-import LeftArrow from "@/assets/icons/left_arrow_icon.svg";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { PropsWithChildren, useEffect, useState } from "react";
+import { LeftArrow } from "@/assets/assets";
 
 type Props = {
   title: string;
@@ -25,7 +25,7 @@ const BackButton = ({ color }: { color: "white" | "black" }) => {
     >
       <LeftArrow
         className={clsx(
-          "w-8 h-8 stroke-black",
+          "w-8 h-8 stroke-black stroke-[0.1rem]",
           color === "black" ? "stroke-black" : "stroke-white",
         )}
       />

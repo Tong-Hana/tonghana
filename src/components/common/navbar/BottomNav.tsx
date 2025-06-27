@@ -7,6 +7,7 @@ import {
   HeartIcon,
   HomeIcon,
   ProfileIcon,
+  FilledProfileIcon,
 } from "@/assets/assets";
 import BottomNavButton from "./BottomNavTab";
 import clsx from "clsx";
@@ -21,14 +22,14 @@ const navItems = [
       active: (
         <HomeIcon
           className={clsx(
-            "text-hanagreen-normal stroke-hanagreen-normal",
+            "fill-hanagreen-normal stroke-hanagreen-normal",
             NavIconSize,
           )}
         />
       ),
       inactive: (
         <HomeIcon
-          className={clsx("stroke-hanasilver text-white", NavIconSize)}
+          className={clsx("fill-white stroke-hanasilver stroke-2", NavIconSize)}
         />
       ),
     },
@@ -62,7 +63,7 @@ const navItems = [
       ),
       inactive: (
         <HeartIcon
-          className={clsx("stroke-hanasilver fill-white", NavIconSize)}
+          className={clsx("stroke-hanasilver stroke-2 fill-white", NavIconSize)}
         />
       ),
     },
@@ -74,14 +75,14 @@ const navItems = [
       active: (
         <ChatIcon
           className={clsx(
-            "text-hanagreen-normal stroke-hanagreen-normal",
+            "fill-hanagreen-normal stroke-hanagreen-normal",
             NavIconSize,
           )}
         />
       ),
       inactive: (
         <ChatIcon
-          className={clsx("stroke-hanasilver fill-white", NavIconSize)}
+          className={clsx("fill-white stroke-hanasilver stroke-2", NavIconSize)}
         />
       ),
     },
@@ -90,12 +91,10 @@ const navItems = [
     label: "profile",
     path: "/profile",
     icon: {
-      active: (
-        <ProfileIcon className={clsx("stroke-hanagreen-normal", NavIconSize)} />
-      ),
+      active: <FilledProfileIcon className={clsx(NavIconSize)} />,
       inactive: (
         <ProfileIcon
-          className={clsx("fill-white stroke-hanasilver", NavIconSize)}
+          className={clsx("fill-white stroke-hanasilver stroke-2", NavIconSize)}
         />
       ),
     },

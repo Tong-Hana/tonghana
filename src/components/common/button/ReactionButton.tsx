@@ -79,9 +79,9 @@ export function IconButton({
           iconSizeClass,
           intent === "like"
             ? isActive
-              ? "text-hanared-normal-active"
-              : "text-white hover:text-hanared-normal-hover active:text-hanared-normal-active"
-            : `text-white p-[0.1rem] ${strokeWidth} hover:text-gray-600 active:text-gray-700`,
+              ? "fill-hanared-normal-active stroke-hanared-normal-active"
+              : "fill-white stroke-white hover:fill-hanared-normal-hover hover:stroke-hanared-normal-hover active:fill-hanared-normal-active"
+            : `fill-white p-[0.1rem] ${strokeWidth} hover:fill-gray-600 active:fill-gray-700`,
           iconClassName,
         )}
       />
