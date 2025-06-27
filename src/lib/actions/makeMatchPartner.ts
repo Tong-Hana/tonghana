@@ -67,6 +67,10 @@ export async function makeMatchPartner(user: User, findNum: number) {
     },
   });
 
+  if (count === findNum) {
+    return;
+  }
+
   const matchLogs = await replicaPrisma.userMatchLog.findMany({
     where: {
       OR: [{ sentId: user.userId }, { receiveId: user.userId }],
@@ -122,10 +126,9 @@ export async function makeMatchPartner(user: User, findNum: number) {
       };
     })
     .sort((a, b) => b.mutualScore - a.mutualScore)
-    .slice(0, findNum + count);
-  for (let i = count; i < slice.length; i++) {
+    .slice(0, findNum - count);
+  for (let i = 0; i < slice.length; i++) {
     const result = slice[i];
-    console.log(result);
     await masterPrisma.userRecoLog.create({
       data: {
         baseUserId: user.userId,
