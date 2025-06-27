@@ -36,8 +36,6 @@ export async function main() {
     // 더미 유저 생성
     const createdUsers = await generateUsers(userCount);
     console.log(`더미 유저 ${userCount}명 생성 성공!`);
-    await saveDummyDataToWeaviate();
-    console.log("weaviate에 유저 데이터 업로드 성공!");
     // 더미 유저 상품 생성
     await generateUserFinancialProductsAll(createdUsers);
     console.log("더미 유저 금융상품 생성 성공!");
@@ -56,6 +54,10 @@ export async function main() {
     // 더미 유저 배지 데이터 생성
     await generateUserBadgesAll(createdUsers);
     console.log("더미 유저 배지 데이터 생성 성공!");
+
+    // Weaviate에 유저 데이터 업로드
+    await saveDummyDataToWeaviate();
+    console.log("weaviate에 유저 데이터 업로드 성공!");
 
     // 주제별 퀴즈 생성
     const depositCount = await masterPrisma.subject.count({
