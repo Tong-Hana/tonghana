@@ -172,6 +172,7 @@ export async function GET(_req: NextRequest) {
   const rawUserIds = await replicaPrisma.userRecoLog.findMany({
     where: {
       baseUserId: baseUser.userId,
+      likeStatus: false,
       createdAt: {
         gte: new Date(new Date().setHours(0, 0, 0, 0)), // 오늘 날짜의 시작
         lt: new Date(new Date().setHours(23, 59, 59, 999)), // 오늘 날짜의 끝
@@ -183,7 +184,6 @@ export async function GET(_req: NextRequest) {
   });
   const userIds = rawUserIds.map((log) => log.candidateId);
 
-  // 랜덤 광고 조회
   const [randomSubject] = await replicaPrisma.$queryRaw<SubjectResponse[]>`
     SELECT 
       subject_id as subjectId,

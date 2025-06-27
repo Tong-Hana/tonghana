@@ -1,5 +1,5 @@
 import weaviate from "weaviate-ts-client";
-import { saveUserVector } from "@/lib/actions/saveUserVector";
+import { saveDummyUserVector } from "@/lib/actions/saveUserVector";
 import { replicaPrisma } from "./prisma/replicaClient";
 
 export const client = weaviate.client({
@@ -28,6 +28,11 @@ const createUserSchema = async () => {
           description: "user's own gender",
         },
         {
+          name: "preferredGender",
+          dataType: ["string"],
+          description: "user's preferred gender for matching",
+        },
+        {
           name: "currentType",
           dataType: ["string"],
           description: "investment type: CONSERVATIVE ~ VERY_AGGRESSIVE",
@@ -49,10 +54,10 @@ const createUserSchema = async () => {
 };
 
 // 기존의 유저들을 Weaviate에 업로드
-async function main() {
+export async function saveDummyDataToWeaviate() {
   const users = await replicaPrisma.user.findMany({});
   for (const user of users) {
-    await saveUserVector(user);
+    await saveDummyUserVector(user);
   }
 }
 
@@ -70,6 +75,6 @@ if (require.main === module) {
     await dropSchema();
     await createUserSchema();
     console.log("✅ User schema created in Weaviate");
-    await main();
+    await saveDummyDataToWeaviate();
   })();
 }

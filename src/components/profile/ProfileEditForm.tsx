@@ -52,7 +52,7 @@ export default function ProfileEditForm() {
   const [goalAmount, setGoalAmount] = useState("");
   const [goalPeriod, setGoalPeriod] = useState<GoalPeriodOption | null>(null);
   const [selectedGoal, setSelectedGoal] = useState<GoalTag | null>(null);
-  const [, setProfileImage] = useState<File | null>(null);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [hasCar, setHasCar] = useState(false);
   const [carPrice, setCarPrice] = useState("");
   const [hasHouse, setHasHouse] = useState(false);
@@ -149,46 +149,138 @@ export default function ProfileEditForm() {
     },
   });
 
-  const handleSubmit = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
     if (!name.trim() || !introduction.trim() || !job.trim()) {
       toast.error("필수 정보를 모두 입력해주세요.");
       return;
     }
 
-    const goalType = selectedGoal
-      ? goalUtils.getEnumFromSelectedTag(selectedGoal)
-      : undefined;
-    const goalPeriodValue = goalPeriod
-      ? goalUtils.getValueFromSelectedPeriod(goalPeriod)
-      : undefined;
+    setIsSubmitting(true);
 
-    profileEditMutation.mutate({
-      nickname: name,
-      description: introduction,
-      job,
-      city: district ? `${city} ${district}` : city,
-      goalType: goalType || undefined,
-      goalAmount: goalAmount ? parseInt(goalAmount) * 100000000 : undefined,
-      goalPeriod: goalPeriodValue || undefined,
-      hasCar,
-      carValue: hasCar && carPrice ? parseInt(carPrice) * 10000000 : undefined,
-      hasHouse,
-      houseValue:
-        hasHouse && housePrice ? parseInt(housePrice) * 100000000 : undefined,
-      pairingAnswer: {
-        carBudget: carPrice ? parseInt(carPrice) * 10000000 : undefined,
-        dateBudget: datePrice ? parseInt(datePrice) * 10000 : undefined,
-        shoesBudget: shoePrice ? parseInt(shoePrice) * 10000 : undefined,
-        preferredCity: preferredDistrict
-          ? `${preferredCity} ${preferredDistrict}`
-          : preferredCity,
-        idealIncomeRange: selectedIncome
-          ? pairingIncomeUtils.optionToEnum(
-              selectedIncome as PairingIncomeOption,
-            )
-          : undefined,
-      },
-    });
+    try {
+      const goalType = selectedGoal
+        ? goalUtils.getEnumFromSelectedTag(selectedGoal)
+        : undefined;
+      const goalPeriodValue = goalPeriod
+        ? goalUtils.getValueFromSelectedPeriod(goalPeriod)
+        : undefined;
+
+      if (profileImage) {
+        const formData = new FormData();
+
+        formData.append("img", profileImage);
+        formData.append("nickname", name);
+        formData.append("description", introduction);
+        formData.append("job", job);
+        formData.append("city", district ? `${city} ${district}` : city);
+
+        if (goalType) formData.append("goalType", goalType);
+        if (goalAmount)
+          formData.append(
+            "goalAmount",
+            (parseInt(goalAmount) * 100000000).toString(),
+          );
+        if (goalPeriodValue) formData.append("goalPeriod", goalPeriodValue);
+
+        formData.append("hasCar", hasCar.toString());
+        if (hasCar && carPrice)
+          formData.append(
+            "carValue",
+            (parseInt(carPrice) * 10000000).toString(),
+          );
+
+        formData.append("hasHouse", hasHouse.toString());
+        if (hasHouse && housePrice)
+          formData.append(
+            "houseValue",
+            (parseInt(housePrice) * 100000000).toString(),
+          );
+
+        if (carPrice)
+          formData.append(
+            "pairingCarBudget",
+            (parseInt(carPrice) * 10000000).toString(),
+          );
+        if (datePrice)
+          formData.append(
+            "pairingDateBudget",
+            (parseInt(datePrice) * 10000).toString(),
+          );
+        if (shoePrice)
+          formData.append(
+            "pairingShoesBudget",
+            (parseInt(shoePrice) * 10000).toString(),
+          );
+        if (preferredCity) {
+          const fullPreferredCity = preferredDistrict
+            ? `${preferredCity} ${preferredDistrict}`
+            : preferredCity;
+          formData.append("pairingPreferredCity", fullPreferredCity);
+        }
+        if (selectedIncome) {
+          const incomeRange = pairingIncomeUtils.optionToEnum(
+            selectedIncome as PairingIncomeOption,
+          );
+          if (incomeRange)
+            formData.append("pairingIdealIncomeRange", incomeRange);
+        }
+
+        const response = await fetch("/api/profiles/me", {
+          method: "PATCH",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error("프로필 수정 실패");
+        }
+      } else {
+        profileEditMutation.mutate({
+          nickname: name,
+          description: introduction,
+          job,
+          city: district ? `${city} ${district}` : city,
+          goalType: goalType || undefined,
+          goalAmount: goalAmount ? parseInt(goalAmount) * 100000000 : undefined,
+          goalPeriod: goalPeriodValue || undefined,
+          hasCar,
+          carValue:
+            hasCar && carPrice ? parseInt(carPrice) * 10000000 : undefined,
+          hasHouse,
+          houseValue:
+            hasHouse && housePrice
+              ? parseInt(housePrice) * 100000000
+              : undefined,
+          pairingAnswer: {
+            carBudget: carPrice ? parseInt(carPrice) * 10000000 : undefined,
+            dateBudget: datePrice ? parseInt(datePrice) * 10000 : undefined,
+            shoesBudget: shoePrice ? parseInt(shoePrice) * 10000 : undefined,
+            preferredCity: preferredDistrict
+              ? `${preferredCity} ${preferredDistrict}`
+              : preferredCity,
+            idealIncomeRange: selectedIncome
+              ? pairingIncomeUtils.optionToEnum(
+                  selectedIncome as PairingIncomeOption,
+                )
+              : undefined,
+          },
+        });
+        return;
+      }
+
+      toast.success("프로필이 성공적으로 수정되었습니다!");
+      await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      await queryClient.refetchQueries({ queryKey: ["userProfile"] });
+
+      setTimeout(() => {
+        router.push("/profile");
+      }, 100);
+    } catch {
+      toast.error("프로필 수정에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isLoading) {
@@ -202,10 +294,14 @@ export default function ProfileEditForm() {
   return (
     <div className="flex flex-col gap-5 px-4 py-6">
       <div className="flex justify-center">
-        <ImageUploader
-          imageUrl={profileData?.data?.profileImage || undefined}
-          onChange={setProfileImage}
-        />
+        <div className="relative">
+          <ImageUploader
+            imageUrl={profileData?.data?.profileImage || undefined}
+            onChange={(file) => {
+              setProfileImage(file);
+            }}
+          />
+        </div>
       </div>
 
       <InputWithLabel
@@ -396,11 +492,17 @@ export default function ProfileEditForm() {
 
       <div className="pt-6">
         <Button
-          intent={profileEditMutation.isPending ? "default" : "green"}
+          intent={
+            isSubmitting || profileEditMutation.isPending ? "default" : "green"
+          }
           size="full"
-          label={profileEditMutation.isPending ? "저장 중..." : "저장"}
+          label={
+            isSubmitting || profileEditMutation.isPending
+              ? "저장 중..."
+              : "저장"
+          }
           onClick={handleSubmit}
-          disabled={profileEditMutation.isPending}
+          disabled={isSubmitting || profileEditMutation.isPending}
         />
       </div>
     </div>

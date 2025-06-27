@@ -30,7 +30,10 @@ export const investmentTypeToVector = (type: InvestmentType): number[] => {
 };
 
 // 사용자 벡터를 Weaviate에 저장하는 함수
-export const saveUserVector = async (userInPrisma: User) => {
+export const saveDummyUserVector = async (userInPrisma: User) => {
+  if (!userInPrisma.preferredType) {
+    return;
+  }
   const oppositeGender = userInPrisma.gender === "M" ? "F" : "M";
   const user: UserProfile = {
     userId: userInPrisma.userId,
@@ -39,7 +42,9 @@ export const saveUserVector = async (userInPrisma: User) => {
     currentInvestmentType: userInPrisma.currentType as InvestmentType,
     preferredInvestmentType: userInPrisma.preferredType as InvestmentType,
   };
-  const vector = investmentTypeToVector(user.currentInvestmentType);
+  const vector = investmentTypeToVector(
+    userInPrisma.currentType as InvestmentType,
+  );
   await client.data
     .creator()
     .withClassName("User")
@@ -52,5 +57,88 @@ export const saveUserVector = async (userInPrisma: User) => {
     })
     .withVector(vector)
     .do();
-  console.log(`✅ Uploaded user ${user.userId} to Weaviate`);
+};
+
+export const saveUserVector = async (userInPrisma: User) => {
+  if (!userInPrisma.gender) {
+    return;
+  }
+  const oppositeGender = userInPrisma.gender === "M" ? "F" : "M";
+  await client.data
+    .creator()
+    .withClassName("User")
+    .withProperties({
+      userId: userInPrisma.userId,
+      gender: userInPrisma.gender,
+      preferredGender: oppositeGender,
+    })
+    .do();
+};
+
+export const updateUserCurrentVector = async (userInPrisma: User) => {
+  if (!userInPrisma.currentType) {
+    return;
+  }
+  const result = await client.graphql
+    .get()
+    .withClassName("User")
+    .withFields(
+      `
+    userId
+    gender
+    preferredGender
+    currentType
+    preferredType
+    currentVector
+    _additional {
+      id
+      vector
+    }
+  `,
+    )
+    .withWhere({
+      path: ["userId"],
+      operator: "Equal",
+      valueNumber: Number(userInPrisma.userId),
+    })
+    .do();
+  const userObj = result.data.Get.User[0];
+  if (!userObj) throw new Error("User not found in Weaviate");
+  const { _additional, ...existingProperties } = userObj;
+  const vector = investmentTypeToVector(
+    userInPrisma.currentType as InvestmentType,
+  );
+  await client.data
+    .updater()
+    .withClassName("User")
+    .withId(_additional.id)
+    .withProperties(existingProperties)
+    .withVector(vector)
+    .do();
+};
+
+export const updateUserPreferredVector = async (userInPrisma: User) => {
+  if (!userInPrisma.preferredType) {
+    return;
+  }
+  const result = await client.graphql
+    .get()
+    .withClassName("User")
+    .withFields("_additional { id }")
+    .withWhere({
+      path: ["userId"],
+      operator: "Equal",
+      valueNumber: userInPrisma.userId,
+    })
+    .do();
+  const weaviateId = result.data.Get.User[0]?._additional?.id;
+  if (!weaviateId) throw new Error("User not found in Weaviate");
+  await client.data
+    .merger()
+    .withClassName("User")
+    .withId(weaviateId)
+    .withProperties({
+      preferredType: userInPrisma.preferredType,
+    })
+    .do();
 };

@@ -52,6 +52,7 @@
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { masterPrisma } from "@/lib/prisma/masterClient";
+import { updateUserPreferredVector } from "@/lib/actions/saveUserVector";
 
 export async function PATCH(req: Request) {
   try {
@@ -86,12 +87,15 @@ export async function PATCH(req: Request) {
     const mappedType = typeMap[type as keyof typeof typeMap];
 
     // 4. DB 저장
-    await masterPrisma.user.update({
+    const updateUser = await masterPrisma.user.update({
       where: { userId: user.userId },
       data: {
         preferredType: mappedType,
       },
     });
+
+    // 5. 벡터 저장
+    await updateUserPreferredVector(updateUser);
 
     return NextResponse.json({
       message: "상대방 투자 성향이 성공적으로 저장되었습니다.",

@@ -5,13 +5,15 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 0.0.0.0",
     "format": "prettier --write .",
     "lint": "eslint src --ext .js,.ts,.tsx",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "dev:chat": "ts-node chat-server.ts",
+    "start:chat": "npx tsx chat-server.ts",
+    "deploy": "npm run build && pm2 restart tonghana || pm2 start npm --name tonghana -- start && pm2 restart chat || pm2 start 'npx tsx chat-server.ts' --name chat",
     "seed": "tsx prisma/seed.ts"
   },
   "prisma": {

@@ -60,13 +60,28 @@ export async function POST(req: Request) {
     );
   }
 
-  const match = await masterPrisma.userMatchLog.create({
-    data: {
-      sentId,
-      receiveId,
-      matchStatus: "PENDING",
-    },
-  });
+  const result = await masterPrisma.$transaction([
+    masterPrisma.userMatchLog.create({
+      data: {
+        sentId,
+        receiveId,
+        matchStatus: "PENDING",
+      },
+    }),
 
-  return NextResponse.json(match, { status: 201 });
+    masterPrisma.userRecoLog.updateMany({
+      where: {
+        baseUserId: sentId,
+        candidateId: receiveId,
+      },
+      data: {
+        likeStatus: true,
+      },
+    }),
+  ]);
+
+  return NextResponse.json(
+    { message: "좋아요를 보냈습니다." },
+    { status: 201 },
+  );
 }

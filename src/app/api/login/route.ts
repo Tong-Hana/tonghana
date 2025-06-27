@@ -97,7 +97,7 @@ export async function POST(req: Request) {
       process.env.JWT_SECRET!,
       { expiresIn: "1d" },
     );
-    makeMatchPartner(user, 10);
+    await makeMatchPartner(user, 10);
     const response = NextResponse.json({
       message: "로그인에 성공하였습니다.",
       accessToken: token,
@@ -111,7 +111,8 @@ export async function POST(req: Request) {
       name: "accessToken",
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      // secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "lax",
       maxAge: 60 * 60 * 24, // 1일
       path: "/",

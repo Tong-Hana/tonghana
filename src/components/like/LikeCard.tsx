@@ -68,7 +68,7 @@ export default function LikeCard({
           <div className="flex w-full justify-between items-center">
             <p className="">{name}</p>
             <button type="button" onClick={handleRejectLike}>
-              <XMark className="mr-0.5 w-4 h-4 text-hanasilver hover:text-hanablack" />
+              <XMark className="mr-0.5 w-4 h-4 fill-hanasilver hover:fill-hanablack" />
             </button>
           </div>
           <div className="flex text-[10px] font-light items-center">

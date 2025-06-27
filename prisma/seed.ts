@@ -13,6 +13,7 @@ import { generateUserConsumeAll } from "../src/lib/actions/generateUserConsume";
 import { generateUserBadgesAll } from "../src/lib/actions/generateUserBadges";
 import { generateUserPairingAnswers } from "./seeds/generatePairingAnswer";
 import { updateUsersCurrentType } from "./seeds/updateUsersCurrentType";
+import { saveDummyDataToWeaviate } from "../src/lib/weaviate";
 
 const userArg = process.argv[2];
 const userCount = userArg ? parseInt(userArg, 10) : 1; // 기본값 1명
@@ -35,7 +36,8 @@ export async function main() {
     // 더미 유저 생성
     const createdUsers = await generateUsers(userCount);
     console.log(`더미 유저 ${userCount}명 생성 성공!`);
-
+    await saveDummyDataToWeaviate();
+    console.log("weaviate에 유저 데이터 업로드 성공!");
     // 더미 유저 상품 생성
     await generateUserFinancialProductsAll(createdUsers);
     console.log("더미 유저 금융상품 생성 성공!");

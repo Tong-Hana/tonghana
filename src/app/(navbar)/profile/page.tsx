@@ -4,7 +4,6 @@ import MonthlySpendingChart from "@/components/chart/MonthlySpendingChart";
 import Button from "@/components/common/button/Button";
 import DialogButton from "@/components/common/button/DialogButton";
 import { DislikeButton } from "@/components/common/button/ReactionButton";
-import RightArrow from "@/assets/icons/right_arrow_icon.svg";
 import ProfileCardDetail from "@/components/profile/ProfileCardDetail";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,6 +16,7 @@ import { useWithdraw } from "@/hooks/useWithdraw";
 import { customUser } from "@/lib/customUserData";
 import { customConsumeHistory } from "@/lib/customConsumeHistory";
 import { customPairingAnswers } from "@/lib/customParingAnswer";
+import { RightArrow } from "@/assets/assets";
 
 export default function MyPage() {
   const { data } = useSuspenseQuery(userProfileOptions("me"));
@@ -177,7 +177,7 @@ export default function MyPage() {
                 onClick={() => router.push(item.path)}
               >
                 <span>{item.name}</span>
-                <RightArrow size={20} className="text-gray-400" />
+                <RightArrow size={20} className="w-5 h-5 stroke-gray-400" />
               </div>
             );
           }
@@ -200,7 +200,7 @@ export default function MyPage() {
                   onClick={() => setActiveDialog(item.name)}
                 >
                   <span>{item.name}</span>
-                  <RightArrow size={20} className="text-gray-400" />
+                  <RightArrow className="w-5 h-5 stroke-gray-400" />
                 </div>
               </DialogButton>
             );

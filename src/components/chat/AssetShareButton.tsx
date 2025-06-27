@@ -50,7 +50,7 @@ export default function AssetShareButtonGroup({
           className="px-5 py-2 border border-hanagreen-normal text-sm rounded-2xl text-hanagreen-normal bg-white hover:bg-hanagreen-light-hover w-fit self-center"
         >
           <div className="flex gap-1 items-center">
-            <CheckCircle className="h-5 w-5" />
+            <CheckCircle className="h-5 w-5 fill-hanagreen-normal" />
             자산 공유 요청 확인
           </div>
         </button>
