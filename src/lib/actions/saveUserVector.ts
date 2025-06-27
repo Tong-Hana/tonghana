@@ -31,6 +31,9 @@ export const investmentTypeToVector = (type: InvestmentType): number[] => {
 
 // 사용자 벡터를 Weaviate에 저장하는 함수
 export const saveUserVector = async (userInPrisma: User) => {
+  if (!userInPrisma.preferredType) {
+    return;
+  }
   const oppositeGender = userInPrisma.gender === "M" ? "F" : "M";
   const user: UserProfile = {
     userId: userInPrisma.userId,
