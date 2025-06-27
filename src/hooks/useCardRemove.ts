@@ -31,7 +31,9 @@ export const useCardRemove = (
 
       return { previousCardList };
     },
-
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cardList"] });
+    },
     onError: (error, receiveId, context) => {
       if (context?.previousCardList) {
         queryClient.setQueryData(["cardList"], context.previousCardList);
