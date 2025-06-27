@@ -4,9 +4,9 @@
  *   patch:
  *     tags:
  *       - Profiles
- *     summary: 사용자 프로필 등록 및 수정
+ *     summary: 사용자 프로필 최초 등록
  *     description: |
- *       회원가입 후후 사용자가 자신의 프로필 정보를 등록 및 수정합니다.
+ *       회원가입 후 사용자가 자신의 프로필 정보를 최초 등록합니다.
  *       한 줄 소개, 직업, 목표 설정, 목표 금액, 목표 기간,
  *       실물 자산 보유 현황(자차, 부동산) 및 시세 정보, 프로필 이미지를 포함합니다.
  *     consumes:
@@ -129,19 +129,6 @@ export async function PATCH(req: NextRequest) {
   const formData = await req.formData();
   const file = formData.get("img");
   let profileImage: string | null = null;
-
-  // 이미지 업로드
-  // if (file && file instanceof File) {
-  //   try {
-  //     profileImage = await uploadImageToS3(file);
-  //   } catch (err) {
-  //     console.error("❌ S3 업로드 실패:", err);
-  //     return NextResponse.json(
-  //       { code: "IMAGE_UPLOAD_FAILED", message: "이미지 업로드 실패" },
-  //       { status: 500 },
-  //     );
-  //   }
-  // }
 
   if (file && file instanceof File) {
     try {
