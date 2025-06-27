@@ -103,7 +103,7 @@ export default function MyPage() {
   return (
     <div className="w-full h-full">
       <div className="flex flex-col gap-5 px-5 py-2">
-        <Header title="마이페이지" />
+        <Header title="마이페이지" centerTitle={false} showBackButton={false} />
         {/* 프로필 */}
         <div className="flex justify-center items-center gap-10 pt-5 pb-3">
           <div className="flex rounded-full w-28 h-28 overflow-hidden">
