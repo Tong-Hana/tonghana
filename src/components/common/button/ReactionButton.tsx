@@ -58,7 +58,7 @@ export function IconButton({
   const Icon = intent === "like" ? HeartIcon : XMark;
   const iconSizeClass =
     size === "sm" ? "w-4 h-4" : size === "md" ? "w-5 h-5" : "w-6 h-6";
-  const strokeWidth = size === "sm" ? "p-[0.2rem]" : "";
+  const strokeWidth = size === "sm" ? "p-[0.2rem]" : "stroke-2";
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (modalView) return;
@@ -81,7 +81,7 @@ export function IconButton({
             ? isActive
               ? "fill-hanared-normal-active stroke-hanared-normal-active"
               : "fill-white stroke-white hover:fill-hanared-normal-hover hover:stroke-hanared-normal-hover active:fill-hanared-normal-active"
-            : `fill-white p-[0.1rem] ${strokeWidth} hover:fill-gray-600 active:fill-gray-700`,
+            : `fill-white ${strokeWidth}stroke-white [stroke-width:3] hover:fill-gray-600 active:fill-gray-700`,
           iconClassName,
         )}
       />
