@@ -61,6 +61,8 @@ export default function ProfileCard({
     removeMutation.mutate(id);
   };
 
+  console.log(id, "house:", houseCost, "car:", carCost);
+
   return (
     <div
       key={id}
@@ -136,7 +138,7 @@ export default function ProfileCard({
             </div>
           )}
           <div className="flex flex-row gap-1 items-center -ml-[0.15rem] text-sm font-medium text-text-primary">
-            {hasHouse && (
+            {hasHouse && houseCost && (
               <>
                 <div className="flex flex-row gap-1 items-center">
                   <HomeIcon className="w-5 h-5 fill-hanagreen-normal stroke-hanagreen-normal" />
@@ -145,7 +147,7 @@ export default function ProfileCard({
                 <span className="text-hanasilver">|</span>
               </>
             )}
-            {hasCar && (
+            {hasCar && carCost && (
               <div className="flex flex-row gap-1 items-center">
                 <Car className="w-5 h-5 fill-hanagreen-normal stroke-hanagreen-normal" />
                 {carCost}
