@@ -79,6 +79,7 @@ import bcrypt from "bcryptjs";
 import { generateUserFinancialProducts } from "@/lib/actions/generateUserFinancialProducts";
 import { generateUserLoan } from "@/lib/actions/generateUserLoan";
 import { generateUserConsume } from "@/lib/actions/generateUserConsume";
+import { generateUserBadges } from "@/lib/actions/generateUserBadges";
 
 export async function POST(req: Request) {
   try {
@@ -126,7 +127,9 @@ export async function POST(req: Request) {
       await generateUserFinancialProducts(createdUser, productPool, tx);
       await generateUserLoan(createdUser, tx);
       await generateUserConsume(createdUser, tx);
-
+      // 배지 데이터 생성
+      await generateUserBadges(createdUser, tx);
+      ``;
       return createdUser;
     });
 

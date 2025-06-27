@@ -65,7 +65,7 @@ async function createUser() {
   const hasCar = faker.datatype.boolean();
   const hasHouse = faker.datatype.boolean();
   const carValue = hasCar
-    ? faker.number.int({ min: 5, max: 300 }) * 1_000_000
+    ? faker.number.int({ min: 5, max: 100 }) * 1_000_000
     : null;
   const houseValue = hasHouse
     ? faker.number.int({ min: 10, max: 100 }) * 10_000_000

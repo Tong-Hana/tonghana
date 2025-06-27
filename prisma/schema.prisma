@@ -200,8 +200,10 @@ model UserQuizLog {
 model UserBadge {
   userBadgeId Int      @id @default(autoincrement()) @map("user_badge_id")
   userId      Int      @map("user_id")
-  badgeName   String   @map("badge_name")
-  badgeCount  Int      @map("badge_count")
+  diligent    Int      @map("diligent")
+  planner     Int      @map("planner")
+  saver       Int      @map("saver")
+  investor    Int      @map("investor")
   createdAt   DateTime @default(now()) @map("created_at")
   user        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
