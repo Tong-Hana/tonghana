@@ -55,6 +55,8 @@ const createUserSchema = async () => {
 
 // 기존의 유저들을 Weaviate에 업로드
 export async function saveDummyDataToWeaviate() {
+  await dropSchema();
+  await createUserSchema();
   const users = await replicaPrisma.user.findMany({});
   for (const user of users) {
     await saveDummyUserVector(user);
