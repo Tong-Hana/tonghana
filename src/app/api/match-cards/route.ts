@@ -183,6 +183,7 @@ export async function GET(_req: NextRequest) {
     },
   });
   const userIds = rawUserIds.map((log) => log.candidateId);
+  userIds.sort(); // 매칭카드 ID 순서대로 정렬
 
   const [randomSubject] = await replicaPrisma.$queryRaw<SubjectResponse[]>`
     SELECT 
