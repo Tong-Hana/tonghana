@@ -111,7 +111,8 @@ export async function POST(req: Request) {
       name: "accessToken",
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      // secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "lax",
       maxAge: 60 * 60 * 24, // 1일
       path: "/",

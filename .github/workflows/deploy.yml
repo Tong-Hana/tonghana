@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - BE/deploy/#38
+      - dev
 
 jobs:
   deploy:
@@ -20,7 +20,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}" >> .env
+          echo "WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}" > .env
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
           echo "READ_REPLICA_URL=${{ secrets.READ_REPLICA_URL }}" >> .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
@@ -28,6 +28,9 @@ jobs:
           echo "AMPLIFY_BUCKET=${{ secrets.AMPLIFY_BUCKET }}" >> .env
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+          echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env
+          echo "NEXT_PUBLIC_SOCKET_URL=${{ secrets.NEXT_PUBLIC_SOCKET_URL }}" >> .env
+          echo "NEXT_PUBLIC_SOCKET_API_BASE_URL=${{ secrets.NEXT_PUBLIC_SOCKET_API_BASE_URL }}" >> .env
 
       - name: Copy project to EC2
         uses: appleboy/scp-action@master
@@ -58,15 +61,20 @@ jobs:
               sudo npm install -g pm2
             fi
 
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-            echo "READ_REPLICA_URL=${{ secrets.READ_REPLICA_URL }}" >> .env
-            echo "WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}" >> .env
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-            echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
-            echo "AMPLIFY_BUCKET=${{ secrets.AMPLIFY_BUCKET }}" >> .env
-            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
-            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
-            echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env
+            cat <<EOF > .env
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            READ_REPLICA_URL=${{ secrets.READ_REPLICA_URL }}
+            WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            AWS_REGION=${{ secrets.AWS_REGION }}
+            AMPLIFY_BUCKET=${{ secrets.AMPLIFY_BUCKET }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}
+            NEXT_PUBLIC_SOCKET_URL=${{ secrets.NEXT_PUBLIC_SOCKET_URL }}
+            NEXT_PUBLIC_SOCKET_API_BASE_URL=${{ secrets.NEXT_PUBLIC_SOCKET_API_BASE_URL }}
+            EOF
+
 
             # 설치 및 빌드
             npm install --legacy-peer-deps
@@ -80,4 +88,5 @@ jobs:
             npm run build
 
             pm2 restart tonghana || pm2 start npm --name "tonghana" -- start
-            export $(cat .env | xargs) && pm2 restart chat || export $(cat .env | xargs) && pm2 start "npx tsx chat-server.ts" --name "chat"
+            export $(cat .env | xargs)
+            pm2 restart chat || pm2 start "npx tsx chat-server.ts" --name "chat"
