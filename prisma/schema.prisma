@@ -153,6 +153,7 @@ model User {
   sentMatches          UserMatchLog[]         @relation("SentMatches")
   userQuizLog          UserQuizLog[]
   UserRecoLog          UserRecoLog[]          @relation("BaseUserReco")
+  userBadge            UserBadge[]
 }
 
 model Subject {
@@ -194,6 +195,19 @@ model UserQuizLog {
   @@index([userId, subjectId], map: "UserQuizLog_user_subject_idx")
   @@index([subjectId], map: "UserQuizLog_subject_id_fkey")
   @@index([userId], map: "UserQuizLog_user_id_fkey")
+}
+
+model UserBadge {
+  userBadgeId Int      @id @default(autoincrement()) @map("user_badge_id")
+  userId      Int      @map("user_id")
+  diligent    Int      @map("diligent")
+  planner     Int      @map("planner")
+  saver       Int      @map("saver")
+  investor    Int      @map("investor")
+  createdAt   DateTime @default(now()) @map("created_at")
+  user        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId], map: "UserBadge_user_id_fkey")
 }
 
 enum Gender {

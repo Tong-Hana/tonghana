@@ -10,6 +10,7 @@ import { generateUsers } from "./seeds/generateUsers";
 import { generateUserFinancialProductsAll } from "../src/lib/actions/generateUserFinancialProducts";
 import { generateUserLoanAll } from "../src/lib/actions/generateUserLoan";
 import { generateUserConsumeAll } from "../src/lib/actions/generateUserConsume";
+import { generateUserBadgesAll } from "../src/lib/actions/generateUserBadges";
 import { generateUserPairingAnswers } from "./seeds/generatePairingAnswer";
 import { updateUsersCurrentType } from "./seeds/updateUsersCurrentType";
 import { saveDummyDataToWeaviate } from "../src/lib/weaviate";
@@ -35,8 +36,6 @@ export async function main() {
     // 더미 유저 생성
     const createdUsers = await generateUsers(userCount);
     console.log(`더미 유저 ${userCount}명 생성 성공!`);
-    await saveDummyDataToWeaviate();
-    console.log("weaviate에 유저 데이터 업로드 성공!");
     // 더미 유저 상품 생성
     await generateUserFinancialProductsAll(createdUsers);
     console.log("더미 유저 금융상품 생성 성공!");
@@ -52,6 +51,13 @@ export async function main() {
     // 더미 유저의 현재 타입 업데이트
     await updateUsersCurrentType(createdUsers);
     console.log("더미 유저의 현재 투자 성향 업데이트 성공!");
+    // 더미 유저 배지 데이터 생성
+    await generateUserBadgesAll(createdUsers);
+    console.log("더미 유저 배지 데이터 생성 성공!");
+
+    // Weaviate에 유저 데이터 업로드
+    await saveDummyDataToWeaviate();
+    console.log("weaviate에 유저 데이터 업로드 성공!");
 
     // 주제별 퀴즈 생성
     const depositCount = await masterPrisma.subject.count({
