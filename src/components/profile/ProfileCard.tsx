@@ -33,7 +33,6 @@ export default function ProfileCard({
   portfolioType,
   investorType,
   debtPercent,
-  showDetail = false,
   modalView = false,
 }: ProfileCardProps) {
   const router = useRouter();
@@ -104,14 +103,14 @@ export default function ProfileCard({
       {/* portfolio */}
       <div className="w-full rounded-xl bg-white flex flex-col gap-3 p-3">
         <div className="flex gap-1">
-          {hasHouse && !showDetail && (
+          {hasHouse && (
             <Tag
               text="자가 보유"
               size="xs"
               className="font-normal text-[0.6rem] px-[0.6rem]"
             />
           )}
-          {hasCar && !showDetail && (
+          {hasCar && (
             <Tag
               text="자차 보유"
               size="xs"
@@ -130,48 +129,54 @@ export default function ProfileCard({
             <span className="font-normal">🎯 목표: </span>
             {target}
           </div>
-          {showDetail && (
-            <>
-              <div className="text-sm font-normal text-text-primary leading-5">
-                <span className="font-normal">💵 총 자산:</span> {totalAsset}
-              </div>
-              <div className="flex flex-row gap-1 items-center -ml-[0.15rem] text-sm font-medium text-text-primary">
+
+          {totalAsset && (
+            <div className="text-sm font-normal text-text-primary leading-5">
+              <span className="font-normal">💵 총 자산:</span> {totalAsset}
+            </div>
+          )}
+          <div className="flex flex-row gap-1 items-center -ml-[0.15rem] text-sm font-medium text-text-primary">
+            {hasHouse && (
+              <>
                 <div className="flex flex-row gap-1 items-center">
                   <HomeIcon className="w-5 h-5 fill-hanagreen-normal stroke-hanagreen-normal" />
                   {houseCost}
                 </div>
                 <span className="text-hanasilver">|</span>
-                <div className="flex flex-row gap-1 items-center">
-                  <Car className="w-5 h-5 fill-hanagreen-normal stroke-hanagreen-normal" />
-                  {carCost}
-                </div>
+              </>
+            )}
+            {hasCar && (
+              <div className="flex flex-row gap-1 items-center">
+                <Car className="w-5 h-5 fill-hanagreen-normal stroke-hanagreen-normal" />
+                {carCost}
               </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
         <DoughnutChart
           values={portfolioRatios}
           portfolioType={portfolioType}
           debtLabel={debtPercent}
-          showPercent={!showDetail}
         />
       </div>
       {/* 좋아요, 싫어요 버튼 */}
-      <div className="flex justify-between">
-        <DislikeButton
-          circle
-          size="md"
-          modalView={modalView}
-          onClick={handleDislike}
-        />
-        <LikeButton
-          circle
-          size="md"
-          isActive={false}
-          modalView={modalView}
-          onClick={handleLike}
-        />
-      </div>
+      {!modalView && (
+        <div className="flex justify-between">
+          <DislikeButton
+            circle
+            size="md"
+            modalView={modalView}
+            onClick={handleDislike}
+          />
+          <LikeButton
+            circle
+            size="md"
+            isActive={false}
+            modalView={modalView}
+            onClick={handleLike}
+          />
+        </div>
+      )}
     </div>
   );
 }

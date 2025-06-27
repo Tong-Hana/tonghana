@@ -9,15 +9,14 @@ export interface ProfileCardProps {
   description: string;
   imageUrl: string;
   target: string;
-  totalAsset: string;
+  totalAsset?: string;
   hasCar: boolean;
   hasHouse: boolean;
-  carCost: string;
-  houseCost: string;
+  carCost?: string;
+  houseCost?: string;
   portfolioRatios: CategoryRatios;
   debtPercent: string;
   portfolioType: string;
   investorType: string;
-  showDetail?: boolean;
   modalView?: boolean;
 }
