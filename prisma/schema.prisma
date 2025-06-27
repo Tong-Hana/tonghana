@@ -148,7 +148,6 @@ model User {
   consumeHistory       ConsumeHistory?
   loan                 Loan[]
   pairingAnswer        PairingAnswer?
-  userBadge            UserBadge[]
   userFinancialProduct UserFinancialProduct[]
   receivedMatches      UserMatchLog[]         @relation("ReceivedMatches")
   sentMatches          UserMatchLog[]         @relation("SentMatches")
@@ -200,7 +199,7 @@ model UserQuizLog {
 
 model UserBadge {
   userBadgeId Int      @id @default(autoincrement()) @map("user_badge_id")
-  userId      Int      @map("user_id")
+  userId      Int      @unique @map("user_id")
   createdAt   DateTime @default(now()) @map("created_at")
   diligent    Int      @map("diligent")
   investor    Int      @map("investor")
