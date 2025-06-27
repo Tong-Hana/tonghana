@@ -115,6 +115,7 @@ import { getAuthUser } from "@/lib/auth";
 import { uploadImageToS3 } from "@/lib/s3/uploadImage";
 import { GoalType, GoalPeriod } from "@prisma/client";
 import { masterPrisma } from "@/lib/prisma/masterClient";
+import { Buffer } from "buffer";
 
 export async function PATCH(req: NextRequest) {
   const user = await getAuthUser();
@@ -130,9 +131,28 @@ export async function PATCH(req: NextRequest) {
   let profileImage: string | null = null;
 
   // 이미지 업로드
+  // if (file && file instanceof File) {
+  //   try {
+  //     profileImage = await uploadImageToS3(file);
+  //   } catch (err) {
+  //     console.error("❌ S3 업로드 실패:", err);
+  //     return NextResponse.json(
+  //       { code: "IMAGE_UPLOAD_FAILED", message: "이미지 업로드 실패" },
+  //       { status: 500 },
+  //     );
+  //   }
+  // }
+
   if (file && file instanceof File) {
     try {
-      profileImage = await uploadImageToS3(file);
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      profileImage = await uploadImageToS3({
+        name: file.name,
+        buffer,
+        type: file.type,
+      });
     } catch (err) {
       console.error("❌ S3 업로드 실패:", err);
       return NextResponse.json(

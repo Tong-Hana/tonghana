@@ -118,9 +118,11 @@ export async function PATCH(
     },
   });
 
+  const socketApiBaseUrl = process.env.NEXT_PUBLIC_SOCKET_API_BASE_URL;
+
   try {
     const response = await fetch(
-      "http://localhost:3001/api/notify-asset-change",
+      `${socketApiBaseUrl}/api/notify-asset-change`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

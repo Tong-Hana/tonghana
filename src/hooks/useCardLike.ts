@@ -33,6 +33,7 @@ export const useCardLike = (
       return { previousCardList };
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["cardList"] });
       onSuccess?.(data);
     },
     onError: (error, receiveId, context) => {

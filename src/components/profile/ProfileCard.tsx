@@ -86,13 +86,13 @@ export default function ProfileCard({
           </div>
           <div className="text-xs flex gap-1 items-center w-fit">
             <span>
-              <Job />
+              <Job className="w-3 h-3 stroke-white fill-white" />
             </span>
             {job}
           </div>
           <div className="text-xs flex gap-1 items-center w-fit">
             <span>
-              <Map />
+              <Map className="w-3 h-3 fill-white" />
             </span>
             {location}
           </div>
@@ -135,12 +135,12 @@ export default function ProfileCard({
               </div>
               <div className="flex flex-row gap-1 items-center -ml-[0.15rem] text-sm font-medium text-text-primary">
                 <div className="flex flex-row gap-1 items-center">
-                  <HomeIcon className="w-5 h-5 text-hanagreen-normal" />
+                  <HomeIcon className="w-5 h-5 fill-hanagreen-normal stroke-hanagreen-normal" />
                   {houseCost}
                 </div>
                 <span className="text-hanasilver">|</span>
                 <div className="flex flex-row gap-1 items-center">
-                  <Car className="w-5 h-5" />
+                  <Car className="w-5 h-5 fill-hanagreen-normal stroke-hanagreen-normal" />
                   {carCost}
                 </div>
               </div>
