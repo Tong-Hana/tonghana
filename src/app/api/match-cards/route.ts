@@ -291,8 +291,6 @@ export async function GET(_req: NextRequest) {
         profileImage: user.profileImage,
         hasCar: user.hasCar,
         hasHouse: user.hasHouse,
-        carValue: carValue,
-        houseValue: houseValue,
         goalAmount: Number(user.goalAmount ?? 0),
         goalPeriod: user.goalPeriod,
         goalType: user.goalType,
