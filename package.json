@@ -16,6 +16,9 @@
     "deploy": "npm run build && pm2 restart tonghana || pm2 start npm --name tonghana -- start && pm2 restart chat || pm2 start 'npx tsx chat-server.ts' --name chat",
     "seed": "tsx prisma/seed.ts"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.828.0",
     "@chatscope/chat-ui-kit-react": "^2.1.1",
