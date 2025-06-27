@@ -1,4 +1,5 @@
 import FilledQuizIcon from "@/assets/icons/bottom_nav/filled_nav_quiz_icon.svg";
+import FilledProfileIcon from "@/assets/icons/bottom_nav/filled_nav_profile_icon.svg";
 import HomeIcon from "@/assets/icons/bottom_nav/nav_home_icon.svg";
 import QuizIcon from "@/assets/icons/bottom_nav/nav_quiz_icon.svg";
 import HeartIcon from "@/assets/icons/bottom_nav/nav_heart_icon.svg";
@@ -18,6 +19,8 @@ import Exit from "@/assets/icons/exit.svg";
 import PaperAirplane from "@/assets/icons/paper_airplane.svg";
 import CheckCircle from "@/assets/icons/check_circle_icon.svg";
 import Chart from "@/assets/icons/chart_icon.svg";
+import LeftArrow from "@/assets/icons/left_arrow_icon.svg";
+import RightArrow from "@/assets/icons/right_arrow_icon.svg";
 
 import SelectO from "@/assets/icons/select_O.svg";
 import SelectX from "@/assets/icons/select_X.svg";
@@ -28,6 +31,7 @@ export {
   QuizIcon,
   HeartIcon,
   ChatIcon,
+  FilledProfileIcon,
   ProfileIcon,
   AttentionStarBoy,
   AttentionStarGirl,
@@ -41,6 +45,8 @@ export {
   PaperAirplane,
   CheckCircle,
   Chart,
+  LeftArrow,
+  RightArrow,
   SelectX,
   SelectO,
 };

@@ -2,13 +2,11 @@ import { isSameDay, isSameMinute } from "date-fns";
 import DateSeparator from "./ChatDateSeparater";
 import ChatMessage from "./ChatMessage";
 import { Ref } from "react";
-import { cn } from "@/utils/cn";
 import { ChatMessageDisplay } from "@/app/types/client-chat";
 
 type Props = {
   scrollRef: Ref<HTMLDivElement>;
   messages: ChatMessageDisplay[];
-  showShareButton: boolean;
   isLoading: boolean;
   isError: boolean;
 };
@@ -16,7 +14,6 @@ type Props = {
 export default function ChatMessageList({
   scrollRef,
   messages,
-  showShareButton,
   isLoading,
   isError,
 }: Props) {
@@ -32,10 +29,7 @@ export default function ChatMessageList({
   return (
     <div
       ref={scrollRef}
-      className={cn(
-        "flex flex-col-reverse overflow-y-scroll px-4 py-2 scrollbar-hide",
-        showShareButton ? "pb-32" : "pb-20",
-      )}
+      className="flex flex-col-reverse pb-32 overflow-y-scroll px-4 py-2 scrollbar-hide"
     >
       {reversedMessage.map((m, idx) => {
         const prev = reversedMessage[idx + 1];

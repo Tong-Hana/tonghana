@@ -48,10 +48,6 @@ export default function ChatRoomPage() {
     isError: isErrorChats,
   } = useChatMessages(roomId);
 
-  const showShareButton =
-    roomInfo?.agreeStatus === AssetShareStatus.PENDING ||
-    roomInfo?.agreeStatus === AssetShareStatus.PARTNER_AGREED;
-
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -199,7 +195,6 @@ export default function ChatRoomPage() {
         <ChatMessageList
           scrollRef={scrollRef}
           messages={messages}
-          showShareButton={showShareButton}
           isLoading={isLoading}
           isError={isError}
         />
@@ -211,7 +206,7 @@ export default function ChatRoomPage() {
         style={{ zIndex: 5 }}
       >
         <div className="flex w-full items-center">
-          <div className="ml-5 flex items-center ">
+          <div className="ml-5 flex items-center">
             {myProfile && chatPartner && (
               <ChatPortfolioButton onOpen={() => setShowBottomSheet(true)} />
             )}

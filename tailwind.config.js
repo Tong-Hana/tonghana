@@ -74,4 +74,8 @@ module.exports = {
     },
   },
   plugins: [],
+  corePlugins: {
+    stroke: true,
+    strokeWidth: true,
+  },
 };
