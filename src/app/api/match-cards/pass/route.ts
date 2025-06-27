@@ -87,11 +87,13 @@ export async function PATCH(req: Request) {
         },
       }),
 
-      // 2. UserRecoLog: likeStatus true로 생성
-      masterPrisma.userRecoLog.create({
-        data: {
+      // 2. UserRecoLog: likeStatus true로 업데이트
+      masterPrisma.userRecoLog.updateMany({
+        where: {
           baseUserId: userId,
           candidateId: receiveId,
+        },
+        data: {
           likeStatus: true,
         },
       }),
