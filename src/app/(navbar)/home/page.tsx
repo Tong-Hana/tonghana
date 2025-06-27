@@ -44,11 +44,8 @@ export default function HomePage() {
               description={user.description}
               imageUrl={user.imageUrl}
               target={user.target}
-              totalAsset={user.totalAsset}
               hasCar={user.hasCar}
               hasHouse={user.hasHouse}
-              carCost={user.carCost}
-              houseCost={user.houseCost}
               portfolioRatios={user.portfolioRatios}
               debtPercent={user.debtPercent}
               investorType={user.investorType}
