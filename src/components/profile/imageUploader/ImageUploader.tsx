@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import ImageCropperModal from "@/components/profile/imageUploader/ImageCropperModal";
 import Image from "next/image";
+import { dataURLtoFile } from "@/utils/cropImage";
 
 interface ImageUploaderProps {
   imageUrl?: string;
@@ -34,7 +35,17 @@ export default function ImageUploader({
 
   const handleCropComplete = (croppedDataUrl: string) => {
     setPreview(croppedDataUrl);
-    onChange(file);
+
+    if (file) {
+      const originalName = file.name;
+      const nameWithoutExt =
+        originalName.substring(0, originalName.lastIndexOf(".")) ||
+        originalName;
+      const croppedFileName = `${nameWithoutExt}_cropped.jpg`;
+      const croppedFile = dataURLtoFile(croppedDataUrl, croppedFileName);
+
+      onChange(croppedFile);
+    }
   };
 
   const handleClick = () => {
@@ -55,7 +66,7 @@ export default function ImageUploader({
             className="object-cover rounded-full"
           />
         ) : (
-          <span className="text-3xl text-hanasilver">+</span> //임시
+          <span className="text-3xl text-hanasilver">+</span>
         )}
       </div>
 
