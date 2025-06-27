@@ -6,7 +6,7 @@
  *       - MatchCards
  *     summary: 매칭 카드 리스트 조회
  *     description: |
- *       15명의 유저 ID를 기준으로 유저 매칭 카드 리스트를 반환합니다.
+ *       다수의 유저 ID를 기준으로 유저 매칭 카드 리스트를 반환합니다.
  *       각 유저는 기본 정보, 금융상품 카테고리 비율, 부채 비율을 포함하며,
  *       광고를 위한 subjectType이 '금융상식'이 아닌 랜덤 Subject 1개도 함께 포함됩니다.
  *     responses:
@@ -217,6 +217,7 @@ export async function GET(_req: NextRequest) {
           },
         },
         loan: true,
+        userBadge: true,
       },
     });
 
@@ -298,6 +299,14 @@ export async function GET(_req: NextRequest) {
         preferredType: user.preferredType,
         financialProductRatio,
         categoryRatios,
+        badges: user.userBadge
+          ? {
+              diligent: user.userBadge.diligent,
+              planner: user.userBadge.planner,
+              saver: user.userBadge.saver,
+              investor: user.userBadge.investor,
+            }
+          : null,
       };
     });
 

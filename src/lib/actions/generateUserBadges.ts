@@ -7,13 +7,14 @@ export async function generateUserBadges(
   user: User,
   tx: Prisma.TransactionClient,
 ) {
+  const maxBadgeCount = 3; // 배지 최대 개수
   await tx.userBadge.create({
     data: {
       userId: user.userId,
-      diligent: faker.number.int({ min: 0, max: 5 }),
-      planner: faker.number.int({ min: 0, max: 5 }),
-      saver: faker.number.int({ min: 0, max: 5 }),
-      investor: faker.number.int({ min: 0, max: 5 }),
+      diligent: faker.number.int({ min: 0, max: maxBadgeCount }),
+      planner: faker.number.int({ min: 0, max: maxBadgeCount }),
+      saver: faker.number.int({ min: 0, max: maxBadgeCount }),
+      investor: faker.number.int({ min: 0, max: maxBadgeCount }),
     },
   });
 }

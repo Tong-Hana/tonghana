@@ -132,6 +132,23 @@
  *                       additionalProperties:
  *                         type: number
  *                         example: 0.35
+ *                     badges:
+ *                      type: object
+ *                      nullable: true
+ *                      description: 유저의 뱃지 정보 (없으면 null)
+ *                      properties:
+ *                        diligent:
+ *                          type: integer
+ *                          example: 3
+ *                        planner:
+ *                          type: integer
+ *                          example: 2
+ *                        saver:
+ *                          type: integer
+ *                          example: 5
+ *                        investor:
+ *                          type: integer
+ *                          example: 1
  *       401:
  *         description: 인증되지 않은 사용자
  *         content:
@@ -227,6 +244,14 @@ export async function GET(
               leisureRate: true,
               livingExpenseRate: true,
               otherRate: true,
+            },
+          },
+          userBadge: {
+            select: {
+              diligent: true,
+              planner: true,
+              saver: true,
+              investor: true,
             },
           },
         },
@@ -371,6 +396,14 @@ export async function GET(
       },
       categoryRatios,
       consumeHistory: consumeRatios,
+      badges: userData.userBadge
+        ? {
+            diligent: userData.userBadge.diligent,
+            planner: userData.userBadge.planner,
+            saver: userData.userBadge.saver,
+            investor: userData.userBadge.investor,
+          }
+        : null,
     };
 
     // BigInt 변환 에러 방지: bigint → number

@@ -175,6 +175,7 @@ import { isSameDay } from "date-fns";
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import { masterPrisma } from "@/lib/prisma/masterClient";
 import { makeMatchPartner } from "@/lib/actions/makeMatchPartner";
+import { calBadgeCount } from "@/lib/actions/calBadgeCount";
 
 export async function GET() {
   const user = await getAuthUser();
@@ -359,6 +360,9 @@ export async function PATCH(req: NextRequest) {
     });
     const baseUser = await replicaPrisma.user.findUnique({
       where: { userId: user.userId },
+      include: {
+        userBadge: true,
+      },
     });
     if (!baseUser) {
       return NextResponse.json(
@@ -366,8 +370,13 @@ export async function PATCH(req: NextRequest) {
         { status: 404 },
       );
     }
+
     if (answer) {
-      await makeMatchPartner(baseUser, 15);
+      let badgeCount = 0;
+      if (baseUser.userBadge !== null) {
+        badgeCount = calBadgeCount(baseUser.userBadge);
+      }
+      await makeMatchPartner(baseUser, 15 + badgeCount);
     }
 
     return NextResponse.json(

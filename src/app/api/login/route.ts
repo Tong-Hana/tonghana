@@ -56,6 +56,7 @@ import { replicaPrisma } from "@/lib/prisma/replicaClient";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { makeMatchPartner } from "@/lib/actions/makeMatchPartner";
+import { calBadgeCount } from "@/lib/actions/calBadgeCount";
 
 export async function POST(req: Request) {
   try {
@@ -69,7 +70,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const user = await replicaPrisma.user.findUnique({ where: { email } });
+    const user = await replicaPrisma.user.findUnique({
+      where: { email },
+      include: {
+        userBadge: true,
+      },
+    });
+
     if (!user) {
       return NextResponse.json(
         { code: "NON_EXIST_USER", message: "존재하지 않는 사용자입니다." },
@@ -97,7 +104,11 @@ export async function POST(req: Request) {
       process.env.JWT_SECRET!,
       { expiresIn: "1d" },
     );
-    await makeMatchPartner(user, 10);
+    let badgeCount = 0;
+    if (user.userBadge !== null) {
+      badgeCount = calBadgeCount(user.userBadge);
+    }
+    await makeMatchPartner(user, 10 + badgeCount);
     const response = NextResponse.json({
       message: "로그인에 성공하였습니다.",
       accessToken: token,
