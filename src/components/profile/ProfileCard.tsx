@@ -61,8 +61,6 @@ export default function ProfileCard({
     removeMutation.mutate(id);
   };
 
-  console.log(id, "house:", houseCost, "car:", carCost);
-
   return (
     <div
       key={id}
