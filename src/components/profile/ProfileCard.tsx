@@ -25,6 +25,8 @@ export default function ProfileCard({
   imageUrl,
   target,
   totalAsset,
+  hasCar,
+  hasHouse,
   carCost,
   houseCost,
   portfolioRatios,
@@ -102,14 +104,14 @@ export default function ProfileCard({
       {/* portfolio */}
       <div className="w-full rounded-xl bg-white flex flex-col gap-3 p-3">
         <div className="flex gap-1">
-          {!showDetail && (
+          {hasHouse && !showDetail && (
             <Tag
               text="자가 보유"
               size="xs"
               className="font-normal text-[0.6rem] px-[0.6rem]"
             />
           )}
-          {!showDetail && (
+          {hasCar && !showDetail && (
             <Tag
               text="자차 보유"
               size="xs"
