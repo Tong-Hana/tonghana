@@ -19,6 +19,7 @@ export default function CardDetailComponent({ userId }: { userId: string }) {
         user={user}
         answers={answer}
         data={consumeHistoryData}
+        modalView={true}
       />
     </div>
   );

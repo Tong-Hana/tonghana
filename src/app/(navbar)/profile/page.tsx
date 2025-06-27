@@ -140,7 +140,6 @@ export default function MyPage() {
                     user={user}
                     answers={answer}
                     data={consumeHistoryData}
-                    showDetail={true}
                     modalView={true}
                   />
                 </div>

@@ -8,7 +8,6 @@ interface ProfileCardDetailProps {
   user: ProfileCardProps;
   answers: { id: number; answer: string }[];
   data: ConsumeHistory;
-  showDetail?: boolean;
   modalView?: boolean;
 }
 
@@ -16,7 +15,6 @@ export default function ProfileCardDetail({
   user,
   answers,
   data,
-  showDetail = false,
   modalView = false,
 }: ProfileCardDetailProps) {
   return (
@@ -39,7 +37,6 @@ export default function ProfileCardDetail({
         debtPercent={user.debtPercent}
         investorType={user.investorType}
         portfolioType={user.portfolioType}
-        showDetail={showDetail}
         modalView={modalView}
       />
       <div className="flex flex-col justify-center w-full mt-4 gap-4">

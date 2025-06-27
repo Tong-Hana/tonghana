@@ -29,11 +29,11 @@ export function customUser(data: UserProfile | CardUser | undefined) {
       description: "소개 정보 없음",
       imageUrl: "/jennie.jpg",
       target: "목표 없음",
-      totalAsset: "0원",
+      totalAsset: undefined,
       hasCar: false,
       hasHouse: false,
-      carCost: "0원",
-      houseCost: "0원",
+      carCost: undefined,
+      houseCost: undefined,
       portfolioRatios: emptyCategoryRatios as CategoryRatios,
       debtPercent: "0%",
       investorType: "정보 없음",
@@ -56,17 +56,17 @@ export function customUser(data: UserProfile | CardUser | undefined) {
     totalAsset:
       "totalAsset" in data && data.totalAsset
         ? `${(data.totalAsset / 10000).toLocaleString()}만원`
-        : "0원",
+        : undefined,
     hasCar: data.hasCar,
     hasHouse: data.hasHouse,
     carCost:
       "carValue" in data && data.carValue
         ? `${(data.carValue / 10000).toLocaleString()}만원`
-        : "0원",
+        : undefined,
     houseCost:
       "houseValue" in data && data.houseValue
         ? `${(data.houseValue / 10000).toLocaleString()}만원`
-        : "0원",
+        : undefined,
     portfolioRatios: (data.categoryRatios ||
       emptyCategoryRatios) as CategoryRatios,
     debtPercent: `${data.financialProductRatio?.loanRatio || 0}%`,
