@@ -73,7 +73,31 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const commonTransform = `
+        translate(var(--tw-translate-x), var(--tw-translate-y)) 
+        rotate(var(--tw-rotate)) 
+        skewX(var(--tw-skew-x)) 
+        skewY(var(--tw-skew-y)) 
+        scaleX(var(--tw-scale-x)) 
+        scaleY(var(--tw-scale-y))
+      `.replace(/\s+/g, " "); // 줄바꿈 제거
+
+      addUtilities({
+        ".translate-y-0-cross": {
+          "--tw-translate-y": "0px",
+          "-webkit-transform": commonTransform,
+          transform: commonTransform,
+        },
+        ".translate-y-full-cross": {
+          "--tw-translate-y": "100%",
+          "-webkit-transform": commonTransform,
+          transform: commonTransform,
+        },
+      });
+    },
+  ],
   corePlugins: {
     stroke: true,
     strokeWidth: true,
