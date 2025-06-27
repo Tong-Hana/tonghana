@@ -16,12 +16,12 @@ const faker = new Faker({ locale: [ko] });
 const fakerEn = new Faker({ locale: [en] });
 
 export function getRandomCity(): string {
-  const states = Object.keys(REGIONS); // 서울시, 경기도 ...
-  const randomState = faker.helpers.arrayElement(states);
-  const cities = REGIONS[randomState]; // 해당 시/도의 군/구 목록
-  const randomCity = faker.helpers.arrayElement(cities); // 군/구 랜덤 선택
+  // const states = Object.keys(REGIONS); // 모든 시/도 목록
+  // const randomState = faker.helpers.arrayElement(states);
+  const cities = REGIONS["서울시"]; // 서울시로 한정
+  const randomCity = faker.helpers.arrayElement(cities); // 구 랜덤 선택
 
-  return `${randomState} ${randomCity}`; // "서울시 성동구" 형태로 반환
+  return `서울시 ${randomCity}`; // "서울시 성동구" 형태로 반환
 }
 
 // const cities = ["서울시 성동구", "서울시 강남구", "서울시 종로구"];
