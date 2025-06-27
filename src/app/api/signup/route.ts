@@ -79,6 +79,7 @@ import bcrypt from "bcryptjs";
 import { generateUserFinancialProducts } from "@/lib/actions/generateUserFinancialProducts";
 import { generateUserLoan } from "@/lib/actions/generateUserLoan";
 import { generateUserConsume } from "@/lib/actions/generateUserConsume";
+import { saveUserVector } from "@/lib/actions/saveUserVector";
 
 export async function POST(req: Request) {
   try {
@@ -129,7 +130,7 @@ export async function POST(req: Request) {
 
       return createdUser;
     });
-
+    await saveUserVector(newUser);
     return NextResponse.json(
       {
         message: "회원가입에 성공하였습니다.",
