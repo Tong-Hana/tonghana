@@ -130,7 +130,7 @@ export async function POST(req: Request) {
       await generateUserConsume(createdUser, tx);
       // 배지 데이터 생성
       await generateUserBadges(createdUser, tx);
-      ``;
+
       return createdUser;
     });
     await saveUserVector(newUser);
