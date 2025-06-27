@@ -10,6 +10,8 @@ export interface ProfileCardProps {
   imageUrl: string;
   target: string;
   totalAsset: string;
+  hasCar: boolean;
+  hasHouse: boolean;
   carCost: string;
   houseCost: string;
   portfolioRatios: CategoryRatios;

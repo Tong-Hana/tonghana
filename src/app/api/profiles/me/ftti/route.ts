@@ -54,6 +54,7 @@
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { masterPrisma } from "@/lib/prisma/masterClient";
+import { updateUserCurrentVector } from "@/lib/actions/saveUserVector";
 
 export async function POST(req: Request) {
   try {
@@ -122,12 +123,15 @@ export async function POST(req: Request) {
     else currentType = "VERY_AGGRESSIVE";
 
     // 6. DB 저장
-    await masterPrisma.user.update({
+    const updateUser = await masterPrisma.user.update({
       where: { userId: user.userId },
       data: {
         currentType,
       },
     });
+
+    // 7. Weaviate 벡터 저장
+    await updateUserCurrentVector(updateUser);
 
     return NextResponse.json({
       message: "투자 성향 분석 결과가 성공적으로 저장되었습니다.",
