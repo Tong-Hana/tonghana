@@ -21,7 +21,7 @@ const slides = [
     imageSrc: "/onboarding2.png",
     title: "금융 포트폴리오 분석",
     description:
-      "“매일 다른 퀴즈로 금융 감각을 키워요.”\n반복할수록 더 똑똑해지는 금융 퀴즈를 경험해보세요.",
+      "“마이데이터로 내 자산현황을 파악해요.”\n 자산현황을 통하나의 그래프로 한 눈에 볼 수 있어요.",
   },
   {
     imageSrc: "/onboarding3.png",
