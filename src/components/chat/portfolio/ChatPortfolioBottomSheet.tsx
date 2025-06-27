@@ -39,10 +39,10 @@ export default function ChatPortfolioBottomSheet({
       )}
       <div
         className={cn(
-          "fixed frame-container h-fit inset-0 z-50 transition-transform duration-300",
-          open ? "-translate-y-full" : "translate-y-0",
+          "fixed frame-container left-0 right-0 bottom-0 z-50 transition-transform duration-300",
+          open ? "translate-y-0-cross" : "translate-y-full-cross",
         )}
-        style={{ top: "100vh", maxHeight: "90vh" }}
+        style={{ maxHeight: "90vh" }}
       >
         <div className="relative flex flex-col w-full h-full px-5 rounded-t-3xl bg-white">
           {/* 바텀시트 라벨 */}
