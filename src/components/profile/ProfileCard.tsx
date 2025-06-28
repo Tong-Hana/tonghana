@@ -14,6 +14,7 @@ import { InvestmentTypeLabelMap } from "@/app/types/profiles";
 import { useCardLike } from "@/hooks/useCardLike";
 import { useCardRemove } from "@/hooks/useCardRemove";
 import toast from "react-hot-toast";
+import BadgeList from "../badge/BadgeList";
 
 export default function ProfileCard({
   id,
@@ -31,6 +32,7 @@ export default function ProfileCard({
   houseCost,
   portfolioRatios,
   badges,
+  badgeExpandable,
   portfolioType,
   investorType,
   debtPercent,
@@ -77,9 +79,8 @@ export default function ProfileCard({
           className="object-cover"
           priority
         />
-        <div className="absolute right-5 top-5 text-text-primary">
-          {badges?.diligent ?? 0}
-        </div>
+
+        <BadgeList badges={badges} expandable={badgeExpandable} />
 
         {/* Gradient Overlay */}
         <div className="absolute inset-x-0 bottom-0 h-[20%] bg-gradient-to-b from-transparent via-black/20 to-black/60" />

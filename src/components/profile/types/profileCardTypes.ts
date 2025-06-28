@@ -16,6 +16,7 @@ export interface ProfileCardProps {
   houseCost?: string;
   portfolioRatios: CategoryRatios;
   badges: UserBadge;
+  badgeExpandable?: boolean;
   debtPercent: string;
   portfolioType: string;
   investorType: string;
