@@ -3,8 +3,6 @@ import DoughnutChart from "@/components/chart/DoughnutChart";
 import MonthlySpendingChart from "@/components/chart/MonthlySpendingChart";
 import Button from "@/components/common/button/Button";
 import DialogButton from "@/components/common/button/DialogButton";
-import { DislikeButton } from "@/components/common/button/ReactionButton";
-import ProfileCardDetail from "@/components/profile/ProfileCardDetail";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Header from "@/components/common/Header";
@@ -17,6 +15,7 @@ import { customUser } from "@/lib/customUserData";
 import { customConsumeHistory } from "@/lib/customConsumeHistory";
 import { customPairingAnswers } from "@/lib/customParingAnswer";
 import { RightArrow } from "@/assets/assets";
+import CardBottomSheet from "@/components/card/CardBottomSheet";
 
 export default function MyPage() {
   const { data } = useSuspenseQuery(userProfileOptions("me"));
@@ -101,7 +100,7 @@ export default function MyPage() {
   ];
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full scrollbar-hide">
       <div className="flex flex-col gap-5 px-5 py-2">
         <Header title="마이페이지" centerTitle={false} showBackButton={false} />
         {/* 프로필 */}
@@ -125,26 +124,6 @@ export default function MyPage() {
               onClick={() => setShowCard(true)}
               className="text-[0.8rem] font-normal px-8"
             />
-            {/* ProfileCardDetail 모달 */}
-            {showCard && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-                <div className="relative bg-white mb-12 rounded-xl shadow-lg max-w-sm w-full max-h-[90vh] overflow-y-auto">
-                  {/* 닫기 버튼 */}
-                  <DislikeButton
-                    size="lg"
-                    onClick={() => setShowCard(false)}
-                    className="absolute top-4 right-4 z-10 "
-                    iconClassName="text-hanablack hover:text-gray-500 active:text-gray-900"
-                  />
-                  <ProfileCardDetail
-                    user={user}
-                    answers={answer}
-                    data={consumeHistoryData}
-                    modalView={true}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
@@ -208,6 +187,16 @@ export default function MyPage() {
           return null;
         })}
       </div>
+      {/* ProfileCardDetail 모달 */}
+      {
+        <CardBottomSheet
+          user={user}
+          answers={answer}
+          data={consumeHistoryData}
+          open={showCard}
+          onClose={() => setShowCard(false)}
+        />
+      }
     </div>
   );
 }
