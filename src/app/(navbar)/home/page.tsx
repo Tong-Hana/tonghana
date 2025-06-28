@@ -47,6 +47,7 @@ export default function HomePage() {
               hasCar={user.hasCar}
               hasHouse={user.hasHouse}
               portfolioRatios={user.portfolioRatios}
+              badges={user.badges}
               debtPercent={user.debtPercent}
               investorType={user.investorType}
               portfolioType={user.portfolioType}

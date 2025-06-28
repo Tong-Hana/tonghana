@@ -3,6 +3,7 @@ import {
   FinancialProductRatio,
   GoalPeriod,
   GoalType,
+  UserBadge,
 } from "./profiles";
 
 export interface RandomSubject {
@@ -35,6 +36,7 @@ export interface CardUser {
   preferredType: string;
   financialProductRatio: FinancialProductRatio;
   categoryRatios: CategoryRatios;
+  badges: UserBadge;
 }
 
 export interface CardListResponse {

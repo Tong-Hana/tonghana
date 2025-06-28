@@ -30,6 +30,7 @@ export default function ProfileCard({
   carCost,
   houseCost,
   portfolioRatios,
+  badges,
   portfolioType,
   investorType,
   debtPercent,
@@ -76,6 +77,9 @@ export default function ProfileCard({
           className="object-cover"
           priority
         />
+        <div className="absolute right-5 top-5 text-text-primary">
+          {badges?.diligent ?? 0}
+        </div>
 
         {/* Gradient Overlay */}
         <div className="absolute inset-x-0 bottom-0 h-[20%] bg-gradient-to-b from-transparent via-black/20 to-black/60" />
