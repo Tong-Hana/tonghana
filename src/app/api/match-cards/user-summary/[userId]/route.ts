@@ -398,10 +398,10 @@ export async function GET(
       consumeHistory: consumeRatios,
       badges: userData.userBadge
         ? {
-            diligent: userData.userBadge.diligent,
-            planner: userData.userBadge.planner,
-            saver: userData.userBadge.saver,
-            investor: userData.userBadge.investor,
+            diligent: userData.userBadge[0].diligent,
+            planner: userData.userBadge[0].planner,
+            saver: userData.userBadge[0].saver,
+            investor: userData.userBadge[0].investor,
           }
         : null,
     };
