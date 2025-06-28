@@ -3,6 +3,7 @@ import Badge from "./Badge";
 import { BadgeType } from "@/app/types/badge";
 import { useState } from "react";
 import { XMark } from "@/assets/assets";
+import BadgeBottomSheet from "./BadgeBottomSheet";
 
 type Props = {
   badges: UserBadge;
@@ -11,6 +12,7 @@ type Props = {
 
 export default function BadgeList({ badges, expandable = false }: Props) {
   const [expanded, setExpandded] = useState(false);
+  const [open, setOpen] = useState(false);
   const totalCount = badgeKeys.reduce((prev, key) => prev + badges[key], 0);
 
   const badgeData = badgeKeys
@@ -28,9 +30,9 @@ export default function BadgeList({ badges, expandable = false }: Props) {
 
   return (
     <div>
-      <div onClick={handleClick}>
+      <div className="cursor-pointer" onClick={handleClick}>
         {badgeData.map((badge, index) => {
-          const offset = 10 + (expanded ? index * 60 : index * 8); // 펼치면 간격 넓게
+          const offset = 20 + (expanded ? index * 60 : index * 8); // 펼치면 간격 넓게
           const zIndex = badgeData.length - index; // 위에 올수록 높은 zIndex
           const showCount = expanded || index === 0;
           const count = expanded ? badge.count : totalCount;
@@ -49,20 +51,23 @@ export default function BadgeList({ badges, expandable = false }: Props) {
                 count={count}
                 size={50}
                 showCount={showCount}
+                onClick={expanded ? () => setOpen(true) : undefined}
               />
             </div>
           );
         })}
       </div>
       {expanded && (
-        <div
-          className="absolute p-2 rounded-full bg-hanagreen-normal cursor-pointer"
-          style={{ top: 10 + badgeData.length * 60, right: 32 }}
+        <button
+          className="absolute p-2 rounded-full bg-hanagreen-normal"
+          style={{ top: 20 + badgeData.length * 60, right: 32 }}
+          type="button"
           onClick={() => setExpandded(false)}
         >
           <XMark className="w-3 h-3 stroke-white" />
-        </div>
+        </button>
       )}
+      <BadgeBottomSheet open={open} onClose={() => setOpen(false)} />
     </div>
   );
 }

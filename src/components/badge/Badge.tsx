@@ -1,5 +1,6 @@
 import { BadgeType, BadgeTypeImagePathMap } from "@/app/types/badge";
 import { XMark } from "@/assets/assets";
+import { cn } from "@/utils/cn";
 import Image from "next/image";
 
 type Props = {
@@ -7,11 +8,21 @@ type Props = {
   count: number;
   showCount: boolean;
   size: number;
+  onClick?: () => void;
 };
 
-export default function Badge({ type, count, showCount, size }: Props) {
+export default function Badge({
+  type,
+  count,
+  showCount,
+  size,
+  onClick,
+}: Props) {
   return (
-    <div className="relative">
+    <div
+      className={cn("relative", onClick ? "cursor-pointer" : "")}
+      onClick={onClick}
+    >
       <Image
         src={BadgeTypeImagePathMap[type]}
         width={size}
