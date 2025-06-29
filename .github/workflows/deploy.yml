@@ -42,7 +42,7 @@ jobs:
           target: "~/tonghana"
           rm: true
           strip_components: 0
-          args: "-r --exclude=node_modules --exclude=.next --exclude=.env.local"
+          args: "-r --exclude=node_modules --exclude=.env.local"
 
       - name: Restart on EC2
         uses: appleboy/ssh-action@master
