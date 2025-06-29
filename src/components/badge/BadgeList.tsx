@@ -36,14 +36,16 @@ export default function BadgeList({ badges, expandable = false }: Props) {
           const zIndex = badgeData.length - index; // 위에 올수록 높은 zIndex
           const showCount = expanded || index === 0;
           const count = expanded ? badge.count : totalCount;
+          const duration = 200 * index;
 
           return (
             <div
               key={index}
-              className="absolute right-5 transition-all duration-300"
+              className="absolute right-5 transition-all "
               style={{
                 top: offset,
                 zIndex: zIndex,
+                transitionDuration: `${duration}ms`,
               }}
             >
               <Badge
