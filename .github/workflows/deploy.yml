@@ -42,7 +42,7 @@ jobs:
           target: "~/tonghana"
           rm: true
           strip_components: 0
-          args: "-r --exclude=node_modules --exclude=.next --exclude=.env.local"
+          args: "-r --exclude=node_modules --exclude=.env.local"
 
       - name: Restart on EC2
         uses: appleboy/ssh-action@master
@@ -65,18 +65,18 @@ jobs:
             fi
 
             cat <<EOF > .env
-DATABASE_URL=${{ secrets.DATABASE_URL }}
-READ_REPLICA_URL=${{ secrets.READ_REPLICA_URL }}
-WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}
-JWT_SECRET=${{ secrets.JWT_SECRET }}
-AWS_REGION=${{ secrets.AWS_REGION }}
-AMPLIFY_BUCKET=${{ secrets.AMPLIFY_BUCKET }}
-AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}
-NEXT_PUBLIC_SOCKET_URL=${{ secrets.NEXT_PUBLIC_SOCKET_URL }}
-NEXT_PUBLIC_SOCKET_API_BASE_URL=${{ secrets.NEXT_PUBLIC_SOCKET_API_BASE_URL }}
-EOF
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            READ_REPLICA_URL=${{ secrets.READ_REPLICA_URL }}
+            WEAVIATE_URL=${{ secrets.WEAVIATE_URL }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            AWS_REGION=${{ secrets.AWS_REGION }}
+            AMPLIFY_BUCKET=${{ secrets.AMPLIFY_BUCKET }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}
+            NEXT_PUBLIC_SOCKET_URL=${{ secrets.NEXT_PUBLIC_SOCKET_URL }}
+            NEXT_PUBLIC_SOCKET_API_BASE_URL=${{ secrets.NEXT_PUBLIC_SOCKET_API_BASE_URL }}
+            EOF
 
             # 설치 및 빌드
             npm install --legacy-peer-deps
