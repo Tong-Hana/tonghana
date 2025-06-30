@@ -18,22 +18,14 @@ export default function HomePage() {
   const allUsers = data.data.map((user: CardUser) => customUser(user));
   const adData = data.randomSubject;
 
-  // 좋아요/카드삭제 구현, 카드 상세페이지
-  const initialUsers = allUsers.slice(0, 10);
-  const additionalUsers = allUsers.slice(10, 15);
-  const usersToRender = quizLog?.isPassed
-    ? [...additionalUsers, ...initialUsers]
-    : initialUsers;
-
   const handleQuizButtonClick = () => {
-    // setIsQuizResolved(true);
     router.push("/quiz");
   };
 
   return (
     <div className="frame-container space-y-8">
       <div className="flex flex-col gap-5">
-        {usersToRender.map((user, index) => (
+        {allUsers.map((user, index) => (
           <div key={user.id}>
             <ProfileCard
               id={user.id}
