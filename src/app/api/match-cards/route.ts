@@ -302,10 +302,10 @@ export async function GET(_req: NextRequest) {
         categoryRatios,
         badges: user.userBadge
           ? {
-              diligent: user.userBadge[0].diligent,
-              planner: user.userBadge[0].planner,
-              saver: user.userBadge[0].saver,
-              investor: user.userBadge[0].investor,
+              diligent: user.userBadge.diligent,
+              planner: user.userBadge.planner,
+              saver: user.userBadge.saver,
+              investor: user.userBadge.investor,
             }
           : null,
       };
