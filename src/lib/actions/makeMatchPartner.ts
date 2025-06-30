@@ -16,14 +16,14 @@ type WeaviateCandidate = {
 };
 
 // 코사인 유사도 계산 함수
-const cosineSimilarity = (a: number[], b: number[]): number => {
+export const cosineSimilarity = (a: number[], b: number[]): number => {
   const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
   const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
   const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
   return dot / (normA * normB);
 };
 
-const calcMutualSimilarity = (
+export const calcMutualSimilarity = (
   aCurrent: InvestmentType,
   aPreferred: InvestmentType,
   bCurrent: InvestmentType,
