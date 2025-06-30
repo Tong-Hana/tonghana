@@ -122,8 +122,8 @@ export async function makeMatchPartner(user: User, findNum: number) {
       };
     })
     .sort((a, b) => b.mutualScore - a.mutualScore)
-    .slice(0, findNum - count);
-  for (let i = 0; i < slice.length; i++) {
+    .slice(0, findNum);
+  for (let i = count + 1; i < slice.length; i++) {
     const result = slice[i];
     await masterPrisma.userRecoLog.create({
       data: {

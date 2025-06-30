@@ -22,10 +22,12 @@ import ChatAssetShareModal from "@/components/chat/ChatAssetShareModal";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { parseToChatRoomInfo } from "@/utils/chat";
+import { useChatRoomStore } from "@/lib/store/chatRoomsStore";
 
 export default function ChatRoomPage() {
   const params = useParams();
   const roomId = Number(params.roomId);
+  const updateRoom = useChatRoomStore((state) => state.updateRoom);
 
   const {
     data: myProfile,
@@ -122,6 +124,18 @@ export default function ChatRoomPage() {
           senderProfileImg: isMine ? undefined : chatPartner?.profileImage,
         },
       ]);
+
+      // 채팅방 마지막 메세지 업데이트
+      updateRoom({
+        roomId: roomId,
+        lastMessage: msg.message,
+        lastMessageAt: new Date(Date.now()),
+        opponent: {
+          userId: chatPartner.userId,
+          nickname: chatPartner.nickname,
+          profileUrl: chatPartner.profileImage,
+        },
+      });
     };
     // 메세지 리스너 등록
     socket.on("receiveMessage", messageHandler);
@@ -157,7 +171,7 @@ export default function ChatRoomPage() {
       socket.off("receiveMessage", messageHandler);
       socket.off("assetStatusChanged", assetShareStatusHandler);
     };
-  }, [myProfile, chatPartner, roomId, socket, queryClient]);
+  }, [myProfile, chatPartner, roomId, socket, queryClient, updateRoom]);
 
   const handleSendMessage = (message: string) => {
     if (!myProfile) return;

@@ -3,11 +3,23 @@
 import { ChatRoom } from "@/app/types/client-chat";
 import ChatRoomTile from "@/components/chat/ChatRoom";
 import { useChatRooms } from "@/hooks/chat/useChatRooms";
+import { useChatRoomStore } from "@/lib/store/chatRoomsStore";
+import { useEffect } from "react";
 
 export default function ChatPage() {
-  const { data, isLoading, isError, error } = useChatRooms();
+  const { data, isLoading, isError, error, isFetchedAfterMount } =
+    useChatRooms();
 
-  if (isLoading || isError || data?.chatRooms.length === 0) {
+  const setChatRooms = useChatRoomStore((state) => state.setChatRooms);
+  const chatRooms = useChatRoomStore((state) => state.chatRooms);
+
+  useEffect(() => {
+    if (data && isFetchedAfterMount) {
+      setChatRooms(data?.chatRooms);
+    }
+  }, [data, isFetchedAfterMount, setChatRooms]);
+
+  if (isLoading || isError || chatRooms.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center content-h">
         <p className="text-text-secondary text-base ">
@@ -23,7 +35,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col w-full h-full">
-      {data?.chatRooms.map((chatroom: ChatRoom) => (
+      {chatRooms.map((chatroom: ChatRoom) => (
         <ChatRoomTile
           key={chatroom.roomId}
           roomId={chatroom.roomId}

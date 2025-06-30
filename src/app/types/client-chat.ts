@@ -1,7 +1,7 @@
 export type ChatRoom = {
   roomId: number;
   lastMessage: string;
-  lastMessageAt: Date;
+  lastMessageAt?: Date;
   opponent: {
     userId: number;
     nickname: string;
