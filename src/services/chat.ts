@@ -5,7 +5,7 @@ import {
 } from "@/app/types/client-chat";
 import { parseToChatRoomInfo } from "@/utils/chat";
 
-type ChatRoomsResponse = {
+export type ChatRoomsResponse = {
   chatRooms: ChatRoom[];
 };
 
@@ -17,13 +17,22 @@ export const fetchChatRooms = async (): Promise<ChatRoomsResponse> => {
     throw new Error(error.message ?? "채팅방 목록 조회에 실패했습니다.");
   }
 
-  const parsedData = await res.json();
+  const parsedData = (await res.json()) as ChatRoomsResponse;
 
   return {
-    chatRooms: parsedData.chatRooms.map((chatRoom: ChatRoom) => ({
-      ...chatRoom,
-      lastMessageAt: new Date(chatRoom.lastMessageAt),
-    })),
+    chatRooms: parsedData.chatRooms
+      .map((chatRoom: ChatRoom) => ({
+        ...chatRoom,
+        lastMessageAt:
+          chatRoom.lastMessageAt && new Date(chatRoom.lastMessageAt),
+      }))
+      .sort((a, b) => {
+        // null이 가장 위로 오도록 정렬
+        if (!a.lastMessageAt && !b.lastMessageAt) return 0;
+        if (!a.lastMessageAt) return -1;
+        if (!b.lastMessageAt) return 1;
+        return b.lastMessageAt.getTime() - a.lastMessageAt.getTime(); // 최신순
+      }),
   };
 };
 
