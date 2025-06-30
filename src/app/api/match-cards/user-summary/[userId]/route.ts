@@ -6,7 +6,7 @@
  *     description: |
  *       지정한 유저 ID 또는 me 에 대한 카드 상세 정보를 조회합니다.  
  *       응답에는 사용자 기본 정보, 페어링북, 지난달 소비내역 비율,  
- *       금융상품 및 대출 비율, 금융 카테고리별 비율이 포함됩니다.
+ *       금융상품 및 부채 비율, 금융 카테고리별 비율이 포함됩니다.
 
  *       자산 정보 공개 조건:
  *       - 마이페이지에서 본인 카드 상세보기 (userId가 "me"일 경우)
@@ -319,13 +319,9 @@ export async function GET(
     for (const p of products) {
       const { category } = p.financialProduct;
       const value = Number(p.currentValue ?? 0);
-      if (category === "LOAN") continue; // 대출은 금융자산에서 제외
       financeTotal += value;
       categorySums[category] = (categorySums[category] ?? 0) + value;
     }
-
-    // 금융자산 + 대출 총합 (기준 비율 계산용, 0 방지)
-    const totalValue = financeTotal + loanTotal || 1;
 
     // 카테고리별 비율 계산 → 마지막 항목은 보정해서 합이 1.0이 되도록 조정
     const entries = Object.entries(categorySums).map(([key, value]) => {
@@ -349,12 +345,11 @@ export async function GET(
     // 총자산 계산 (자동차/부동산 제외, 금융자산만)
     const assetTotal = showAssetValues ? financeTotal : null;
 
-    // 대출 비율 계산용 총합: 자동차 + 부동산 + 금융자산 + 대출
-    const assetTotalWithLoanAndPhysical =
+    // 부채 비율 계산용 총합: 자동차 + 부동산 + 금융자산
+    const assetTotalWithPhysical =
       Number(userData.carValue ?? 0) +
         Number(userData.houseValue ?? 0) +
-        financeTotal +
-        loanTotal || 1; // 0 방지 fallback
+        financeTotal || 1; // 0 방지 fallback
 
     // 소비 히스토리: Decimal → number 변환 후 비율화
     const ch = userData.consumeHistory;
@@ -390,9 +385,7 @@ export async function GET(
       houseValue: showAssetValues ? Number(userData.houseValue ?? 0) : null,
       totalAsset: assetTotal,
       financialProductRatio: {
-        loanRatio: parseFloat(
-          (loanTotal / assetTotalWithLoanAndPhysical).toFixed(2),
-        ),
+        loanRatio: parseFloat((loanTotal / assetTotalWithPhysical).toFixed(2)),
       },
       categoryRatios,
       consumeHistory: consumeRatios,

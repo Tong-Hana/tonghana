@@ -22,6 +22,12 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["svgr.d.ts", "next-env.d.ts", "src/**/*", ".next/types/**/*.ts"],
+  "include": [
+    "svgr.d.ts",
+    "next-env.d.ts",
+    "src/**/*",
+    ".next/types/**/*.ts",
+    "tests/**/*"
+  ],
   "exclude": ["node_modules"]
 }
