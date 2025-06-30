@@ -28,7 +28,7 @@ export default function ImageCropper({
   };
 
   return (
-    <div className="relative w-full aspect-square">
+    <div className="rounded-xl relative w-full aspect-square overflow-hidden">
       {" "}
       <Cropper
         image={image}
@@ -37,7 +37,7 @@ export default function ImageCropper({
         aspect={1}
         cropShape="rect"
         showGrid={false}
-        objectFit="cover" // ⭐ 핵심: 정사각형 crop 영역을 이미지가 꽉 채움 (비율 유지)
+        objectFit="cover"
         onCropChange={setCrop}
         onZoomChange={setZoom}
         onCropComplete={(_, areaPixels) => {
@@ -58,7 +58,7 @@ export default function ImageCropper({
             style={{
               width: "min(100%, 320px)",
               aspectRatio: "1 / 1",
-              boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.4)",
+              boxShadow: "0 0 0 200px rgba(0, 0, 0, 0.4)",
             }}
           />
         </div>
@@ -66,7 +66,7 @@ export default function ImageCropper({
       {onCropComplete && (
         <button
           onClick={handleCropComplete}
-          className="absolute bottom-[-2.5rem] left-1/2 -translate-x-1/2 text-sm text-hanagreen-normal underline"
+          className="absolute bottom-16 left-0 right-0 mx-4 text-sm text-hanagreen-normal underline text-center"
         >
           완료
         </button>
