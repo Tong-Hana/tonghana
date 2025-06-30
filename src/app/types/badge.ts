@@ -20,8 +20,8 @@ export const BadgeTypeLabelMap: Record<BadgeType, string> = {
 };
 
 export const BadgeTypeDescMap: Record<BadgeType, string> = {
-  diligent: "하나은행 정기예금/적금 가입",
-  planner: "목표 설정 적금 2회 이상",
-  saver: "월 소비 항목 10건 이하인 달이 3회 이상",
-  investor: "자산 포트폴리오에서 3개 이상 자산 비중이 20% 이상",
+  diligent: "하나은행 예금/적금 만기 시",
+  planner: "하나은행 정기예금/적금 가입",
+  saver: "최근 3개월 동안 소득 대비\n소비 비율이 60% 이하",
+  investor: "하나은행에서 판매하는\n예금/적금을 제외한\n투자 상품 가입 시",
 };
