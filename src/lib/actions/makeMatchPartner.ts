@@ -48,14 +48,10 @@ export async function makeMatchPartner(user: User, findNum: number) {
   // 오늘 생성된 추천 기록 확인
   const now = new Date();
   const startOfToday = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
   );
   const startOfTomorrow = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + 1,
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1),
   );
   const count = await replicaPrisma.userRecoLog.count({
     where: {
@@ -133,22 +129,8 @@ export async function makeMatchPartner(user: User, findNum: number) {
       data: {
         baseUserId: user.userId,
         candidateId: result.userId,
-        createdAt: startOfToday,
       },
     });
   }
   return;
 }
-// async function main() {
-//   const user = await replicaPrisma.user.findFirst({
-//     where: { userId: 101 },
-//   });
-//   if (!user) {
-//     console.error("User not found");
-//     return;
-//   }
-//
-//   const partners = await makeMatchPartner(user, 5);
-//   console.log("Matched Partners:", partners);
-// }
-// main();
