@@ -4,6 +4,7 @@ import {
   GoalPeriod,
   GoalType,
   goalUtils,
+  UserBadge,
   UserProfile,
 } from "@/app/types/profiles";
 
@@ -16,6 +17,13 @@ const emptyCategoryRatios = {
   FOREIGN_BONDS: 0,
   ALTERNATIVE: 0,
   CASH: 0,
+};
+
+const emptyUserBadges = {
+  diligent: 0,
+  planner: 0,
+  saver: 0,
+  investor: 0,
 };
 
 export function customUser(data: UserProfile | CardUser | undefined) {
@@ -35,6 +43,7 @@ export function customUser(data: UserProfile | CardUser | undefined) {
       carCost: undefined,
       houseCost: undefined,
       portfolioRatios: emptyCategoryRatios as CategoryRatios,
+      badges: emptyUserBadges as UserBadge,
       debtPercent: "0%",
       investorType: "정보 없음",
       portfolioType: "정보 없음",
@@ -69,6 +78,7 @@ export function customUser(data: UserProfile | CardUser | undefined) {
         : undefined,
     portfolioRatios: (data.categoryRatios ||
       emptyCategoryRatios) as CategoryRatios,
+    badges: (data.badges || emptyUserBadges) as UserBadge,
     debtPercent: `${data.financialProductRatio?.loanRatio || 0}%`,
     investorType: data.preferredType || "정보 없음",
     portfolioType: data.currentType || "정보 없음",

@@ -1,4 +1,4 @@
-import { CategoryRatios } from "@/app/types/profiles";
+import { CategoryRatios, UserBadge } from "@/app/types/profiles";
 
 export interface ProfileCardProps {
   id: number;
@@ -15,6 +15,8 @@ export interface ProfileCardProps {
   carCost?: string;
   houseCost?: string;
   portfolioRatios: CategoryRatios;
+  badges: UserBadge;
+  badgeExpandable?: boolean;
   debtPercent: string;
   portfolioType: string;
   investorType: string;

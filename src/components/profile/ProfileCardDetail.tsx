@@ -34,6 +34,8 @@ export default function ProfileCardDetail({
         carCost={user.carCost}
         houseCost={user.houseCost}
         portfolioRatios={user.portfolioRatios}
+        badges={user.badges}
+        badgeExpandable={true}
         debtPercent={user.debtPercent}
         investorType={user.investorType}
         portfolioType={user.portfolioType}
