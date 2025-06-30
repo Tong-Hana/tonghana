@@ -59,7 +59,7 @@ model UserRecoLog {
   baseUserId  Int      @map("base_user")
   candidateId Int      @map("candidate_id")
   likeStatus  Boolean  @default(false) @map("like_status")
-  baseUser    User     @relation("BaseUserReco", fields: [baseUserId], references: [userId], onDelete: Cascade)
+  baseUser    User     @relation("BaseUserReco", fields: [baseUserId], references: [userId])
 
   @@index([baseUserId], map: "UserRecoLog_base_user_fkey")
 }
@@ -148,12 +148,12 @@ model User {
   consumeHistory       ConsumeHistory?
   loan                 Loan[]
   pairingAnswer        PairingAnswer?
+  userBadge            UserBadge[]
   userFinancialProduct UserFinancialProduct[]
   receivedMatches      UserMatchLog[]         @relation("ReceivedMatches")
   sentMatches          UserMatchLog[]         @relation("SentMatches")
   userQuizLog          UserQuizLog[]
   UserRecoLog          UserRecoLog[]          @relation("BaseUserReco")
-  userBadge            UserBadge?
 }
 
 model Subject {
@@ -199,12 +199,12 @@ model UserQuizLog {
 
 model UserBadge {
   userBadgeId Int      @id @default(autoincrement()) @map("user_badge_id")
-  userId      Int      @unique @map("user_id")
-  createdAt   DateTime @default(now()) @map("created_at")
+  userId      Int      @map("user_id")
   diligent    Int      @map("diligent")
-  investor    Int      @map("investor")
   planner     Int      @map("planner")
   saver       Int      @map("saver")
+  investor    Int      @map("investor")
+  createdAt   DateTime @default(now()) @map("created_at")
   user        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@index([userId], map: "UserBadge_user_id_fkey")
