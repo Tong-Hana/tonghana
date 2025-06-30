@@ -66,7 +66,7 @@ export async function makeMatchPartner(user: User, findNum: number) {
     },
   });
 
-  if (todayRecoUsers.length >= findNum) {
+  if (todayRecoUsers.length >= findNum && findNum !== 5) {
     // 오늘 이미 충분한 추천이 생성되었으면 종료
     return;
   }
