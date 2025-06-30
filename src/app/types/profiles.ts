@@ -1,4 +1,5 @@
 import { GoalType, GoalPeriod, ProductCategory } from "@/lib/constants/enums";
+import { BadgeType } from "./badge";
 export { GoalType, GoalPeriod };
 
 export interface PairingAnswer {
@@ -21,10 +22,12 @@ export interface FinancialProductRatio {
 }
 
 export type CategoryKey = `${ProductCategory}`;
-
 export const categoryKeys: CategoryKey[] = Object.values(ProductCategory);
-
 export type CategoryRatios = Record<CategoryKey, number>;
+
+export type BadgeKey = `${BadgeType}`;
+export const badgeKeys: BadgeKey[] = Object.values(BadgeType);
+export type UserBadge = Record<BadgeKey, number>;
 
 export interface UserProfile {
   userId: number;
@@ -49,6 +52,7 @@ export interface UserProfile {
   consumeHistory: ConsumeHistory;
   financialProductRatio: FinancialProductRatio;
   categoryRatios: CategoryRatios;
+  badges: UserBadge;
 }
 
 export const PortfolioCategoryLabelMap: Record<string, string> = {
