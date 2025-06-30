@@ -1,4 +1,3 @@
-// services/matchCards/matchCardListService.ts
 import { replicaPrisma } from "@/lib/prisma/replicaClient";
 
 type SubjectResponse = {
