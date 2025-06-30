@@ -22,7 +22,7 @@ export const fetchChatRooms = async (): Promise<ChatRoomsResponse> => {
   return {
     chatRooms: parsedData.chatRooms.map((chatRoom: ChatRoom) => ({
       ...chatRoom,
-      lastMessageAt: new Date(chatRoom.lastMessageAt),
+      lastMessageAt: chatRoom.lastMessageAt && new Date(chatRoom.lastMessageAt),
     })),
   };
 };
