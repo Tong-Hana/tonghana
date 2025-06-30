@@ -53,7 +53,7 @@ export async function makeMatchPartner(user: User, findNum: number) {
   const startOfTomorrow = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1),
   );
-  const count = await replicaPrisma.userRecoLog.count({
+  const todayRecoUsers = await replicaPrisma.userRecoLog.findMany({
     where: {
       baseUserId: user.userId,
       createdAt: {
@@ -61,9 +61,13 @@ export async function makeMatchPartner(user: User, findNum: number) {
         lt: startOfTomorrow,
       },
     },
+    select: {
+      candidateId: true,
+    },
   });
 
-  if (count === findNum) {
+  if (todayRecoUsers.length >= findNum) {
+    // 오늘 이미 충분한 추천이 생성되었으면 종료
     return;
   }
 
@@ -83,6 +87,9 @@ export async function makeMatchPartner(user: User, findNum: number) {
     matchedUserIds.add(log.receiveId);
   });
   matchedUserIds.add(user.userId);
+  todayRecoUsers.forEach((log) => {
+    matchedUserIds.add(log.candidateId);
+  });
 
   const rawCandidates = await client.graphql
     .get()
@@ -123,7 +130,7 @@ export async function makeMatchPartner(user: User, findNum: number) {
     })
     .sort((a, b) => b.mutualScore - a.mutualScore)
     .slice(0, findNum);
-  for (let i = count + 1; i < slice.length; i++) {
+  for (let i = 0; i < slice.length; i++) {
     const result = slice[i];
     await masterPrisma.userRecoLog.create({
       data: {
