@@ -31,6 +31,9 @@ jobs:
           echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env
           echo "NEXT_PUBLIC_SOCKET_URL=${{ secrets.NEXT_PUBLIC_SOCKET_URL }}" >> .env
           echo "NEXT_PUBLIC_SOCKET_API_BASE_URL=${{ secrets.NEXT_PUBLIC_SOCKET_API_BASE_URL }}" >> .env
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
+          echo "NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}" >> .env
+          
 
       - name: Copy project to EC2
         uses: appleboy/scp-action@master
