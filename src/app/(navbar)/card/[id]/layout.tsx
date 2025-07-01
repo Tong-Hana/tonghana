@@ -38,7 +38,17 @@ export default async function CardDetailLayout({
         showBackButton={true}
       />
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<div>Loading profile...</div>}>
+        <Suspense
+          fallback={
+            <div className="flex flex-col min-h-screen h-full">
+              <div className="mt-5 mb-5 h-full w-full p-3 rounded-xl bg-hanagreen-light border-hanagreen-light-active border shadow-[0px_1px_3px_0px_#0000001A]">
+                <div className="bg-white w-full text-text-secondary aspect-square rounded-xl overflow-hidden flex items-center justify-center">
+                  프로필 불러오는 중...
+                </div>
+              </div>
+            </div>
+          }
+        >
           <div className="pb-[1rem]" />
           {children}
           <div className="pb-[5rem]" />
