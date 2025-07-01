@@ -1,6 +1,31 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
+
+// === JWT 검증 함수 (Edge Runtime 호환) ===
+async function isValidToken(token: string): Promise<boolean> {
+  try {
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error("JWT_SECRET environment variable is not set");
+      return false;
+    }
+
+    // JWT 시크릿을 Uint8Array로 변환 (jose 라이브러리 요구사항)
+    const secret = new TextEncoder().encode(jwtSecret);
+
+    // JWT 토큰 검증 (만료시간, 서명 등 자동 확인)
+    await jwtVerify(token, secret);
+    return true;
+  } catch (error) {
+    // 토큰이 만료되었거나 유효하지 않음
+    console.log(
+      "JWT 검증 실패:",
+      error instanceof Error ? error.message : "알 수 없는 오류",
+    );
+    return false;
+  }
+}
 
 // === 보안 기능들 ===
 
@@ -159,29 +184,16 @@ function validateCSRFToken(request: NextRequest): boolean {
   return false;
 }
 
-// JWT 토큰 유효성 검증 함수
-function isValidToken(token: string): boolean {
-  try {
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      console.error("JWT_SECRET environment variable is not set");
-      return false;
-    }
-
-    // JWT 토큰 검증 (만료시간, 서명 등 자동 확인)
-    jwt.verify(token, jwtSecret);
-    return true;
-  } catch {
-    // 토큰이 만료되었거나 유효하지 않음
-    return false;
-  }
-}
-
 // === 메인 미들웨어 ===
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isDev = process.env.NODE_ENV === "development";
+
+  // API 요청은 미들웨어에서 제외
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
 
   // 1. 요청 크기 제한
   if (!checkRequestSize(request)) {
@@ -256,10 +268,20 @@ export function middleware(request: NextRequest) {
     if (isProtectedPage) {
       const accessToken = request.cookies.get("accessToken");
 
-      if (!accessToken || !isValidToken(accessToken.value)) {
+      // JWT 토큰 검증 활성화
+      if (!accessToken || !(await isValidToken(accessToken.value))) {
         const loginUrl = new URL("/login", request.url);
         loginUrl.searchParams.set("redirect", pathname);
         const response = NextResponse.redirect(loginUrl);
+        return withSecurityHeaders(response);
+      }
+    }
+
+    // 로그인한 사용자가 로그인/회원가입 페이지에 접근 시 홈으로 리다이렉트
+    if (pathname === "/login" || pathname === "/signup") {
+      const accessToken = request.cookies.get("accessToken");
+      if (accessToken && (await isValidToken(accessToken.value))) {
+        const response = NextResponse.redirect(new URL("/home", request.url));
         return withSecurityHeaders(response);
       }
     }
@@ -271,5 +293,14 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: "/((?!_next|api|favicon.ico).*)",
+  matcher: [
+    /*
+     * 다음으로 시작하는 경로를 제외한 모든 요청 경로에 매치:
+     * - api (API 경로)
+     * - _next/static (정적 파일)
+     * - _next/image (이미지 최적화 파일)
+     * - favicon.ico (파비콘 파일)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
 };
