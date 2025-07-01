@@ -120,6 +120,7 @@ export default function ChatRoomPage() {
           direction: isMine ? "outgoing" : "incoming",
           position: "single",
           createdAt: new Date(Date.parse(msg.regdate)),
+          senderId: msg.userId,
           senderNickname: isMine ? undefined : chatPartner?.nickname,
           senderProfileImg: isMine ? undefined : chatPartner?.profileImage,
         },
