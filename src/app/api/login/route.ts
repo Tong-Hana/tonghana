@@ -123,7 +123,7 @@ export async function POST(req: Request) {
       value: token,
       httpOnly: true,
       // secure: process.env.NODE_ENV === "production",
-      secure: false,
+      secure: true,
       sameSite: "lax",
       maxAge: 60 * 60 * 24, // 1일
       path: "/",
