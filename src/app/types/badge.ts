@@ -7,14 +7,14 @@ export enum BadgeType {
 
 export const BadgeTypeImagePathMap: Record<BadgeType, string> = {
   diligent: "/badge/diligent.png",
-  planner: "/badge/planner.png",
+  planner: "/badge/hana.png",
   saver: "/badge/saver.png",
   investor: "/badge/investor.png",
 };
 
 export const BadgeTypeLabelMap: Record<BadgeType, string> = {
   diligent: "성실러",
-  planner: "계획러",
+  planner: "하나러",
   saver: "절약러",
   investor: "분산투자러",
 };
