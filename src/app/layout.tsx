@@ -3,6 +3,8 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import localFont from "next/font/local";
 import { TQProvider } from "@/lib/TQProvider";
+import * as Sentry from "@sentry/nextjs";
+import { getAuthUser } from "@/lib/auth";
 
 // Pretendard 폰트 설정
 const pretendard = localFont({
@@ -17,11 +19,23 @@ export const metadata: Metadata = {
   description: "Tong-Hana",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userInfo = await getAuthUser();
+
+  if (userInfo) {
+    try {
+      Sentry.setUser({
+        id: userInfo.userId,
+      });
+    } catch (e) {
+      Sentry.captureException(e);
+    }
+  }
+
   return (
     <html lang="ko" className={pretendard.variable}>
       <head>
