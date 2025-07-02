@@ -174,10 +174,10 @@
       <a href="https://github.com/daehyun03">@daehyun03</a>
     </td>
     <td align="center">
-      <a href="https://github.com/jhpark0888">@jhpark0888</a>
+      <a href="https://github.com/seunghui-park">@seunghui-park</a>
     </td>
     <td align="center">
-      <a href="https://github.com/seunghui-park">@seunghui-park</a>
+      <a href="https://github.com/jhpark0888">@jhpark0888</a>
     </td>
     <td align="center">
       <a href="https://github.com/youlimsongs">@youlimsongs</a>
