@@ -1,5 +1,5 @@
 # TongHana - 하나된 금융, 이어지는 인연
-### **🚀 배포 링크** : ['통하나' 바로가기](https://your-deployment-url.com)
+### **🚀 배포 링크** : ['통하나' 바로가기](https://tonghana.site/)
 
 ‘통하나’는 MZ세대를 위한 금융 기반 소셜 매칭 서비스입니다.  
 
