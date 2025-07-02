@@ -57,6 +57,7 @@ export default function ProfileEditForm() {
   const [carPrice, setCarPrice] = useState("");
   const [hasHouse, setHasHouse] = useState(false);
   const [housePrice, setHousePrice] = useState("");
+  const [pairingCarPrice, setPairingCarPrice] = useState("");
   const [datePrice, setDatePrice] = useState("");
   const [shoePrice, setShoePrice] = useState("");
   const [preferredCity, setPreferredCity] = useState("");
@@ -106,7 +107,7 @@ export default function ProfileEditForm() {
             ? (profile.pairingAnswer.shoesBudget / 10000).toString()
             : "",
         );
-        setCarPrice(
+        setPairingCarPrice(
           profile.pairingAnswer.carBudget
             ? (Number(profile.pairingAnswer.carBudget) / 10000000).toString()
             : "",
@@ -200,8 +201,8 @@ export default function ProfileEditForm() {
 
         // 페어링 답변을 JSON 문자열로 변환
         const pairingAnswerData: Record<string, string | number> = {};
-        if (carPrice)
-          pairingAnswerData.carBudget = parseInt(carPrice) * 10000000;
+        if (pairingCarPrice)
+          pairingAnswerData.carBudget = parseInt(pairingCarPrice) * 10000000;
         if (datePrice)
           pairingAnswerData.dateBudget = parseInt(datePrice) * 10000;
         if (shoePrice)
@@ -249,8 +250,10 @@ export default function ProfileEditForm() {
             hasHouse && housePrice
               ? parseInt(housePrice) * 100000000
               : undefined,
-          pairingAnswer: {
-            carBudget: carPrice ? parseInt(carPrice) * 10000000 : undefined,
+          pairingAnswer: JSON.stringify({
+            carBudget: pairingCarPrice
+              ? parseInt(pairingCarPrice) * 10000000
+              : undefined,
             dateBudget: datePrice ? parseInt(datePrice) * 10000 : undefined,
             shoesBudget: shoePrice ? parseInt(shoePrice) * 10000 : undefined,
             preferredCity: preferredDistrict
@@ -261,7 +264,7 @@ export default function ProfileEditForm() {
                   selectedIncome as PairingIncomeOption,
                 )
               : undefined,
-          },
+          }),
         });
         return;
       }
@@ -427,8 +430,8 @@ export default function ProfileEditForm() {
           {[
             {
               label: "차",
-              value: carPrice,
-              setter: setCarPrice,
+              value: pairingCarPrice,
+              setter: setPairingCarPrice,
               unit: "천만원",
             },
             {
