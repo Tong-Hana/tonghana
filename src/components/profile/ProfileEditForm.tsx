@@ -250,7 +250,7 @@ export default function ProfileEditForm() {
             hasHouse && housePrice
               ? parseInt(housePrice) * 100000000
               : undefined,
-          pairingAnswer: {
+          pairingAnswer: JSON.stringify({
             carBudget: pairingCarPrice
               ? parseInt(pairingCarPrice) * 10000000
               : undefined,
@@ -264,7 +264,7 @@ export default function ProfileEditForm() {
                   selectedIncome as PairingIncomeOption,
                 )
               : undefined,
-          },
+          }),
         });
         return;
       }

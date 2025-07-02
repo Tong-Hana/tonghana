@@ -13,13 +13,7 @@ export interface ProfileEditRequest {
   hasHouse?: boolean;
   houseValue?: number;
   city?: string;
-  pairingAnswer?: {
-    carBudget?: number;
-    dateBudget?: number;
-    shoesBudget?: number;
-    preferredCity?: string;
-    idealIncomeRange?: string;
-  };
+  pairingAnswer?: string;
 }
 
 export interface ProfileEditResponse {

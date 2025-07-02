@@ -348,18 +348,6 @@ export async function PATCH(req: NextRequest) {
     );
   }
 
-  const parsedHasCar = hasCar === "true";
-  const parsedCarValue =
-    parsedHasCar && typeof carValue === "string" && carValue !== ""
-      ? BigInt(carValue)
-      : null;
-
-  const parsedHasHouse = hasHouse === "true";
-  const parsedHouseValue =
-    parsedHasHouse && typeof houseValue === "string" && houseValue !== ""
-      ? BigInt(houseValue)
-      : null;
-
   const updateData: any = {
     ...(nickname && { nickname: nickname.toString() }),
     ...(job && { job: job.toString() }),
@@ -368,10 +356,10 @@ export async function PATCH(req: NextRequest) {
     ...(goalType && { goalType: goalType.toString() }),
     ...(description && { description: description.toString() }),
     ...(profileImage && { profileImage }),
-    ...(hasCar !== null && { hasCar: parsedHasCar }),
-    ...(carValue !== null && { carValue: parsedCarValue }),
-    ...(hasHouse !== null && { hasHouse: parsedHasHouse }),
-    ...(houseValue !== null && { houseValue: parsedHouseValue }),
+    ...(hasCar !== null && { hasCar: hasCar }),
+    ...(carValue !== null && { carValue: carValue }),
+    ...(hasHouse !== null && { hasHouse: hasHouse }),
+    ...(houseValue !== null && { houseValue: houseValue }),
     ...(city && { city: city.toString() }),
   };
 
@@ -383,12 +371,13 @@ export async function PATCH(req: NextRequest) {
 
     if (pairingAnswerRaw && typeof pairingAnswerRaw === "string") {
       const pairingAnswer = JSON.parse(pairingAnswerRaw);
+      console.log("pairingAnswer", pairingAnswer.pairingAnswer);
 
       await masterPrisma.pairingAnswer.update({
         where: { userId: user.userId },
         data: {
           ...(pairingAnswer.carBudget !== undefined && {
-            carBudget: BigInt(pairingAnswer.carBudget),
+            carBudget: pairingAnswer.carBudget,
           }),
           ...(pairingAnswer.dateBudget !== undefined && {
             dateBudget: pairingAnswer.dateBudget,
