@@ -1,12 +1,12 @@
 # TongHana - 하나된 금융, 이어지는 인연
-![image](https://github.com/user-attachments/assets/3639ebbf-fed8-4cea-bce9-85265e7f19d0)
-<br><br>
+### **🚀 배포 링크** : ['통하나' 바로가기](https://your-deployment-url.com)
 
-## ✨ Intro
 ‘통하나’는 MZ세대를 위한 금융 기반 소셜 매칭 서비스입니다.  
 
 연애와 자산관리를 결합해 비슷한 소비·투자 성향을 가진 또래와 매칭하고, 자연스럽게 금융에 관심을 가질 수 있도록 돕습니다.  
 연애를 핑계로 자산관리에 스며들게 하여, 어렵고 딱딱한 금융을 쉽고 재미있게 시작하는 새로운 방식을 제안합니다.
+<br><br>
+![image](https://github.com/user-attachments/assets/3639ebbf-fed8-4cea-bce9-85265e7f19d0)
 <br><br>
 
 ## 📝 기능 설명
@@ -150,10 +150,10 @@
 ### Front-End
 <table width="100%">
   <tr>
-    <th width="25%">김대현</th>
-    <th width="25%">박승희</th>
-    <th width="25%">박지환</th>
-    <th width="25%">송유림</th>
+    <th width="25%" align="center">김대현</th>
+    <th width="25%" align="center">박승희</th>
+    <th width="25%" align="center">박지환</th>
+    <th width="25%" align="center">송유림</th>
   </tr>
   <tr>
     <td align="center">
@@ -223,10 +223,10 @@
 ### Back-End
 <table width="100%">
   <tr>
-    <th width="25%">김대현</th>
-    <th width="25%">김유림</th>
-    <th width="25%">김지민</th>
-    <th width="25%">정재희</th>
+    <th width="25%" align="center">김대현</th>
+    <th width="25%" align="center">김유림</th>
+    <th width="25%" align="center">김지민</th>
+    <th width="25%" align="center">정재희</th>
   </tr>
   <tr>
     <td align="center">
