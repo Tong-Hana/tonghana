@@ -83,8 +83,8 @@ function checkIPRestriction(request: NextRequest): boolean {
   const activity = suspiciousActivity.get(ip);
 
   if (activity) {
-    // 1분 내에 50회 이상 요청 시 차단
-    if (now - activity.lastActivity < 60000 && activity.count > 50) {
+    // 1분 내에 1000회 이상 요청 시 차단
+    if (now - activity.lastActivity < 60000 && activity.count > 1000) {
       blockedIPs.add(ip);
       return false;
     }
