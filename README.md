@@ -66,62 +66,63 @@
 
   <table width="100%">
   <tr>
-    <th>페이지명</th>
-    <th>동작 화면</th>
+    <th align="center">페이지명</th>
+    <th align="center">동작 화면</th>
   </tr>
   <tr>
-    <td>회원가입/로그인</td>
+    <td align="center">회원가입/로그인</td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/95b7eb3b-70c4-4af2-b04c-d39aa2fe39a8" width="300"/>
     </td>
   </tr>
   <tr>
-    <td>홈화면</td>
+    <td align="center">홈화면</td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/8842c6a5-0c15-4d3e-99cc-3a131c513879" width="300"/>
     </td>
   </tr>
   <tr>
-    <td>퀴즈</td>
+    <td align="center">퀴즈</td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/bb14ca94-f1cb-4b67-90ab-6a7f2b16a0b5" width="300"/>
     </td>
   </tr>
   <tr>
-    <td>받은 좋아요</td>
+    <td align="center">받은 좋아요</td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/d737f35d-9a02-408e-b6fa-8f8cca11d343" width="300"/>
     </td>
   </tr>
   <tr>
-    <td>채팅_포트폴리오비교</td>
+    <td align="center">채팅_포트폴리오비교</td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/70c53094-469a-40d8-a0db-fab8d746ebb1" width="300"/>
     </td>
   </tr>
   <tr>
-    <td>채팅_자산공유</td>
+    <td align="center">채팅_자산공유</td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/8c696e0f-4410-4299-89f8-1378d8998dc5" width="300"/>
     </td>
   </tr>
   <tr>
-    <td>채팅_금지어_나가기</td>
+    <td align="center">채팅_금지어_나가기</td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/1ef7d245-849f-4aac-b121-eee28f198061" width="300"/>
     </td>
   </tr>
   <tr>
-    <td>마이페이지</td>
+    <td align="center">마이페이지</td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/351d2c11-96fb-442a-9178-403c94d3dd58" width="300"/>
     </td>
   </tr>
 </table>
 
+
 <br><br>
 
-## 🛠️ 기술 스택
+## 🛠️ Tech Stack
 
 | 구분 | 내용 |
 | :-- | :-- |
