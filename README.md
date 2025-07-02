@@ -126,12 +126,13 @@
 
 | 구분 | 내용 |
 | :-- | :-- |
-| **Frontend** | Next.js 15, React 19, TypeScript, Tailwind CSS |
+| **Frontend** | Next.js 15, React 19, TypeScript, Tailwind CSS, MUI |
 | **Backend** | Next.js API Routes, Prisma ORM, MySQL, Weaviate 벡터 데이터베이스 |
 | **Chat** | Socket.IO, Express |
-| **인증** | JWT, bcrypt, 미들웨어 |
+| **인증** | JWT, bcrypt, Next.js middleware |
+| **협업** | Notion, Slack, StoryBook, Swagger |
 | **스토리지** | AWS S3 (이미지 업로드) |
-| **상태관리** | Zustand, React Query |
+| **상태관리** | Zustand, Tanstack Query |
 
 <br><br>
 
