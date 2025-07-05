@@ -153,25 +153,25 @@
 ## 🧑‍💻 Developers
 <table width="100%">
   <tr>
-    <td align="center">
+    <td width="14.28%" align="center">
       <img src="https://github.com/user-attachments/assets/ae4ad215-8465-42d2-8060-4b9da760e5ea" width="160"/>
     </td>
-    <td align="center">
+    <td width="14.28%" align="center">
       <img src="https://github.com/user-attachments/assets/28669a5c-c7a1-4bad-8805-13aec6624e90" width="160"/>
     </td>
-    <td align="center">
+    <td width="14.28%" align="center">
       <img src="https://github.com/user-attachments/assets/0a443363-1775-41e8-81fb-3543ec0dc9ef" width="160"/>
     </td>
-    <td align="center">
+    <td width="14.28%" align="center">
       <img src="https://github.com/user-attachments/assets/15e57d2e-b780-4c92-8496-bcf00f54f93b" width="160"/>
     </td>
-    <td align="center">
+    <td width="14.28%" align="center">
       <img src="https://github.com/user-attachments/assets/3ce06ab6-dffe-481e-b9a6-fd29a8252db6" width="160"/>
     </td>
-    <td align="center">
+    <td width="14.28%" align="center">
       <img src="https://github.com/user-attachments/assets/e7957b6b-5a74-4558-8a23-9a25073c6c73" width="160"/>
     </td>
-    <td align="center">
+    <td width="14.28%" align="center">
       <img src="https://github.com/user-attachments/assets/4b512024-2e68-4853-86b5-97fd10356a08" width="160"/>
     </td>
   </tr>
