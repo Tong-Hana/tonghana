@@ -151,88 +151,17 @@
 ![Group 133](https://github.com/user-attachments/assets/7ff78762-5714-4b09-8617-6583d709dfa5)
 
 ## 🧑‍💻 Developers
-### Front-End
 <table width="100%">
   <tr>
-    <th width="25%" align="center">김대현</th>
-    <th width="25%" align="center">박승희</th>
-    <th width="25%" align="center">박지환</th>
-    <th width="25%" align="center">송유림</th>
-  </tr>
-  <tr>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/15e57d2e-b780-4c92-8496-bcf00f54f93b" width="180"/>
+      <img src="https://github.com/user-attachments/assets/ae4ad215-8465-42d2-8060-4b9da760e5ea" width="160"/>
     </td>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/28669a5c-c7a1-4bad-8805-13aec6624e90" width="180"/>
+      <img src="https://github.com/user-attachments/assets/28669a5c-c7a1-4bad-8805-13aec6624e90" width="160"/>
     </td>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/0a443363-1775-41e8-81fb-3543ec0dc9ef" width="180"/>
+      <img src="https://github.com/user-attachments/assets/0a443363-1775-41e8-81fb-3543ec0dc9ef" width="160"/>
     </td>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/ae4ad215-8465-42d2-8060-4b9da760e5ea" width="180"/>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/daehyun03">@daehyun03</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/seunghui-park">@seunghui-park</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/jhpark0888">@jhpark0888</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/youlimsongs">@youlimsongs</a>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      - 퀴즈 페이지 구현<br/>
-      - 금융 상품설명서 설명 페이지 구현
-    </td>
-    <td>
-      - UI/UX 디자인, 일러스트 작업<br/>
-      - 공통 컴포넌트, 유틸 함수 제작<br/>
-      - 인트로 페이지 구현<br/>
-      - 프로필 등록 페이지 구현<br/>
-      - 페어링 페이지 구현<br/>
-      - FTTI (체질)분류 페이지 구현<br/>
-      - FTTI 결과 페이지 구현<br/>
-      - 내 정보 수정하기 페이지 구현
-    </td>
-    <td>
-      - UI/UX 디자인<br/>
-      - 금융 컴포넌트 제작<br/>
-      - 로그인, 회원가입 페이지 구현<br/>
-      - 셋업 페이지 및 관련 기능 구현<br/>
-      - 받은 좋아요 페이지 구현<br/>
-      - 뱃지 기능 구현
-    </td>
-    <td>
-      - UI/UX 디자인<br/>
-      - 공통 컴포넌트 제작<br/>
-      - 홈페이지 구현<br/>
-      - 이메일페이지 구현<br/>
-      - 카드 상세페이지 구현<br/>
-      - 자산 데이터 시각화<br/>
-      - 로그인/회원가입 구현
-    </td>
-  </tr>
-</table>
-
-
-
-### Back-End
-<table width="100%">
-  <tr>
-    <th width="25%" align="center">김대현</th>
-    <th width="25%" align="center">김유림</th>
-    <th width="25%" align="center">김지민</th>
-    <th width="25%" align="center">정재희</th>
-  </tr>
-  <tr>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/15e57d2e-b780-4c92-8496-bcf00f54f93b" width="160"/>
     </td>
@@ -248,53 +177,44 @@
   </tr>
   <tr>
     <td align="center">
+      송유림 (팀장)<br/>
+      <a href="https://github.com/youlimsongs">@youlimsongs</a>
+    </td>
+    <td align="center">
+      박승희<br/>
+      <a href="https://github.com/seunghui-park">@seunghui-park</a>
+    </td>
+    <td align="center">
+      박지환<br/>
+      <a href="https://github.com/jhpark0888">@jhpark0888</a>
+    </td>
+    <td align="center">
+      김대현<br/>
       <a href="https://github.com/daehyun03">@daehyun03</a>
     </td>
     <td align="center">
+      김유림<br/>
       <a href="https://github.com/rladbflaz">@rladbflaz</a>
     </td>
     <td align="center">
+      김지민<br/>
       <a href="https://github.com/zzimnii">@zzimnii</a>
     </td>
     <td align="center">
+      정재희<br/>
       <a href="https://github.com/jaehejun">@jaehejun</a>
     </td>
   </tr>
   <tr>
-    <td>
-      - ERD 설계<br/>
-      - API 설계<br/>
-      - 유저 더미데이터 생성<br/>
-      - Webview DB 설계<br/>
-      - 매칭 시스템 구현<br/>
-      - 테스트 코드 작성
-    </td>
-    <td>
-      - ERD 설계 & API 명세<br/>
-      - 프로필, FTTI 설문, 페어링 답변 등록/수정/조회 API 구현<br/>
-      - 매칭카드 리스트 조회/상세보기/삭제 API 구현<br/>
-      - 로그아웃/회원 탈퇴 API 구현<br/>
-      - 좋아요 전송/수락/거절/조회 API 구현<br/>
-      - 테스트 코드 작성<br/>
-    </td>
-    <td>
-      - ERD 설계<br/>
-      - API 설계<br/>
-      - 회원가입/로그인 API<br/>
-      - 실시간 Socket.io 통신<br/>
-      - 자산 공개 요청/수락/거절 API 구현<br/>
-      - AWS 인프라 구축<br/>
-      - DB Master-Replica 적용<br/>
-      - CI/CD 파이프라인 구축 및 배포 자동화
-    </td>
-    <td>
-      - ERD 설계<br/>
-      - API 설계<br/>
-      - 유저 데이터 생성<br/>
-      - 국제표준/특허 API<br/>
-      - 테스트코드 작성
-    </td>
+    <td align="center">Frontend</td>
+    <td align="center">Frontend</td>
+    <td align="center">Frontend</td>
+    <td align="center">Full Stack</td>
+    <td align="center">Backend</td>
+    <td align="center">Backend</td>
+    <td align="center">Backend</td>
   </tr>
 </table>
+
 
 ---
